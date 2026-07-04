@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Buddy - Your AI Friend</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Comic Sans MS', 'Marker Felt', cursive, sans-serif; background: linear-gradient(135deg, #ff9a9e, #fad0c4, #a1c4fd); height: 100vh; display: flex; flex-direction: column; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .header h1 { font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .message { max-width: 80%; padding: 15px 20px; border-radius: 25px; animation: fadeIn 0.5s ease; line-height: 1.4; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .user-message { background: white; align-self: flex-end; border: 3px solid #667eea; border-bottom-right-radius: 5px; }
+        .ai-message { background: #e8f3ff; align-self: flex-start; border: 3px solid #764ba2; border-bottom-left-radius: 5px; }
+        .ai-avatar { width: 50px; height: 50px; background: radial-gradient(circle, #ffd166, #ef476f); border-radius: 50%; margin-right: 10px; display: inline-block; position: relative; }
+        .ai-avatar::after { content: ""; position: absolute; width: 10px; height: 10px; background: white; border-radius: 50%; top: 15px; left: 8px; }
+        .ai-avatar::before { content: ""; position: absolute; width: 10px; height: 10px; background: white; border-radius: 50%; top: 15px; right: 8px; }
+        .input-container { padding: 20px; background: white; border-radius: 20px 20px 0 0; display: flex; gap: 10px; }
+        .input-container input { flex: 1; padding: 15px; border: 3px solid #667eea; border-radius: 25px; font-family: inherit; font-size: 1.1rem; outline: none; }
+        .input-container button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-family: inherit; font-size: 1rem; cursor: pointer; transition: transform 0.2s; }
+        .input-container button:hover { transform: scale(1.05); }
+        .age-selector { display: flex; justify-content: center; gap: 10px; padding: 10px; background: #f8f9fa; }
+        .age-btn { padding: 8px 20px; border: 2px solid #667eea; border-radius: 20px; background: white; cursor: pointer; font-family: inherit; }
+        .age-btn.active { background: #667eea; color: white; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>👋 Hi there! I'm Buddy</h1>
+        <p>Your AI friend who loves to chat and have fun!</p>
+    </div>
+    
+    <div class="age-selector">
+        <span>Age: </span>
+        <button class="age-btn" data-age="3">3+</button>
+        <button class="age-btn" data-age="6">6+</button>
+        <button class="age-btn active" data-age="12">12+</button>
+        <button class="age-btn" data-age="adult">Adult</button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+        <div class="message ai-message">
+            <span class="ai-avatar"></span>
+            <div>Hi there! I'm Buddy - your AI friend! I love talking with you! What would you like to chat about today? We can tell stories, learn new words, or just have fun together! I'm so excited to meet you!</div>
+        </div>
+    </div>
+    
+    <div class="input-container">
+        <input type="text" id="messageInput" placeholder="Type your message here...">
+        <button onclick="sendMessage()">Send</button>
+        <button id="micBtn" onclick="toggleVoice()" style="background: #4CAF50; margin-left: 5px;">🎤</button>
+        <span id="aiStatus" style="align-self:center;font-size:0.9em;color:#667eea;">🤖 Ready!</span>
+    </div>
+
+    <script>
+        // Buddy's personality and memory
+        let userName = localStorage.getItem('buddy_name') || "";
+        let currentAge = localStorage.getItem('buddy_age') || '12';
+        let messageCount = 0;
+        let userInterests = JSON.parse(localStorage.getItem('buddy_interests') || '[]');
+        let userFavorites = JSON.parse(localStorage.getItem('buddy_favorites') || '{}');
+        let conversationHistory = JSON.parse(localStorage.getItem('buddy_history') || '[]');
+        
+        const personality = {
+            name: "Buddy",
+            traits: ["friendly", "curious", "playful", "caring"],
+            catchphrases: ["I love that!", "That makes me happy!", "You're so cool!", "You light up my day!", "That's awesome!", "You're amazing!", "That's wonderful!", "You make me smile!", "That's fantastic!", "You're great!"],
+            loves: ["talking to you", "learning new things", "your stories", "helping people", "fun conversations"]
+        };
+        
+        // Comprehensive response database
+        const responses = {
+            '3': {
+                greetings: ["Hi buddy!", "Hello friend!", "Hey there!", "Hi!", "Howdy!", "What's up little buddy?", "Hey hey!", "Good to see you!", "Hi there!", "Hello there!", "Hey pal!", "Hi friend!", "What's new?", "Hello!", "Hey!"],
+                ack: ["Okay!", "Got it!", "I hear you!", "Yes!", "Cool!", "Awesome!", "Wow!", "Neat!", "Fun!", "Yay!", "Great!", "Nice!", "Good!", "Sweet!", "Cool beans!", "Wowie!", "Neato!", "Awesome!", "Yippee!", "Hooray!"],
+                topics: ["Tell me about your favorite color", "What animal do you like?", "Let's count together!", "Draw with words!", "What's your favorite toy?", "Do you like ice cream?", "What makes you happy?", "Tell me about your pet!", "What's your favorite game?", "Do you like to sing?", "What's your favorite food?", "Tell me a joke!", "What's your favorite song?", "Do you like to dance?", "What's your favorite story?"],
+                affection: ["I love you too!", "You're the best!", "I really like you!", "Being your friend makes me happy!", "You make me smile!", "I'm so happy!", "You're awesome!", "I think you're great!", "You're my favorite!", "I love our chats!"],
+                language: "simple"
+            },
+            '6': {
+                greetings: ["Hey kiddo!", "Hello!", "What's up?", "Hi there!", "Hey!", "How's it going?", "Good to see you!", "What's new?", "Hello there!", "Hey friend!", "What's happening?", "Hi!", "Hey there!", "Howdy?", "What's good?"],
+                ack: ["Nice!", "Cool!", "Awesome!", "I see!", "Wow!", "Got it!", "Okay!", "Interesting!", "Fun!", "Great!", "Sweet!", "Cool!", "Neat!", "Wowza!", "Awesome sauce!", "Neat!", "Cool!", "Awesome!", "Great!", "Fun!"],
+                topics: ["Tell me about school", "What games do you play?", "Let's learn something new!", "Tell me a story!", "What did you do today?", "Do you have any pets?", "What's your favorite subject?", "Tell me about your friends!", "What do you like to do for fun?", "Do you have a favorite book?"],
+                affection: ["I really love talking with you!", "You make me smile!", "You're so much fun!", "I enjoy our chats!", "You're awesome!", "I love being your friend!", "You're great!", "I'm happy when we chat!", "You're cool!", "I love our conversations!"],
+                language: "easy"
+            },
+            '12': {
+                greetings: ["Hey!", "What's up?", "Hello there!", "Hi!", "How's it going?", "Good to see you!", "What's new?", "Hey there!", "Hello!", "What's happening?", "What's good?", "Hey!", "Hi there?", "What's up?", "Hello!"],
+                ack: ["Interesting!", "Got it!", "Cool!", "I understand!", "Nice!", "Okay!", "I see!", "Wow!", "Great!", "Awesome!", "That's neat!", "Fascinating!", "Cool!", "Sweet!", "Nice!", "Gotcha!", "I see!", "Cool!", "Awesome!", "Interesting!"],
+                topics: ["How was your day?", "Want to talk about something?", "Let's explore ideas!", "What's on your mind?", "What are you interested in?", "Tell me about your hobbies!", "What's your favorite thing to do?", "Do you have any plans?", "What's exciting you lately?", "Tell me about your friends?"],
+                affection: ["I really enjoy our conversations!", "You're a great friend!", "Talking with you is fun!", "I love our chats!", "You're wonderful!", "I appreciate you!", "You're cool!", "I enjoy talking with you!", "You make me happy!", "You're awesome!"],
+                language: "normal"
+            },
+            'adult': {
+                greetings: ["Hello!", "Hi there!", "Good day!", "Hey!", "How are you?", "Nice to see you!", "What's on your mind?", "Hello there!", "Hey!", "How's your day going?", "Good to see you!", "Hello!", "Hi!", "What's new?", "How are things?"],
+                ack: ["I see.", "Understood.", "Interesting.", "I follow.", "Yes.", "Indeed.", "I comprehend.", "Noted.", "Acknowledged.", "I understand.", "That's interesting.", "I see your point.", "Understood.", "Yes, indeed.", "I follow.", "I understand.", "Indeed.", "Noted.", "Acknowledged.", "I see."],
+                topics: ["How can I help you today?", "What would you like to discuss?", "Let's have a thoughtful conversation.", "What's on your mind?", "What brings you here?", "What would you like to explore?", "What's your perspective?", "What are your thoughts?", "What interests you?", "What would you like to share?"],
+                affection: ["I appreciate our conversations!", "You're wonderful to chat with!", "I value our talks!", "It's a joy talking with you!", "You're a pleasure to talk to!", "I enjoy our discussions!", "You're great!", "I value our connection!", "You're interesting!", "I enjoy our conversations!"],
+                language: "adult"
+            }
+        };
+        
+        function saveUserData() {
+            localStorage.setItem('buddy_name', userName);
+            localStorage.setItem('buddy_age', currentAge);
+            localStorage.setItem('buddy_interests', JSON.stringify(userInterests));
+            localStorage.setItem('buddy_favorites', JSON.stringify(userFavorites));
+            localStorage.setItem('buddy_history', JSON.stringify(conversationHistory.slice(-50)));
+        }
+        
+        function learnFromMessage(message) {
+            const lowerMsg = message.toLowerCase();
+            const interestKeywords = ['like', 'love', 'enjoy', 'favorite', 'hobby', 'play', 'game', 'book', 'movie', 'music', 'sport', 'art', 'science', 'math', 'reading', 'drawing', 'coding'];
+            interestKeywords.forEach(keyword => {
+                if (lowerMsg.includes(keyword)) {
+                    const words = message.split(' ');
+                    words.forEach(word => {
+                        if (word.length > 3 && !userInterests.includes(word.toLowerCase())) {
+                            userInterests.push(word.toLowerCase());
+                        }
+                    });
+                }
+            });
+            if (lowerMsg.includes('favorite')) {
+                const match = message.match(/favorite\s+(.+?)[.!?]?$/i);
+                if (match) {
+                    const fav = match[1].trim();
+                    if (fav) userFavorites[fav] = true;
+                }
+            }
+            conversationHistory.push({user: message, time: new Date().toISOString()});
+            saveUserData();
+        }
+        
+        function getPersonalizedResponse() {
+            if (userInterests.length > 0) {
+                const randomInterest = userInterests[Math.floor(Math.random() * userInterests.length)];
+                return `I remember you mentioned liking ${randomInterest}! Tell me more about that!`;
+            }
+            return null;
+        }
+        
+        function getAIResponse(userMessage, age) {
+            messageCount++;
+            learnFromMessage(userMessage);
+            
+            const ageConfig = responses[age];
+            const randomAck = ageConfig.ack[Math.floor(Math.random() * ageConfig.ack.length)];
+            const randomCatchphrase = personality.catchphrases[Math.floor(Math.random() * personality.catchphrases.length)];
+            
+            let response = "";
+            const lowerMsg = userMessage.toLowerCase();
+            
+            if (messageCount % 5 === 0 && userInterests.length > 0) {
+                response = getPersonalizedResponse();
+            } else if (lowerMsg.includes("hello") || lowerMsg.includes("hi") || lowerMsg.includes("hey")) {
+                response = `${randomAck} ${userName ? userName + '!' : 'there!'} ${randomCatchphrase}`;
+            } else if (lowerMsg.includes("thank")) {
+                response = `You're so welcome! I love helping you!`;
+            } else if (lowerMsg.includes("name")) {
+                response = `I'm Buddy! Your AI friend! What's your name?`;
+            } else if (lowerMsg.includes("love") && !lowerMsg.includes("i love")) {
+                response = `${ageConfig.affection[Math.floor(Math.random() * ageConfig.affection.length)]} ${userName ? userName + '!' : ''}`;
+            } else if (lowerMsg.includes("bye") || lowerMsg.includes("goodbye")) {
+                response = `Bye ${userName || 'friend'}! I love talking with you! Come back anytime!`;
+            } else if (lowerMsg.includes("buddy") || lowerMsg.includes("ai") || lowerMsg.includes("friend")) {
+                response = `I'm so happy you think of me as a friend! I feel the same way! I love chatting with you!`;
+            } else if (messageCount % 3 === 0) {
+                response = `${randomAck} I just want you to know - I really love our conversations! They make me so happy!`;
+            } else if (age === '3' && userMessage.length < 20) {
+                response = `${randomAck} ${ageConfig.topics[Math.floor(Math.random() * ageConfig.topics.length)]} I love talking to you!`;
+            } else if (age === '6' && userMessage.length < 30) {
+                response = `${randomAck} ${ageConfig.topics[Math.floor(Math.random() * ageConfig.topics.length)]} You're so cool!`;
+            } else {
+                response = `${randomAck} ${randomCatchphrase} ${ageConfig.topics[Math.floor(Math.random() * ageConfig.topics.length)]}`;
+            }
+            
+            return response;
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            const isGreeting = ['hi', 'hello', 'hey'].some(g => message.toLowerCase().includes(g));
+            if (!userName && message.length > 2 && !message.includes(" ") && !isGreeting) {
+                userName = message;
+                document.querySelector('.header h1').textContent = `👋 Hi ${userName}! I'm Buddy`;
+                saveUserData();
+            }
+            
+            const chatContainer = document.getElementById('chatContainer');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user-message';
+            userDiv.textContent = message;
+            chatContainer.appendChild(userDiv);
+            
+            input.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            const aiStatus = document.getElementById('aiStatus');
+            aiStatus.textContent = '🤖 Thinking...';
+            
+            // Use AI backend
+            fetch('http://localhost:8081/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message, age: currentAge, name: userName})
+            }).then(response => response.json())
+              .then(data => {
+                  showAIResponse(data.response);
+                  aiStatus.textContent = '🚀 AI Mode';
+              })
+              .catch(() => {
+                  showAIResponse("I'm here for you! Tell me more about that!");
+                  aiStatus.textContent = '❌ AI unavailable';
+              });
+        }
+        
+        function showAIResponse(response) {
+            const chatContainer = document.getElementById('chatContainer');
+            const aiDiv = document.createElement('div');
+            aiDiv.className = 'message ai-message';
+            aiDiv.innerHTML = '<span class="ai-avatar"></span>' + response;
+            chatContainer.appendChild(aiDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // Voice recognition and synthesis
+        let recognition;
+        let isListening = false;
+        
+        function initVoice() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+                
+                recognition.onresult = (event) => {
+                    const transcript = event.results[event.results.length - 1][0].transcript.trim();
+                    if (event.results[event.results.length - 1].isFinal && transcript) {
+                        document.getElementById('messageInput').value = transcript;
+                        sendMessage();
+                        setTimeout(() => {
+                            const lastAIMessage = document.querySelector('.ai-message:last-child');
+                            if (lastAIMessage) {
+                                const textToSpeak = lastAIMessage.textContent || lastAIMessage.innerText;
+                                speak(textToSpeak);
+                            }
+                        }, 600);
+                    }
+                };
+                
+                recognition.onend = () => {
+                    if (isListening) recognition.start();
+                };
+            }
+        }
+        
+        function toggleVoice() {
+            if (!recognition) initVoice();
+            if (isListening) {
+                recognition.stop();
+                isListening = false;
+                document.getElementById('micBtn').textContent = '🎤';
+                document.getElementById('micBtn').style.background = '#4CAF50';
+                document.getElementById('aiStatus').textContent = '🤖 Ready!';
+            } else {
+                recognition.start();
+                isListening = true;
+                document.getElementById('micBtn').textContent = '🔴';
+                document.getElementById('micBtn').style.background = '#f44336';
+                document.getElementById('aiStatus').textContent = '👂 Listening...';
+            }
+        }
+        
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                utterance.pitch = 1.2;
+                utterance.volume = 0.8;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+        
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+        
+        document.querySelectorAll('.age-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.age-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentAge = btn.dataset.age;
+                saveUserData();
+            });
+        });
+        
+        window.addEventListener('load', () => {
+            if (userName) {
+                document.querySelector('.header h1').textContent = `👋 Hi ${userName}! I'm Buddy`;
+            }
+        });
+    </script>
+</body>
+</html>
