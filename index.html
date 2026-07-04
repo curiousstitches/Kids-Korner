@@ -204,8 +204,11 @@
             const aiStatus = document.getElementById('aiStatus');
             aiStatus.textContent = '🤖 Thinking...';
             
-            // Use AI backend
-            fetch('http://localhost:8081/chat', {
+            // Use AI backend - detect if we're on ngrok or localhost
+            const apiUrl = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' 
+                ? window.location.origin + '/chat' 
+                : 'http://localhost:8081/chat';
+            fetch(apiUrl, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({message, age: currentAge, name: userName})
