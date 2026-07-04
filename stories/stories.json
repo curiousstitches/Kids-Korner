@@ -1,0 +1,22 @@
+{
+  "stories": [
+    {
+      "title": "The Friendly Robot",
+      "age_group": "3",
+      "content": "Once upon a time, there was a robot named Bix. Bix was not scary at all! He had a big smile and helped people all day long. When a little girl named Mia met Bix, she was scared at first, but Bix showed her his sparkly lights and said 'Hello!' in a friendly voice. Now Mia and Bix are the best of friends!",
+      "words": ["robot", "friendly", "sparkly", "lights", "friend"]
+    },
+    {
+      "title": "Colors in the Garden",
+      "age_group": "6",
+      "content": "In a magical garden, everything glowed with beautiful colors. The red roses were soft as pillows, the yellow sunflowers danced in the breeze, and the purple grapes hung like jewels. A little boy named Sam picked a red apple and a yellow banana, learning their names as he played.",
+      "words": ["garden", "rose", "sunflower", "grape", "apple", "banana"]
+    },
+    {
+      "title": "The Brave Explorer",
+      "age_group": "12",
+      "content": "Maya was an explorer who loved discovering new things. She traveled to distant lands, made new friends, and learned about different cultures. Her motto was 'The world is full of wonders, and every day is a new adventure.' She kept a journal of all her discoveries, inspiring others to explore too.",
+      "words": ["explorer", "adventure", "discover", "culture", "wonder"]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "vocabulary": {
+    "3": [
+      {"word": "happy", "emoji": "😊", "meaning": "feeling good and smiling"},
+      {"word": "big", "emoji": "⬆️", "meaning": "larger than usual"},
+      {"word": "small", "emoji": "⬇️", "meaning": "little in size"},
+      {"word": "love", "emoji": "❤️", "meaning": "to care deeply"}
+    ],
+    "6": [
+      {"word": "adventure", "emoji": "🗺️", "meaning": "an exciting journey or experience"},
+      {"word": "imagine", "emoji": "🎨", "meaning": "to form pictures in your mind"},
+      {"word": "curious", "emoji": "🤔", "meaning": "wanting to learn new things"}
+    ],
+    "12": [
+      {"word": "innovation", "emoji": "💡", "meaning": "new ideas and methods"},
+      {"word": "sophisticated", "emoji": "✨", "meaning": "complex and advanced"},
+      {"word": "collaborate", "emoji": "🤝", "meaning": "work together"}
+    ],
+    "adult": [
+      {"word": "serendipity", "emoji": "🍀", "meaning": "the occurrence of fortunate discoveries"},
+      {"word": "ephemeral", "emoji": "⏳", "meaning": "lasting for a very short time"}
+    ]
+  },
+  "greetings": {
+    "3": ["Hello!", "Hi!", "Hey buddy!"],
+    "6": ["Hey there!", "What's up?", "Hello!"],
+    "12": ["Greetings!", "How's it going?", "Hey!"],
+    "adult": ["Good day.", "Hello.", "Pleased to meet you."]
+  }
+}
