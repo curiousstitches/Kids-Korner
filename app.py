@@ -28,11 +28,14 @@ You LOVE talking to the user and always want them to know how much you enjoy the
 def get_ai_response(message, age, user_name="friend"):
     try:
         # Use OpenRouter API key from environment variable
-        api_key = os.environ.get('OPENROUTER_API_KEY', '')
+        api_key = os.environ.get('OPENROUTER_API_KEY')
         
         if not api_key:
-            print("Warning: OPENROUTER_API_KEY not set")
+            print("ERROR: OPENROUTER_API_KEY not set in environment!")
             return None
+        
+        if not api_key.startswith('sk-or-'):
+            print(f"WARNING: API key format may be incorrect: {api_key[:10]}...")
             
         response = requests.post(
             "https://openrouter.ai/api/v1/chat/completions",
