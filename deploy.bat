@@ -26,7 +26,12 @@ echo.
 
 :: [2] Set environment variables
 echo [2/7] Setting environment variables...
-set OPENROUTER_API_KEY=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
+set /p OPENROUTER_API_KEY=Enter OPENROUTER_API_KEY: 
+if "%OPENROUTER_API_KEY%"=="" (
+    echo     [ERROR] API Key is required!
+    pause
+    exit /b 1
+)
 echo     [DONE] OPENROUTER_API_KEY set
 echo.
 
