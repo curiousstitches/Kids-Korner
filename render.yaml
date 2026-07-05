@@ -8,3 +8,4 @@ services:
       - key: OPENROUTER_API_KEY
         sync: false
     plan: free
+    # Force Python build - no Node.js
