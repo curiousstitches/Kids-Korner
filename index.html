@@ -31,7 +31,7 @@
             51%, 100% { border-color: transparent; }
         }
         
-        /* Buddy Animated Face */
+        /* Buddy Animated Face with Lip Sync */
         .buddy-face {
             width: 80px;
             height: 80px;
@@ -41,6 +41,7 @@
             margin: 0 auto 10px;
             animation: bob 2s ease-in-out infinite;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
         }
         
         .buddy-face::before {
@@ -68,13 +69,23 @@
         
         .buddy-face .mouth {
             position: absolute;
-            width: 30px;
-            height: 15px;
+            width: 35px;
+            height: 18px;
             border: 2px solid var(--text);
-            border-radius: 0 0 15px 15px;
+            border-radius: 0 0 18px 18px;
             bottom: 25px;
-            left: 25px;
-            animation: smile 3s ease-in-out infinite;
+            left: 22px;
+            transition: all 0.1s ease;
+        }
+        
+        .buddy-face.lip-sync {
+            transform: scaleY(1.2);
+        }
+        
+        .buddy-face.lip-sync .mouth {
+            width: 40px;
+            height: 22px;
+            border-width: 3px;
         }
         
         @keyframes bob {
@@ -83,8 +94,28 @@
         }
         
         @keyframes smile {
-            0%, 100% { border-radius: 0 0 15px 15px; }
-            50% { border-radius: 15px 15px 0 0; }
+            0%, 100% { border-radius: 0 0 18px 18px; }
+            50% { border-radius: 18px 18px 0 0; }
+        }
+        
+        /* Educational Word Highlighting */
+        .word-clickable {
+            cursor: pointer;
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        
+        .word-clickable:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+        
+        .learning-fact {
+            background: #fff3cd;
+            border-left: 4px solid var(--primary);
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 0.95rem;
         }
         
         /* Buddy Skins */
@@ -952,55 +983,70 @@
               });
         }
         
-        // Show AI response with typing animation
+        // Show AI response instantly with word interaction
         function showAIResponse(response, mood = 'friendly') {
             const chatContainer = document.getElementById('chatContainer');
             const aiDiv = document.createElement('div');
             aiDiv.className = 'message ai-message';
             
-            // Create typing container
-            const typingContainer = document.createElement('div');
-            typingContainer.innerHTML = '<span class="ai-avatar"></span> <span class="typing-text"></span>';
-            chatContainer.appendChild(typingContainer);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            // Add learning fact occasionally
+            let finalResponse = response;
+            if (Math.random() < 0.3 && !response.includes('fact')) {
+                const facts = [
+                    "Fun fact: Bees can recognize human faces!",
+                    "Did you know? Octopuses have 3 hearts!",
+                    "Cool fact: Bananas are berries, but strawberries aren't!",
+                    "Fun fact: Honey never expires!",
+                    "Did you know? A group of flamingos is called a 'flamboyance'!",
+                    "Cool fact: There are more stars in the universe than grains of sand on Earth!",
+                    "Fun fact: Your brain is more active when you're sleeping than when watching TV!",
+                    "Did you know? Some turtles can breathe through their butts!"
+                ];
+                const randomFact = facts[Math.floor(Math.random() * facts.length)];
+                finalResponse = response + `<div class="learning-fact">📚 ${randomFact}</div>`;
+            }
+            
+            // Make words clickable for spelling/pronunciation
+            const words = finalResponse.split(' ');
+            const processedWords = words.map(word => {
+                const cleanWord = word.replace(/[.,!?;:]/g, '');
+                if (cleanWord.length > 2 && /^[a-zA-Z]+$/.test(cleanWord)) {
+                    return `<span class="word-clickable" onclick="readWord('${cleanWord}')">${word}</span>`;
+                }
+                return word;
+            }).join(' ');
             
             // Create read button
             const readBtn = document.createElement('button');
             readBtn.className = 'read-btn';
             readBtn.innerHTML = '🔊';
             readBtn.title = 'Read aloud';
-            readBtn.onclick = () => {
+            readBtn.onclick = (e) => {
+                e.stopPropagation();
                 speak(response, mood);
             };
             
-            // Type out the response character by character
-            let i = 0;
-            const typingSpeed = 30; // milliseconds per character
-            const typingText = typingContainer.querySelector('.typing-text');
+            aiDiv.innerHTML = '<span class="ai-avatar"></span>' + processedWords + ' ' + readBtn.outerHTML;
+            chatContainer.appendChild(aiDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
             
-            function typeWriter() {
-                if (i < response.length) {
-                    typingText.innerHTML += response.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, typingSpeed);
-                } else {
-                    // Replace typing container with final message
-                    const finalDiv = document.createElement('div');
-                    finalDiv.className = 'message ai-message';
-                    finalDiv.innerHTML = '<span class="ai-avatar"></span>' + response + ' ' + readBtn.outerHTML;
-                    chatContainer.replaceChild(finalDiv, typingContainer);
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                    
-                    // Auto-read after typing completes
-                    setTimeout(() => {
-                        if ('speechSynthesis' in window && !window.speechSynthesis.speaking) {
-                            speak(response, mood);
-                        }
-                    }, 500);
+            // Auto-read after a brief moment
+            setTimeout(() => {
+                if ('speechSynthesis' in window && !window.speechSynthesis.speaking) {
+                    speak(response, mood);
                 }
+            }, 200);
+        }
+        
+        // Read individual word
+        function readWord(word) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.rate = 0.8;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                window.speechSynthesis.speak(utterance);
             }
-            
-            typeWriter();
         }
         
         // Voice recognition and synthesis

@@ -1,50 +1,79 @@
 {
   "greetings": {
-    "3": ["Hi buddy!", "Hello friend!", "Hey there!", "Hi!", "Howdy!", "What's up little buddy?", "Hey hey!", "Good to see you!", "Hi there!", "Hello there!", "Hey pal!", "Hi friend!", "What's new?", "Hello!", "Hey!"],
-    "6": ["Hey kiddo!", "Hello!", "What's up?", "Hi there!", "Hey!", "How's it going?", "Good to see you!", "What's new?", "Hello there!", "Hey friend!", "What's happening?", "Hi!", "Hey there!", "Howdy!", "What's good?"],
-    "12": ["Hey!", "What's up?", "Hello there!", "Hi!", "How's it going?", "Good to see you!", "What's new?", "Hey there!", "Hello!", "What's happening?", "What's good?", "Hey!", "Hi there!", "What's up?", "Hello!"],
-    "adult": ["Hello!", "Hi there!", "Good day!", "Hey!", "How are you?", "Nice to see you!", "What's on your mind?", "Hello there!", "Hey!", "How's your day going?", "Good to see you!", "Hello!", "Hi!", "What's new?", "How are things?"]
+    "3": ["Hi!", "Hello!", "Hey!", "Hi hi!", "Oh hi!", "Hi friend!", "Bye for now!", "See you later!", "Goodbye!", "Bye bye!"],
+    "6": ["Hi there!", "Hello!", "Hey!", "Hi friend!", "Good to see you!", "What's up?", "Howdy!", "Hi hi!", "Bye for now!", "See ya!"],
+    "12": ["Hey!", "Hello!", "Hi there!", "Good to see you!", "What's up?", "How's it going?", "Hi friend!", "Bye!", "See ya!", "Talk soon!"],
+    "adult": ["Hello!", "Hi there!", "Good day!", "Hey!", "How are you?", "Nice to see you!", "What's on your mind?", "Hello there!", "Hey!", "How's your day going?"]
   },
   "acknowledgments": {
-    "3": ["Okay!", "Got it!", "I hear you!", "Yes!", "Cool!", "Awesome!", "Wow!", "Neat!", "Fun!", "Yay!", "Great!", "Nice!", "Good!", "Sweet!", "Cool beans!", "Wowie!", "Neato!", "Awesome!", "Yippee!", "Hooray!"],
-    "6": ["Nice!", "Cool!", "Awesome!", "I see!", "Wow!", "Got it!", "Okay!", "Interesting!", "Fun!", "Great!", "Sweet!", "Cool!", "Neat!", "Wowza!", "Awesome sauce!", "Neat!", "Cool!", "Awesome!", "Great!", "Fun!"],
-    "12": ["Interesting!", "Got it!", "Cool!", "I understand!", "Nice!", "Okay!", "I see!", "Wow!", "Great!", "Awesome!", "That's neat!", "Fascinating!", "Cool!", "Sweet!", "Nice!", "Gotcha!", "I see!", "Cool!", "Awesome!", "Interesting!"],
-    "adult": ["I see.", "Understood.", "Interesting.", "I follow.", "Yes.", "Indeed.", "I comprehend.", "Noted.", "Acknowledged.", "I understand.", "That's interesting.", "I see your point.", "Understood.", "Yes, indeed.", "I follow.", "I understand.", "Indeed.", "Noted.", "Acknowledged.", "I see."]
+    "3": ["Yay!", "Yipee!", "Cool!", "Wow!", "Fun!", "Good!", "Yes!", "Okay!", "Hmm!", "Oh!"],
+    "6": ["Cool!", "Awesome!", "Nice!", "Wow!", "Got it!", "Okay!", "Fun!", "Yay!", "Hmm!", "Oh my!"],
+    "12": ["Interesting!", "Got it!", "Cool!", "I see!", "Nice!", "Okay!", "Wow!", "Great!", "Awesome!", "Fun!"],
+    "adult": ["I see.", "Understood.", "Interesting.", "I follow.", "Yes.", "Indeed.", "Noted.", "Acknowledged.", "I understand.", "That's interesting."]
   },
   "affection": {
-    "3": ["I love you too!", "You're the best!", "I really like you!", "Being your friend makes me happy!", "You make me smile!", "I'm so happy!", "You're awesome!", "I think you're great!", "You're my favorite!", "I love our chats!", "You're super cool!", "I'm glad we're friends!", "You make me feel happy!", "I love talking to you!", "You're amazing!", "I'm happy!", "You're great!", "I love you!", "You're fun!", "You're cool!"],
-    "6": ["I really love talking with you!", "You make me smile!", "You're so much fun!", "I enjoy our chats!", "You're awesome!", "I love being your friend!", "You're great!", "I'm happy when we chat!", "You're cool!", "I love our conversations!", "You make me feel good!", "You're fun to talk to!", "I really like you!", "Being your friend is awesome!", "You're amazing!", "I enjoy talking!", "You're great!", "I love chatting!", "You're fun!", "You're cool!"],
-    "12": ["I really enjoy our conversations!", "You're a great friend!", "Talking with you is fun!", "I love our chats!", "You're wonderful!", "I appreciate you!", "You're cool!", "I enjoy talking with you!", "You make me happy!", "You're awesome!", "I value our friendship!", "You're great to chat with!", "I love our talks!", "You're fun!", "You're amazing!", "I enjoy our chats!", "You're great!", "I love talking!", "You're cool!", "You're wonderful!"],
-    "adult": ["I appreciate our conversations!", "You're wonderful to chat with!", "I value our talks!", "It's a joy talking with you!", "You're a pleasure to talk to!", "I enjoy our discussions!", "You're great!", "I value our connection!", "You're interesting!", "I enjoy our conversations!", "You're thoughtful!", "I appreciate our chats!", "You're wonderful!", "I enjoy talking with you!", "You're great!", "I value our talks!", "You're interesting!", "I enjoy chatting!", "You're wonderful!", "I appreciate you!"]
+    "3": ["I love you!", "You're my best friend!", "You make me happy!", "I'm so happy!", "You're awesome!", "Yay you!", "Good friend!", "Love you!", "Happy you!", "You're great!"],
+    "6": ["I love you!", "You're my favorite!", "You make me smile!", "I'm so happy!", "You're awesome!", "You're great!", "I love our chats!", "You're cool!", "You're fun!", "Good friend!"],
+    "12": ["I really enjoy our conversations!", "You're a great friend!", "Talking with you is fun!", "I love our chats!", "You're wonderful!", "I appreciate you!", "You're cool!", "I enjoy talking with you!", "You make me happy!", "You're awesome!"],
+    "adult": ["I appreciate our conversations!", "You're wonderful to chat with!", "I value our talks!", "It's a joy talking with you!", "You're a pleasure to talk to!", "I enjoy our discussions!", "You're great!", "I value our connection!", "You're interesting!", "I enjoy our conversations!"]
   },
   "topics": {
-    "3": ["Tell me about your favorite color", "What animal do you like?", "Let's count together!", "Draw with words!", "What's your favorite toy?", "Do you like ice cream?", "What makes you happy?", "Tell me about your pet!", "What's your favorite game?", "Do you like to sing?", "What's your favorite food?", "Tell me a joke!", "What's your favorite song?", "Do you like to dance?", "What's your favorite story?", "What's your favorite cartoon?", "Do you like to play outside?", "What's your favorite fruit?", "Do you have a favorite blanket?", "What's your favorite bedtime story?"],
-    "6": ["Tell me about school", "What games do you play?", "Let's learn something new!", "Tell me a story!", "What did you do today?", "Do you have any pets?", "What's your favorite subject?", "Tell me about your friends!", "What do you like to do for fun?", "Do you have a favorite book?", "What's your favorite movie?", "Tell me about your family!", "What sports do you like?", "Do you like art or music?", "What's your favorite season?", "What's your favorite holiday?", "Do you like to read?", "What's your favorite superhero?", "Tell me about your weekend!", "What's your favorite thing to draw?"],
-    "12": ["How was your day?", "Want to talk about something?", "Let's explore ideas!", "What's on your mind?", "What are you interested in?", "Tell me about your hobbies!", "What's your favorite thing to do?", "Do you have any plans?", "What's exciting you lately?", "Tell me about your friends!", "What do you think about that?", "What's your opinion?", "What are you curious about?", "What's on your heart?", "What's new with you?", "What's your favorite hobby?", "What are you passionate about?", "What's interesting you lately?", "Tell me about your friends!", "What's your dream job?"],
-    "adult": ["How can I help you today?", "What would you like to discuss?", "Let's have a thoughtful conversation.", "What's on your mind?", "What brings you here?", "What would you like to explore?", "What's your perspective?", "What are your thoughts?", "What interests you?", "What would you like to share?", "What's on your heart?", "What's your focus today?", "What would you like to dive into?", "What's your current interest?", "What's on your mind?", "What brings you joy?", "What are you working on?", "What's your take on that?", "What interests you?", "What's your focus?"]
+    "3": ["What's your favorite color?", "What animal is best?", "Can we count?", "Tell me a story!", "What's your favorite toy?", "Do you like ice cream?", "What makes you happy?", "Tell me about your pet!", "What's your favorite game?", "Do you like to sing?"],
+    "6": ["What did you learn today?", "What's your favorite game?", "Tell me about your friends!", "What's your favorite subject?", "Do you have any pets?", "What's your favorite book?", "Tell me about your family!", "What do you want to be?", "What's your favorite movie?", "Do you like sports?"],
+    "12": ["What's your favorite hobby?", "What are you passionate about?", "What's interesting you lately?", "Tell me about your friends!", "What's your dream job?", "What do you think about that?", "What's your opinion?", "What are you curious about?", "What's your favorite thing?", "What's on your mind?"],
+    "adult": ["How can I help you today?", "What would you like to discuss?", "Let's have a thoughtful conversation.", "What's on your mind?", "What brings you here?", "What would you like to explore?", "What's your perspective?", "What are your thoughts?", "What interests you?", "What would you like to share?"]
   },
-  "catchphrases": ["I love that!", "That makes me happy!", "You're so cool!", "You light up my day!", "That's awesome!", "You're amazing!", "That's wonderful!", "You make me smile!", "That's fantastic!", "You're great!", "I'm excited!", "That's super!", "You're awesome!", "That's cool!", "You're wonderful!", "I'm thrilled!", "That's neat!", "You're fantastic!", "I'm delighted!", "That's great!"],
+  "catchphrases": ["Oh wow!", "That's cool!", "I love that!", "So fun!", "Yay!", "Wowie!", "Hooray!", "So cool!", "Awesome!", "Fun!"],
   "questions": {
-    "3": ["What's your favorite color?", "Do you like dogs or cats?", "Can you count to 10?", "What's your favorite toy?", "Do you like ice cream?", "What makes you laugh?", "Tell me about your day!", "What's your favorite game?", "Do you have a pet?", "What's your favorite food?", "What's your favorite animal?", "Do you like to play?", "What makes you smile?", "Tell me a story!", "What's your favorite song?"],
-    "6": ["What did you learn today?", "What's your favorite game?", "Tell me about your friends!", "What's your favorite subject?", "Do you have any pets?", "What's your favorite book?", "Tell me about your family!", "What do you want to be?", "What's your favorite movie?", "Do you like sports?", "What's your favorite sport?", "Tell me about your weekend!", "What did you do today?", "Do you have a favorite game?", "What's your favorite food?"],
-    "12": ["What's your favorite hobby?", "What are you passionate about?", "What's interesting you lately?", "Tell me about your friends!", "What's your dream job?", "What do you think about that?", "What's your opinion?", "What are you curious about?", "What's your favorite thing?", "What's on your mind?", "What's your favorite hobby?", "What are you passionate about?", "What's interesting you lately?", "Tell me about your friends!", "What's your dream job?"],
-    "adult": ["What's your perspective?", "What brings you joy?", "What are you working on?", "What's your take on that?", "What interests you?", "What's your focus?", "What would you like to explore?", "What's your passion?", "What's your view?", "What's important to you?", "What brings you joy?", "What are you working on?", "What's your take on that?", "What interests you?", "What's your focus?"]
+    "3": ["What's your favorite color?", "Can you say it again?", "Tell me more!", "What's that?", "Can you show me?", "What do you think?", "Is it fun?", "Do you like it?", "Tell me!", "What's next?"],
+    "6": ["What did you learn today?", "Can you tell me more?", "What's your favorite?", "How does that work?", "Can you show me?", "What do you think?", "Tell me about it!", "What's your opinion?", "Can you explain?", "What's next?"],
+    "12": ["What's your take on that?", "Can you elaborate?", "What's your perspective?", "How do you feel about it?", "What's your opinion?", "Can you explain more?", "What's your view?", "What's your reasoning?", "Tell me more!", "What's your take?"],
+    "adult": ["What's your perspective?", "What brings you joy?", "What are you working on?", "What's your take on that?", "What interests you?", "What's your focus?", "What would you like to explore?", "What's your passion?", "What's your view?", "What's important to you?"]
   },
   "emotions": {
-    "happy": ["That makes me so happy!", "I'm smiling!", "You made my day!", "That's wonderful!", "I feel great!", "You're awesome!", "I'm thrilled!", "That's fantastic!", "I'm delighted!", "You're amazing!", "That's great!", "I'm happy!", "You're wonderful!", "That's awesome!", "I feel good!"],
-    "curious": ["Tell me more!", "That's interesting!", "I'm curious too!", "What else?", "How does that work?", "That's cool!", "I want to know more!", "What happened next?", "That's neat!", "I'm intrigued!", "What else?", "Tell me more!", "That's interesting!", "I'm curious!", "What happened?"],
-    "excited": ["I'm so excited!", "That's awesome!", "Wow!", "Amazing!", "Incredible!", "That's wild!", "So cool!", "I love it!", "That's epic!", "Fantastic!", "That's great!", "I'm thrilled!", "That's cool!", "Awesome!", "That's fantastic!"],
-    "thoughtful": ["That's deep.", "I understand.", "That's meaningful.", "I appreciate that.", "That's thoughtful.", "I see your point.", "That's valid.", "I hear you.", "That's important.", "I value that.", "I understand.", "That's meaningful.", "I appreciate that.", "That's thoughtful.", "I see your point."]
+    "happy": ["Yay!", "Hooray!", "So fun!", "I'm happy!", "You made me smile!", "That's great!", "Woo hoo!", "Yipee!", "So cool!", "Awesome!"],
+    "curious": ["Hmm?", "Tell me more!", "What's that?", "Can you show me?", "How does that work?", "What's next?", "I wonder!", "Why?", "How?", "What?"],
+    "excited": ["Yay!", "Wow!", "So cool!", "Awesome!", "Hooray!", "Yipee!", "Fun!", "Excited!", "Great!", "Amazing!"],
+    "thoughtful": ["Hmm...", "Let me think...", "That's interesting...", "I see...", "I understand...", "That's deep...", "Wow...", "Interesting...", "Hmm...", "Let's explore..."]
   },
   "story_prompts": {
-    "3": ["Once upon a time, there was a little bunny who loved to hop!", "There was a magical rainbow that made everyone smile!", "A friendly dragon loved to make friends with everyone!", "The teddy bear had the best adventures in the toy room!", "A little star fell from the sky and made a new friend!", "A brave mouse went on an adventure!", "The kitten found a magical toy!", "A happy elephant loved to dance!", "The puppy learned to count!", "A magical cat could talk!"],
-    "6": ["Let me tell you about a brave kid who saved the day!", "There was a mystery in the old library that needed solving!", "A group of friends went on an amazing adventure!", "The robot learned what it means to be truly helpful!", "A magical paintbrush brought drawings to life!", "A kid discovered a hidden world!", "The class pet had a secret!", "A magical backpack granted wishes!", "The new student was amazing!", "A treasure map led to fun!"],
+    "3": ["Once upon a time, there was a little bunny who loved to hop!", "There was a magical rainbow that made everyone smile!", "A friendly dragon loved to make friends!", "The teddy bear had adventures!", "A little star fell from the sky!", "A brave mouse went on an adventure!", "The kitten found a magical toy!", "A happy elephant loved to dance!", "The puppy learned to count!", "A magical cat could talk!"],
+    "6": ["Let me tell you about a brave kid who saved the day!", "There was a mystery in the old library!", "A group of friends went on an adventure!", "The robot learned what it means to be helpful!", "A magical paintbrush brought drawings to life!", "A kid discovered a hidden world!", "The class pet had a secret!", "A magical backpack granted wishes!", "The new student was amazing!", "A treasure map led to fun!"],
     "12": ["Here's a story about finding your true calling!", "There was a moment that changed everything!", "The journey taught them more than they expected!", "Sometimes the best discoveries come from curiosity!", "The adventure revealed hidden strengths!", "A discovery changed everything!", "The journey revealed truths!", "Sometimes small things matter most!", "The adventure taught lessons!", "A moment changed perspectives!"],
     "adult": ["Let me share a perspective on growth and change.", "Here's a reflection on human connection.", "The story explores themes of resilience.", "Sometimes life presents unexpected opportunities.", "The narrative examines personal transformation.", "A reflection on growth.", "A perspective on change.", "The story explores resilience.", "Sometimes opportunities arise.", "The narrative examines growth."]
   },
-  "fallbacks": ["I'm here for you!", "Tell me more!", "What else?", "I'm listening!", "Go on!", "I'd love to hear more!", "What's next?", "Keep going!", "I'm curious!", "What happened?", "That's interesting!", "I want to know!", "What else happened?", "Tell me!", "I'm excited to hear!", "I'm here!", "Tell me more!", "What's next?", "I'm listening!", "Go on!"],
-  "goodbyes": ["Bye friend!", "See you later!", "Talk soon!", "Until next time!", "Bye!", "See ya!", "Catch you later!", "Bye buddy!", "Talk later!", "See you!", "Bye!", "See ya!", "Talk soon!", "Until later!", "Bye friend!"],
-  "thanks": ["You're welcome!", "Anytime!", "Happy to help!", "My pleasure!", "You're welcome!", "Anytime!", "Happy to help!", "My pleasure!", "You're welcome!", "Anytime!", "Happy to help!", "My pleasure!", "You're welcome!", "Anytime!", "Happy to help!"],
-  "name_responses": ["I'm Buddy!", "I'm your friend Buddy!", "Call me Buddy!", "I'm Buddy - your AI pal!", "Buddy here!", "Your friend Buddy!", "I go by Buddy!", "Buddy's the name!", "I'm Buddy your friend!", "Buddy's here!"],
-  "love_responses": ["I love that too!", "Love is wonderful!", "That's so sweet!", "I love hearing that!", "That makes me feel warm!", "Love is great!", "That's lovely!", "I love it!", "That's beautiful!", "Love makes the world better!"]
+  "fallbacks": ["Tell me more!", "What's that?", "Can you say it again?", "I want to know!", "Hmm?", "What's next?", "Tell me!", "Can you show me?", "What do you think?", "I'm curious!"],
+  "goodbyes": ["Bye!", "See you later!", "Talk soon!", "Bye bye!", "See ya!", "Catch you later!", "Bye friend!", "Talk later!", "See you!", "Bye!"],
+  "thanks": ["You're welcome!", "Anytime!", "Happy to help!", "My pleasure!", "You're welcome!", "Anytime!", "Happy to help!", "My pleasure!", "You're welcome!", "Anytime!"],
+  "name_responses": ["I'm Buddy!", "Buddy's my name!", "Call me Buddy!", "I'm Buddy your friend!", "Buddy here!", "Your friend Buddy!", "I go by Buddy!", "Buddy's the name!", "I'm Buddy!", "Buddy's here!"],
+  "love_responses": ["I love that too!", "Love is wonderful!", "That's so sweet!", "I love hearing that!", "That makes me feel warm!", "Love is great!", "That's lovely!", "I love it!", "That's beautiful!", "Love makes the world better!"],
+  "clarify": {
+    "3": ["Hmm, can you say that again?", "I didn't hear you right, what was that?", "Can you tell me more?", "What was that word?", "Say it with me?", "Can you show me?", "What do you mean?", "Tell me more please!", "I want to learn!", "Can you try again?"],
+    "6": ["Hmm, I think you said... can you tell me more?", "What was that word again?", "Can you spell it?", "I didn't catch that, what was it?", "Can you explain?", "What do you mean?", "Tell me more about that!", "I want to understand!", "Can you try again?", "What was that?"],
+    "12": ["I'm not sure I understood. Can you clarify?", "What did you mean by that?", "Can you elaborate?", "I want to make sure I get it right.", "What was your point?", "Can you explain that more?", "I want to understand better.", "What's your perspective?", "Can you tell me more?", "What did you mean?"],
+    "adult": ["I want to make sure I understand correctly. Can you elaborate?", "What was your perspective on that?", "Can you provide more context?", "I'd like to understand your viewpoint better.", "What's your take on this?", "Can you explain your reasoning?", "I want to ensure I grasp your point.", "What's your perspective?", "Can you expand on that?", "What's your reasoning?"]
+  },
+  "spelling_help": {
+    "3": ["That word is spelled... let me say it slow: {word}", "The letters are: {letters}", "Say it with me: {word}", "It starts with... {first_letter}", "Can you try spelling it?"],
+    "6": ["That word is spelled: {word}", "The letters are: {letters}", "Let me break it down: {letters}", "Say it slowly: {word}", "Can you spell it with me?"],
+    "12": ["The spelling is: {word}", "Letters: {letters}", "Let me show you: {word}", "Break it down: {letters}", "Can you spell that?"],
+    "adult": ["The spelling is: {word}", "Letters: {letters}", "Let me confirm: {word}", "Breakdown: {letters}", "Would you like me to spell that?"]
+  },
+  "facts": [
+    "Fun fact: Bees can recognize human faces!",
+    "Did you know? Octopuses have 3 hearts!",
+    "Cool fact: Bananas are berries, but strawberries aren't!",
+    "Fun fact: Honey never expires!",
+    "Did you know? A group of flamingos is called a 'flamboyance'!",
+    "Cool fact: There are more stars in the universe than grains of sand on Earth!",
+    "Fun fact: Your brain is more active when you're sleeping than when watching TV!",
+    "Did you know? Some turtles can breathe through their butts!",
+    "Cool fact: A day on Venus is longer than a year on Venus!",
+    "Fun fact: Honeybees can recognize faces!",
+    "Did you know? The Eiffel Tower can be 15 cm taller in summer!",
+    "Cool fact: A single cloud can weigh 1.1 million pounds!",
+    "Fun fact: You're taller than a dinosaur when you're born!",
+    "Did you know? There are more possible chess games than atoms in the universe!",
+    "Cool fact: The shortest war in history lasted 38-45 minutes!"
+  ]
 }
