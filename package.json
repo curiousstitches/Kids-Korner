@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "AI chat app for kids 3+ and adults",
   "scripts": {
-    "start": "python -m http.server 8080"
+    "start": "python app.py"
   },
   "keywords": ["ai", "chat", "kids", "education"],
   "license": "MIT"
