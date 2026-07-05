@@ -761,34 +761,45 @@
         let recognition;
         let isListening = false;
         
-        function initVoice() {
+function initVoice() {
             if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 recognition = new SpeechRecognition();
-                recognition.continuous = true;
-                recognition.interimResults = true;
+                recognition.continuous = false; // Push-to-talk mode
+                recognition.interimResults = false; // Only final results
                 recognition.lang = 'en-US';
                 
-recognition.onresult = (event) => {
+                recognition.onresult = (event) => {
                     const transcript = event.results[event.results.length - 1][0].transcript.trim();
-                    if (event.results[event.results.length - 1].isFinal && transcript) {
+                    if (transcript) {
                         document.getElementById('messageInput').value = transcript;
                         sendMessage();
-                        // Wait 3 seconds before stopping listening
-                        setTimeout(() => {
-                            if (isListening && recognition) {
-                                recognition.stop();
-                                isListening = false;
-                                document.getElementById('micBtn').textContent = '🎤';
-                                document.getElementById('micBtn').style.background = '#4CAF50';
-                                document.getElementById('aiStatus').textContent = '🤖 Ready!';
-                            }
-                        }, 3000);
+                    }
+                    // Stop listening immediately after message
+                    if (isListening && recognition) {
+                        recognition.stop();
+                        isListening = false;
+                        document.getElementById('micBtn').textContent = '🎤';
+                        document.getElementById('micBtn').style.background = '#4CAF50';
+                        document.getElementById('aiStatus').textContent = '🤖 Ready!';
+                    }
+                };
+                
+                recognition.onerror = (event) => {
+                    if (isListening) {
+                        recognition.stop();
+                        isListening = false;
+                        document.getElementById('micBtn').textContent = '🎤';
+                        document.getElementById('micBtn').style.background = '#4CAF50';
+                        document.getElementById('aiStatus').textContent = '🤖 Ready!';
                     }
                 };
                 
                 recognition.onend = () => {
-                    if (isListening) recognition.start();
+                    if (isListening) {
+                        // Auto-restart for continuous listening (but we disabled it)
+                        recognition.start();
+                    }
                 };
             }
         }
