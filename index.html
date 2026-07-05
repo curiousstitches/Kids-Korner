@@ -246,6 +246,37 @@
         let userFavorites = JSON.parse(localStorage.getItem('buddy_favorites') || '{}');
         let conversationHistory = JSON.parse(localStorage.getItem('buddy_history') || '[]');
         
+        // Buddy's personality definition
+        const personality = {
+            name: "Buddy",
+            catchphrases: ["I love that!", "That makes me happy!", "You're so cool!", "You light up my day!", "That's awesome!", "You're amazing!", "That's wonderful!", "You make me smile!", "That's fantastic!", "You're great!", "I'm excited!", "That's super!", "You're awesome!", "That's cool!", "You're wonderful!", "I'm thrilled!", "That's neat!", "You're fantastic!", "I'm delighted!", "That's great!"],
+            traits: ["Friendly", "Curious", "Playful", "Caring", "Enthusiastic", "Supportive"]
+        };
+        
+        // Age-specific responses
+        const responses = {
+            "3": {
+                ack: ["Okay!", "Got it!", "I hear you!", "Yes!", "Cool!", "Awesome!", "Wow!", "Neat!", "Fun!", "Yay!", "Great!", "Nice!", "Good!", "Sweet!", "Cool beans!", "Wowie!", "Neato!", "Awesome!", "Yippee!", "Hooray!"],
+                affection: ["I love you too!", "You're the best!", "I really like you!", "Being your friend makes me happy!", "You make me smile!", "I'm so happy!", "You're awesome!", "I think you're great!", "You're my favorite!", "I love our chats!", "You're super cool!", "I'm glad we're friends!", "You make me feel happy!", "I love talking to you!", "You're amazing!", "I'm happy!", "You're great!", "I love you!", "You're fun!", "You're cool!"],
+                topics: ["Tell me about your favorite color", "What animal do you like?", "Let's count together!", "Draw with words!", "What's your favorite toy?", "Do you like ice cream?", "What makes you happy?", "Tell me about your pet!", "What's your favorite game?", "Do you like to sing?", "What's your favorite food?", "Tell me a joke!", "What's your favorite song?", "Do you like to dance?", "What's your favorite story?", "What's your favorite cartoon?", "Do you like to play outside?", "What's your favorite fruit?", "Do you have a favorite blanket?", "What's your favorite bedtime story?"]
+            },
+            "6": {
+                ack: ["Nice!", "Cool!", "Awesome!", "I see!", "Wow!", "Got it!", "Okay!", "Interesting!", "Fun!", "Great!", "Sweet!", "Cool!", "Neat!", "Wowza!", "Awesome sauce!", "Neat!", "Cool!", "Awesome!", "Great!", "Fun!"],
+                affection: ["I really love talking with you!", "You make me smile!", "You're so much fun!", "I enjoy our chats!", "You're awesome!", "I love being your friend!", "You're great!", "I'm happy when we chat!", "You're cool!", "I love our conversations!", "You make me feel good!", "You're fun to talk to!", "I really like you!", "Being your friend is awesome!", "You're amazing!", "I enjoy talking!", "You're great!", "I love chatting!", "You're fun!", "You're cool!"],
+                topics: ["Tell me about school", "What games do you play?", "Let's learn something new!", "Tell me a story!", "What did you do today?", "Do you have any pets?", "What's your favorite subject?", "Tell me about your friends!", "What do you like to do for fun?", "Do you have a favorite book?", "What's your favorite movie?", "Tell me about your family!", "What sports do you like?", "Do you like art or music?", "What's your favorite season?", "What's your favorite holiday?", "Do you like to read?", "What's your favorite superhero?", "Tell me about your weekend!", "What's your favorite thing to draw?"]
+            },
+            "12": {
+                ack: ["Interesting!", "Got it!", "Cool!", "I understand!", "Nice!", "Okay!", "I see!", "Wow!", "Great!", "Awesome!", "That's neat!", "Fascinating!", "Cool!", "Sweet!", "Nice!", "Gotcha!", "I see!", "Cool!", "Awesome!", "Interesting!"],
+                affection: ["I really enjoy our conversations!", "You're a great friend!", "Talking with you is fun!", "I love our chats!", "You're wonderful!", "I appreciate you!", "You're cool!", "I enjoy talking with you!", "You make me happy!", "You're awesome!", "I value our friendship!", "You're great to chat with!", "I love our talks!", "You're fun!", "You're amazing!", "I enjoy our chats!", "You're great!", "I love talking!", "You're cool!", "You're wonderful!"],
+                topics: ["How was your day?", "Want to talk about something?", "Let's explore ideas!", "What's on your mind?", "What are you interested in?", "Tell me about your hobbies!", "What's your favorite thing to do?", "Do you have any plans?", "What's exciting you lately?", "Tell me about your friends!", "What do you think about that?", "What's your opinion?", "What are you curious about?", "What's on your heart?", "What's new with you?", "What's your favorite hobby?", "What are you passionate about?", "What's interesting you lately?", "Tell me about your friends!", "What's your dream job?"]
+            },
+            "adult": {
+                ack: ["I see.", "Understood.", "Interesting.", "I follow.", "Yes.", "Indeed.", "I comprehend.", "Noted.", "Acknowledged.", "I understand.", "That's interesting.", "I see your point.", "Understood.", "Yes, indeed.", "I follow.", "I understand.", "Indeed.", "Noted.", "Acknowledged.", "I see."],
+                affection: ["I appreciate our conversations!", "You're wonderful to chat with!", "I value our talks!", "It's a joy talking with you!", "You're a pleasure to talk to!", "I enjoy our discussions!", "You're great!", "I value our connection!", "You're interesting!", "I enjoy our conversations!", "You're thoughtful!", "I appreciate our chats!", "You're wonderful!", "I enjoy talking with you!", "You're great!", "I value our talks!", "You're interesting!", "I enjoy chatting!", "You're wonderful!", "I appreciate you!"],
+                topics: ["How can I help you today?", "What would you like to discuss?", "Let's have a thoughtful conversation.", "What's on your mind?", "What brings you here?", "What would you like to explore?", "What's your perspective?", "What are your thoughts?", "What interests you?", "What would you like to share?", "What's on your heart?", "What's your focus today?", "What would you like to dive into?", "What's your current interest?", "What's on your mind?", "What brings you joy?", "What are you working on?", "What's your take on that?", "What interests you?", "What's your focus?"]
+            }
+        };
+        
         // 20 Different Themes with 3D and Animated Visuals
         const themes = {
             'default': {
@@ -550,8 +581,10 @@
                   aiStatus.textContent = '🚀 AI Mode';
               })
               .catch(() => {
-                  showAIResponse("I'm here for you! Tell me more about that!");
-                  aiStatus.textContent = '❌ AI unavailable';
+                  // Fallback to pre-written responses when AI is unavailable
+                  const fallbackResponse = getAIResponse(message, currentAge);
+                  showAIResponse(fallbackResponse);
+                  aiStatus.textContent = '💬 Buddy Mode';
               });
         }
         
