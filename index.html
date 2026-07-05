@@ -16,6 +16,21 @@
             --bg: linear-gradient(135deg, #ff9a9e, #fad0c4, #a1c4fd);
         }
         
+        /* Typing Animation */
+        .typing-text {
+            display: inline-block;
+            border-right: 2px solid var(--primary);
+            padding-left: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { border-color: var(--primary); }
+            51%, 100% { border-color: transparent; }
+        }
+        
         /* Responsive Design for Small Screens */
         @media (max-width: 480px) {
             .header h1 { font-size: 1.5rem; }
@@ -691,11 +706,17 @@
               });
         }
         
-        // Show AI response with read button
+        // Show AI response with typing animation
         function showAIResponse(response, mood = 'friendly') {
             const chatContainer = document.getElementById('chatContainer');
             const aiDiv = document.createElement('div');
             aiDiv.className = 'message ai-message';
+            
+            // Create typing container
+            const typingContainer = document.createElement('div');
+            typingContainer.innerHTML = '<span class="ai-avatar"></span> <span class="typing-text"></span>';
+            chatContainer.appendChild(typingContainer);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
             
             // Create read button
             const readBtn = document.createElement('button');
@@ -706,16 +727,34 @@
                 speak(response, mood);
             };
             
-            aiDiv.innerHTML = '<span class="ai-avatar"></span>' + response + ' ' + readBtn.outerHTML;
-            chatContainer.appendChild(aiDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            // Type out the response character by character
+            let i = 0;
+            const typingSpeed = 30; // milliseconds per character
+            const typingText = typingContainer.querySelector('.typing-text');
             
-            // Auto-read with fallback
-            setTimeout(() => {
-                if ('speechSynthesis' in window && !window.speechSynthesis.speaking) {
-                    speak(response, mood);
+            function typeWriter() {
+                if (i < response.length) {
+                    typingText.innerHTML += response.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, typingSpeed);
+                } else {
+                    // Replace typing container with final message
+                    const finalDiv = document.createElement('div');
+                    finalDiv.className = 'message ai-message';
+                    finalDiv.innerHTML = '<span class="ai-avatar"></span>' + response + ' ' + readBtn.outerHTML;
+                    chatContainer.replaceChild(finalDiv, typingContainer);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                    
+                    // Auto-read after typing completes
+                    setTimeout(() => {
+                        if ('speechSynthesis' in window && !window.speechSynthesis.speaking) {
+                            speak(response, mood);
+                        }
+                    }, 500);
                 }
-            }, 300);
+            }
+            
+            typeWriter();
         }
         
         // Voice recognition and synthesis
@@ -730,19 +769,21 @@
                 recognition.interimResults = true;
                 recognition.lang = 'en-US';
                 
-                recognition.onresult = (event) => {
+recognition.onresult = (event) => {
                     const transcript = event.results[event.results.length - 1][0].transcript.trim();
                     if (event.results[event.results.length - 1].isFinal && transcript) {
                         document.getElementById('messageInput').value = transcript;
                         sendMessage();
+                        // Wait 3 seconds before stopping listening
                         setTimeout(() => {
-                            const lastAIMessage = document.querySelector('.ai-message:last-child');
-                            if (lastAIMessage) {
-                                const textToSpeak = lastAIMessage.textContent || lastAIMessage.innerText;
-                                const mood = detectMood(textToSpeak);
-                                speak(textToSpeak, mood);
+                            if (isListening && recognition) {
+                                recognition.stop();
+                                isListening = false;
+                                document.getElementById('micBtn').textContent = '🎤';
+                                document.getElementById('micBtn').style.background = '#4CAF50';
+                                document.getElementById('aiStatus').textContent = '🤖 Ready!';
                             }
-                        }, 600);
+                        }, 3000);
                     }
                 };
                 
