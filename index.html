@@ -16,6 +16,40 @@
             --bg: linear-gradient(135deg, #ff9a9e, #fad0c4, #a1c4fd);
         }
         
+        /* Responsive Design for Small Screens */
+        @media (max-width: 480px) {
+            .header h1 { font-size: 1.5rem; }
+            .header p { font-size: 0.9rem; }
+            .chat-container { padding: 10px; gap: 10px; }
+            .message { max-width: 90%; padding: 12px 15px; font-size: 0.95rem; }
+            .user-message { border: 2px solid var(--primary); }
+            .ai-message { border: 2px solid var(--secondary); }
+            .ai-avatar { width: 40px; height: 40px; margin-right: 8px; }
+            .ai-avatar::after, .ai-avatar::before { width: 8px; height: 8px; top: 12px; }
+            .input-container { padding: 15px; gap: 8px; }
+            .input-container input { padding: 12px; border: 2px solid var(--primary); border-radius: 20px; font-size: 1rem; }
+            .input-container button { padding: 12px 20px; border-radius: 20px; font-size: 0.9rem; }
+            .age-btn { padding: 6px 15px; font-size: 0.85rem; }
+            .theme-card { padding: 12px; }
+            .theme-preview { width: 50px; height: 50px; margin: 0 auto 8px; }
+            .theme-name { font-size: 0.8rem; }
+        }
+        
+        @media (max-width: 360px) {
+            .header { padding: 15px; }
+            .chat-container { padding: 8px; }
+            .input-container { flex-direction: column; }
+            .input-container input { flex: none; }
+            .input-container button { padding: 10px 15px; }
+        }
+        
+        /* Touch-friendly buttons */
+        @media (hover: none) and (pointer: coarse) {
+            .input-container button { padding: 15px 25px; }
+            .age-btn { padding: 10px 20px; }
+            .settings-btn { width: 45px; height: 45px; font-size: 1.3rem; }
+        }
+        
         body { 
             font-family: 'Comic Sans MS', 'Marker Felt', cursive, sans-serif; 
             background: var(--bg); 
@@ -668,16 +702,19 @@
         
         function speak(text, mood = 'friendly') {
             if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+                
                 const utterance = new SpeechSynthesisUtterance(text);
                 
-                // Voice settings by mood
+                // Natural voice settings by mood - more human-like
                 const voiceSettings = {
-                    'friendly': { rate: 0.9, pitch: 1.2, volume: 0.9 },
-                    'excited': { rate: 1.1, pitch: 1.4, volume: 1.0 },
-                    'happy': { rate: 1.0, pitch: 1.3, volume: 0.9 },
-                    'caring': { rate: 0.8, pitch: 1.0, volume: 0.8 },
-                    'thoughtful': { rate: 0.7, pitch: 0.9, volume: 0.7 },
-                    'playful': { rate: 1.0, pitch: 1.3, volume: 0.9 }
+                    'friendly': { rate: 0.95, pitch: 1.1, volume: 0.95, emphasis: 1.0 },
+                    'excited': { rate: 1.05, pitch: 1.25, volume: 1.0, emphasis: 1.2 },
+                    'happy': { rate: 1.0, pitch: 1.2, volume: 0.95, emphasis: 1.1 },
+                    'caring': { rate: 0.85, pitch: 1.0, volume: 0.9, emphasis: 0.9 },
+                    'thoughtful': { rate: 0.75, pitch: 0.95, volume: 0.85, emphasis: 0.8 },
+                    'playful': { rate: 1.0, pitch: 1.15, volume: 0.95, emphasis: 1.0 }
                 };
                 
                 const settings = voiceSettings[mood] || voiceSettings['friendly'];
@@ -685,19 +722,61 @@
                 utterance.pitch = settings.pitch;
                 utterance.volume = settings.volume;
                 
-                // Try to select a friendly, warm voice
+                // Wait for voices to load
                 const voices = window.speechSynthesis.getVoices();
-                const preferredVoices = voices.filter(v => 
-                    v.name.toLowerCase().includes('female') || 
-                    v.name.toLowerCase().includes('samantha') ||
-                    v.name.toLowerCase().includes('karen') ||
-                    v.name.toLowerCase().includes('vicki') ||
-                    v.name.toLowerCase().includes('moira')
-                );
                 
-                if (preferredVoices.length > 0) {
-                    utterance.voice = preferredVoices[0];
+                // Select best available voice - prioritize natural-sounding voices
+                const voicePreferences = [
+                    'Google UK English Female',
+                    'Google US English Female',
+                    'Samantha',
+                    'Karen',
+                    'Vicki',
+                    'Moira',
+                    'Alex',
+                    'Daniel',
+                    'Susan',
+                    'Fred',
+                    'Victoria',
+                    'Yuki',
+                    'Tessa',
+                    'Zira',
+                    'Google',
+                    'Microsoft'
+                ];
+                
+                let selectedVoice = null;
+                for (const pref of voicePreferences) {
+                    selectedVoice = voices.find(v => 
+                        v.name.toLowerCase().includes(pref.toLowerCase()) ||
+                        v.name.includes(pref)
+                    );
+                    if (selectedVoice) break;
                 }
+                
+                // Fallback to any female voice
+                if (!selectedVoice) {
+                    selectedVoice = voices.find(v => 
+                        v.gender === 'female' || 
+                        v.name.toLowerCase().includes('female') ||
+                        v.name.toLowerCase().includes('samantha') ||
+                        v.name.toLowerCase().includes('karen')
+                    );
+                }
+                
+                // Last resort: any voice
+                if (!selectedVoice && voices.length > 0) {
+                    selectedVoice = voices[0];
+                }
+                
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+                
+                // Add slight pauses for natural rhythm
+                utterance.onstart = () => {
+                    // Voice is starting naturally
+                };
                 
                 window.speechSynthesis.speak(utterance);
             }
