@@ -409,10 +409,8 @@
     
     <div class="age-selector">
         <span>Age: </span>
-        <button class="age-btn" data-age="3">3+</button>
-        <button class="age-btn" data-age="6">6+</button>
-        <button class="age-btn active" data-age="12">12+</button>
-        <button class="age-btn" data-age="adult">Adult</button>
+        <input type="number" id="ageInput" min="1" max="100" value="12" style="width: 60px; padding: 5px; border: 2px solid var(--primary); border-radius: 15px; font-size: 1rem; text-align: center;">
+        <span style="margin-left: 10px; color: #666;">(Enter age)</span>
     </div>
     
     <div class="chat-container" id="chatContainer">
@@ -901,7 +899,14 @@
             messageCount++;
             learnFromMessage(userMessage);
             
-            const ageConfig = responses[age];
+            // Determine age group based on numeric age
+            let ageGroup = '12';
+            if (age <= 3) ageGroup = '3';
+            else if (age <= 6) ageGroup = '6';
+            else if (age <= 12) ageGroup = '12';
+            else ageGroup = 'adult';
+            
+            const ageConfig = responses[ageGroup];
             const randomAck = ageConfig.ack[Math.floor(Math.random() * ageConfig.ack.length)];
             const randomCatchphrase = personality.catchphrases[Math.floor(Math.random() * personality.catchphrases.length)];
             
@@ -924,9 +929,9 @@
                 response = `I'm so happy you think of me as a friend! I feel the same way! I love chatting with you!`;
             } else if (messageCount % 3 === 0) {
                 response = `${randomAck} I just want you to know - I really love our conversations! They make me so happy!`;
-            } else if (age === '3' && userMessage.length < 20) {
+            } else if (ageGroup === '3' && userMessage.length < 20) {
                 response = `${randomAck} ${ageConfig.topics[Math.floor(Math.random() * ageConfig.topics.length)]} I love talking to you!`;
-            } else if (age === '6' && userMessage.length < 30) {
+            } else if (ageGroup === '6' && userMessage.length < 30) {
                 response = `${randomAck} ${ageConfig.topics[Math.floor(Math.random() * ageConfig.topics.length)]} You're so cool!`;
             } else {
                 response = `${randomAck} ${randomCatchphrase} ${ageConfig.topics[Math.floor(Math.random() * ageConfig.topics.length)]}`;
@@ -940,6 +945,11 @@
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
             if (!message) return;
+            
+            // Get age from input field
+            const ageInput = document.getElementById('ageInput');
+            const ageValue = parseInt(ageInput.value) || 12;
+            currentAge = ageValue.toString();
             
             const isGreeting = ['hi', 'hello', 'hey'].some(g => message.toLowerCase().includes(g));
             if (!userName && message.length > 2 && !message.includes(" ") && !isGreeting) {
@@ -1190,19 +1200,33 @@ function initVoice() {
             if (e.key === 'Enter') sendMessage();
         });
         
-        document.querySelectorAll('.age-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.age-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentAge = btn.dataset.age;
+        // Age input handler
+        document.getElementById('ageInput').addEventListener('change', () => {
+            const ageValue = parseInt(document.getElementById('ageInput').value);
+            if (ageValue >= 1 && ageValue <= 100) {
+                currentAge = ageValue.toString();
                 saveUserData();
-            });
+            } else {
+                document.getElementById('ageInput').value = 12;
+            }
+        });
+        
+        // Age input keypress handler
+        document.getElementById('ageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const ageValue = parseInt(document.getElementById('ageInput').value);
+                if (ageValue >= 1 && ageValue <= 100) {
+                    currentAge = ageValue.toString();
+                    saveUserData();
+                }
+            }
         });
         
         window.addEventListener('load', () => {
             if (userName) {
                 document.querySelector('.header h1').textContent = `👋 Hi ${userName}! I'm Buddy`;
             }
+            document.getElementById('ageInput').value = currentAge;
             applyTheme(currentTheme);
             applyBuddySkin(currentBuddySkin);
             updateThemeCards();
