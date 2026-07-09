@@ -61,6 +61,9 @@ function resetGame() {
     gameTimers.forEach(function (t) { clearTimeout(t); clearInterval(t); });
     gameTimers = [];
     gameState = { type: null, awaitingInput: false, data: {} };
+    const l = document.getElementById('fxLayer');
+    if (l) l.innerHTML = '';
+    document.querySelectorAll('.confetti, .fx-float, .fx-snip, .fx-fly').forEach(function (x) { x.remove(); });
 }
 
 function gameBubble(html) {
@@ -89,7 +92,7 @@ function burstConfetti() {
         sp.style.setProperty('--dy', (-80 - Math.random() * 160) + 'px');
         sp.style.animationDelay = (Math.random() * 0.2) + 's';
         document.body.appendChild(sp);
-        gTimeout(function () { sp.remove(); }, 1900);
+        setTimeout(function () { sp.remove(); }, 1900);
     }
     chime([500, 700, 900]);
 }
@@ -115,7 +118,7 @@ function fxCenter(text, dur) {
     el.className = 'fx-center';
     el.textContent = text;
     fxLayer().appendChild(el);
-    gTimeout(function () { el.remove(); }, dur || 750);
+    setTimeout(function () { el.remove(); }, dur || 750);
 }
 
 function fxCountdown(words, beat) {
@@ -142,7 +145,7 @@ function fxFly(emoji, from) {
             el.style.left = (window.innerWidth / 2 + (from === 'left' ? -95 : 25)) + 'px';
             el.style.transform = 'rotate(' + (from === 'left' ? 720 : -720) + 'deg)';
         });
-        gTimeout(function () { el.remove(); res(); }, 950);
+        setTimeout(function () { el.remove(); res(); }, 950);
     });
 }
 
@@ -152,7 +155,7 @@ function fxFloatDown(emoji) {
     el.textContent = emoji;
     el.style.left = (window.innerWidth * (0.25 + Math.random() * 0.5)) + 'px';
     fxLayer().appendChild(el);
-    gTimeout(function () { el.remove(); }, 2600);
+    setTimeout(function () { el.remove(); }, 2600);
 }
 
 function fxSnip() {
@@ -162,7 +165,7 @@ function fxSnip() {
     el.style.top = (window.innerHeight * 0.45) + 'px';
     fxLayer().appendChild(el);
     let x = -60, open = false;
-    const iv = gInterval(function () {
+    const iv = setInterval(function () {
         x += 36;
         open = !open;
         el.style.left = x + 'px';
@@ -175,7 +178,7 @@ function fxSnip() {
             c.style.left = x + 'px';
             c.style.top = el.style.top;
             fxLayer().appendChild(c);
-            gTimeout(function () { c.remove(); }, 700);
+            setTimeout(function () { c.remove(); }, 700);
         }
         if (x > window.innerWidth + 60) { clearInterval(iv); el.remove(); }
     }, 85);
@@ -185,7 +188,7 @@ function fxShake() {
     document.body.classList.remove('fx-shake');
     void document.body.offsetWidth;
     document.body.classList.add('fx-shake');
-    gTimeout(function () { document.body.classList.remove('fx-shake'); }, 500);
+    setTimeout(function () { document.body.classList.remove('fx-shake'); }, 500);
 }
 
 function fxRain(emojis, n) {
@@ -196,7 +199,7 @@ function fxRain(emojis, n) {
         el.style.left = (Math.random() * 92 + 2) + '%';
         el.style.animationDelay = (Math.random() * 0.5) + 's';
         fxLayer().appendChild(el);
-        gTimeout(function () { el.remove(); }, 2700);
+        setTimeout(function () { el.remove(); }, 2700);
     }
 }
 

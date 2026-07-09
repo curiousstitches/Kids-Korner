@@ -4,8 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat with Buddy - Your AI Friend</title>
+    <meta name="theme-color" content="#667eea">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Buddy">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { overflow: hidden; } /* the chat scrolls inside; the page itself never should */
         
         /* Theme definitions */
         :root {
@@ -458,6 +466,25 @@
             from { filter: hue-rotate(0deg) saturate(2.5); transform: rotate(0deg) scale(1.1); }
             to { filter: hue-rotate(360deg) saturate(2.5); transform: rotate(360deg) scale(1.1); }
         }
+        .skin-badge { position: absolute; bottom: -7px; right: -9px; font-size: 1.35rem; pointer-events: none; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)); }
+        .buddy-dance { animation: buddyDance 1.8s ease-in-out !important; }
+        @keyframes buddyDance {
+            0%, 100% { transform: rotate(0) translateY(0); }
+            15% { transform: rotate(-18deg) translateY(-10px) scale(1.05); }
+            30% { transform: rotate(16deg) translateY(0) scale(0.95); }
+            45% { transform: rotate(-14deg) translateY(-12px); }
+            60% { transform: rotate(12deg) translateY(0); }
+            75% { transform: rotate(-8deg) translateY(-8px) scale(1.08); }
+            90% { transform: rotate(6deg); }
+        }
+        .buddy-jump { animation: buddyJump 0.7s ease !important; }
+        @keyframes buddyJump {
+            0%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-46px) scale(1.1); }
+            60% { transform: translateY(-40px) rotate(360deg); }
+        }
+        .buddy-spin { animation: buddySpinX 0.8s ease !important; }
+        @keyframes buddySpinX { to { transform: rotate(720deg); } }
         .buddy-say {
             position: fixed; z-index: 3001; background: white; color: #333; padding: 6px 12px;
             border-radius: 14px; font-size: 0.9rem; font-weight: bold; font-family: inherit;
@@ -497,6 +524,21 @@
             0% { transform: translate(0, 0) rotate(0); opacity: 1; }
             100% { transform: translate(var(--dx), var(--dy)) rotate(340deg); opacity: 0; }
         }
+
+        /* Add-to-home-screen banner */
+        .install-banner {
+            position: fixed; left: 50%; transform: translateX(-50%); bottom: 92px;
+            background: white; border: 3px solid var(--primary); border-radius: 18px;
+            padding: 12px 16px; z-index: 7300; display: flex; gap: 12px; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 92%; animation: bannerUp 0.5s ease;
+        }
+        @keyframes bannerUp { from { transform: translateX(-50%) translateY(130px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        .install-banner .ib-icon { font-size: 1.9rem; }
+        .install-banner .ib-text { font-size: 0.85rem; color: #333; line-height: 1.35; }
+        .install-banner .ib-actions { display: flex; gap: 8px; margin-left: 6px; align-items: center; }
+        .install-banner .ib-add { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 10px 18px; border-radius: 14px; font-family: inherit; font-weight: bold; font-size: 0.9rem; cursor: pointer; }
+        .install-banner .ib-add:hover { transform: scale(1.05); }
+        .install-banner .ib-later { background: none; border: none; color: #888; font-family: inherit; font-size: 0.85rem; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -713,16 +755,11 @@
                 if (voices.length > 0) {
                     voicesLoaded = true;
                     // Select best voice
+                    // Most human-sounding voices first (Edge "Natural" voices are stunning)
                     const voicePrefs = [
-                        'Google UK English Female',
-                        'Google US English Female',
-                        'Samantha',
-                        'Karen',
-                        'Vicki',
-                        'Moira',
-                        'Victoria',
-                        'Yuki',
-                        'Tessa'
+                        'Natural', 'Neural', 'Aria', 'Jenny', 'Ava', 'Emma', 'Online',
+                        'Google US English', 'Google UK English Female',
+                        'Samantha', 'Karen', 'Victoria', 'Moira', 'Tessa'
                     ];
                     
                     for (const pref of voicePrefs) {
@@ -1036,13 +1073,23 @@
         // Apply Buddy skin
         function applyBuddySkin(skinName) {
             const skin = buddySkins[skinName] || buddySkins['default'];
-            const buddyFace = document.querySelector('.buddy-face');
-            if (buddyFace) {
-                buddyFace.style.background = `radial-gradient(circle, ${skin.colors.accent}, ${skin.colors.primary})`;
-            }
+            document.querySelectorAll('.buddy-face').forEach(face => {
+                face.style.background = `radial-gradient(circle, ${skin.colors.accent}, ${skin.colors.primary})`;
+                let badge = face.querySelector('.skin-badge');
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'skin-badge';
+                    face.appendChild(badge);
+                }
+                badge.textContent = skin.emoji;
+            });
+            const isChange = window.__buddyLoaded && skinName !== currentBuddySkin;
             localStorage.setItem('buddy_skin', skinName);
             currentBuddySkin = skinName;
             updateBuddySkinCards();
+            if (isChange) {
+                showAIResponse('✨ POOF! I\'m ' + skin.name + ' now ' + skin.emoji + ' — whole new me, same best friend! Talk to me and see!', 'excited');
+            }
         }
         
         // Update Buddy skin cards
@@ -1560,6 +1607,7 @@
         
         // Send message
         function sendMessage() {
+            if (inputLocked) return; // wait until Buddy finishes talking
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
             if (!message) return;
@@ -1616,10 +1664,11 @@
                 ? window.location.origin + '/chat'
                 : 'http://localhost:8081/chat';
             showThinking();
+            lockInput();
             fetch(apiUrl, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({message, age: currentAge, name: userName, buddy: buddyName, mode: currentMode, history: conversationHistory.slice(-11, -1)})
+                body: JSON.stringify({message, age: currentAge, name: userName, buddy: buddyName, mode: currentMode, skin: currentBuddySkin, history: conversationHistory.slice(-11, -1)})
             }).then(response => response.json())
               .then(data => {
                   hideThinking();
@@ -1689,87 +1738,175 @@
             chatContainer.appendChild(aiDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
             
-            // Auto-read after a brief moment (if enabled in settings)
+            // Auto-read, then chime + unlock typing when Buddy finishes
             setTimeout(() => {
-                if (appSettings.autoRead && 'speechSynthesis' in window && !window.speechSynthesis.speaking) {
-                    speak(response, mood);
+                if (appSettings.autoRead && 'speechSynthesis' in window) {
+                    speak(response, mood, responseDone);
+                } else {
+                    responseDone();
                 }
             }, 200);
         }
         
-        // Read individual word
+        // Click a word: say it, spell it letter by letter, say it again (with a visual card)
         function readWord(word) {
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(word);
-                utterance.rate = 0.8;
-                utterance.pitch = 1.0;
-                utterance.volume = 1.0;
-                window.speechSynthesis.speak(utterance);
-            }
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            speechRun++; // stop any running story so the word lesson is clear
+            unlockInput();
+            const letters = word.toUpperCase().split('');
+            showWordCard(word, letters);
+            const t = toneFor();
+            const userRate = (appSettings.rate || 100) / 100;
+            const userPitch = (appSettings.pitch || 100) / 100;
+            const userVol = Math.min(1, Math.max(0, (typeof appSettings.volume === 'number' ? appSettings.volume : 100) / 100));
+            const mk = (txt, rate, pitch) => {
+                const u = new SpeechSynthesisUtterance(txt);
+                u.rate = Math.min(2, Math.max(0.3, rate * userRate));
+                u.pitch = Math.min(2, Math.max(0.3, pitch * userPitch));
+                u.volume = userVol;
+                let v = null;
+                if (appSettings.voiceName) v = window.speechSynthesis.getVoices().find(x => x.name === appSettings.voiceName) || null;
+                if (v || selectedVoice) u.voice = v || selectedVoice;
+                return u;
+            };
+            setBuddyTalking(true);
+            const u3 = mk(word + '!', 0.95 * t.rate, t.pitch * 1.05);
+            u3.onend = () => setBuddyTalking(false);
+            u3.onerror = () => setBuddyTalking(false);
+            window.speechSynthesis.speak(mk(word, 0.9 * t.rate, t.pitch));
+            window.speechSynthesis.speak(mk(letters.join(', '), 0.7, t.pitch * 1.02));
+            window.speechSynthesis.speak(u3);
+        }
+
+        function showWordCard(word, letters) {
+            const c = document.createElement('div');
+            c.className = 'buddy-say';
+            c.innerHTML = '📖 <b>' + escapeHtml(word.toUpperCase()) + '</b> &nbsp;·&nbsp; ' + letters.map(l => escapeHtml(l)).join(' - ');
+            c.style.left = Math.max(10, window.innerWidth / 2 - 130) + 'px';
+            c.style.top = '28%';
+            c.style.fontSize = '1.15rem';
+            c.style.animationDuration = '3.4s';
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 3400);
         }
         
-        // Voice recognition and synthesis
-        let recognition;
-        let isListening = false;
-        
-function initVoice() {
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognition = new SpeechRecognition();
-                recognition.continuous = false; // Push-to-talk mode
-                recognition.interimResults = false; // Only final results
-                recognition.lang = 'en-US';
-                
-                recognition.onresult = (event) => {
-                    const transcript = event.results[event.results.length - 1][0].transcript.trim();
-                    if (transcript) {
-                        document.getElementById('messageInput').value = transcript;
-                        sendMessage();
-                    }
-                    // Stop listening immediately after message
-                    if (isListening && recognition) {
-                        recognition.stop();
-                        isListening = false;
-                        document.getElementById('micBtn').textContent = '🎤';
-                        document.getElementById('micBtn').style.background = '#4CAF50';
-                        document.getElementById('aiStatus').textContent = '🤖 Ready!';
-                    }
-                };
-                
-                recognition.onerror = (event) => {
-                    if (isListening) {
-                        recognition.stop();
-                        isListening = false;
-                        document.getElementById('micBtn').textContent = '🎤';
-                        document.getElementById('micBtn').style.background = '#4CAF50';
-                        document.getElementById('aiStatus').textContent = '🤖 Ready!';
-                    }
-                };
-                
-                recognition.onend = () => {
-                    if (isListening) {
-                        // Auto-restart for continuous listening (but we disabled it)
-                        recognition.start();
-                    }
-                };
-            }
-        }
-        
-        function toggleVoice() {
-            if (!recognition) initVoice();
-            if (isListening) {
-                recognition.stop();
-                isListening = false;
-                document.getElementById('micBtn').textContent = '🎤';
-                document.getElementById('micBtn').style.background = '#4CAF50';
-                document.getElementById('aiStatus').textContent = '🤖 Ready!';
+        // ===== Mic 2.0: thought-window listening + open mic (never hears Buddy) =====
+        let recognition = null;
+        let recRunning = false;
+        let micMode = 'off'; // 'off' | 'push' (one thought) | 'open' (always on)
+        let micBuffer = '';
+        let thoughtTimer = null;
+        let buddyTalking = false;
+
+        function setBuddyTalking(v) {
+            if (buddyTalking === v) return;
+            buddyTalking = v;
+            clearTimeout(setBuddyTalking._t);
+            if (v) {
+                setBuddyTalking._t = setTimeout(() => setBuddyTalking(false), 90000); // failsafe
+                pauseMicForBuddy();
             } else {
-                recognition.start();
-                isListening = true;
-                document.getElementById('micBtn').textContent = '🔴';
-                document.getElementById('micBtn').style.background = '#f44336';
-                document.getElementById('aiStatus').textContent = '👂 Listening...';
+                resumeMicAfterBuddy();
             }
+        }
+
+        function initVoice() {
+            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) return;
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SR();
+            recognition.continuous = true;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+            recognition.onresult = (event) => {
+                if (buddyTalking) return; // mic is dedicated to the USER - Buddy's voice is never accepted
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        const t = event.results[i][0].transcript.trim();
+                        if (t) micBuffer = (micBuffer ? micBuffer + ' ' : '') + t;
+                    }
+                }
+                if (micBuffer) {
+                    document.getElementById('messageInput').value = micBuffer + ' …';
+                    document.getElementById('aiStatus').textContent = '👂 Keep going... (a 2.5s pause sends it)';
+                    clearTimeout(thoughtTimer);
+                    thoughtTimer = setTimeout(finishThought, 2500);
+                }
+            };
+            recognition.onend = () => {
+                recRunning = false;
+                if (micMode !== 'off' && !buddyTalking) setTimeout(tryStartRec, 250);
+            };
+            recognition.onerror = (e) => {
+                recRunning = false;
+                if (e.error === 'not-allowed' || e.error === 'service-not-allowed') setMicMode('off');
+            };
+        }
+
+        function tryStartRec() {
+            if (micMode === 'off' || buddyTalking || recRunning) return;
+            if (!recognition) initVoice();
+            if (!recognition) return;
+            try { recognition.start(); recRunning = true; } catch (e) { /* already running */ }
+        }
+
+        function finishThought() {
+            clearTimeout(thoughtTimer);
+            const text = micBuffer.trim();
+            if (!text) return;
+            if (inputLocked || buddyTalking) { thoughtTimer = setTimeout(finishThought, 600); return; }
+            micBuffer = '';
+            document.getElementById('messageInput').value = text;
+            if (micMode === 'push') setMicMode('off');
+            sendMessage();
+        }
+
+        function pauseMicForBuddy() {
+            clearTimeout(thoughtTimer);
+            micBuffer = '';
+            if (recognition && recRunning) { try { recognition.abort(); } catch (e) {} recRunning = false; }
+            if (micMode === 'open') document.getElementById('aiStatus').textContent = '🙉 Mic covered — Buddy is talking';
+        }
+
+        function resumeMicAfterBuddy() {
+            if (micMode === 'off') return;
+            setTimeout(() => {
+                if (!buddyTalking && micMode !== 'off') {
+                    tryStartRec();
+                    document.getElementById('aiStatus').textContent = micMode === 'open' ? '🎙️ Open mic — your turn!' : '👂 Listening... (a 2.5s pause sends it)';
+                }
+            }, 450);
+        }
+
+        function setMicMode(m) {
+            micMode = m;
+            micBuffer = '';
+            clearTimeout(thoughtTimer);
+            const btn = document.getElementById('micBtn');
+            const status = document.getElementById('aiStatus');
+            if (m === 'off') {
+                if (recognition && recRunning) { try { recognition.abort(); } catch (e) {} recRunning = false; }
+                btn.textContent = '🎤'; btn.style.background = '#4CAF50';
+                btn.title = 'Tap: speak one thought. Tap twice: open mic.';
+                status.textContent = '🤖 Ready!';
+            } else if (m === 'push') {
+                btn.textContent = '🔴'; btn.style.background = '#f44336';
+                btn.title = 'Listening for one thought. Tap again for open mic.';
+                status.textContent = '👂 Listening... (a 2.5s pause sends it)';
+                tryStartRec();
+            } else {
+                btn.textContent = '🎙️'; btn.style.background = '#9c27b0';
+                btn.title = 'Open mic is ON. Tap to turn off.';
+                status.textContent = '🎙️ Open mic ON — I never listen while I talk!';
+                tryStartRec();
+            }
+        }
+
+        function toggleVoice() {
+            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) return;
+            if (micMode === 'off') setMicMode('push');
+            else if (micMode === 'push') setMicMode('open');
+            else setMicMode('off');
         }
         
         // Detect mood from text
@@ -1790,9 +1927,9 @@ function initVoice() {
         }
         
         // Lifelike voice first (if enabled + configured), browser voice as fallback
-        function speak(text, mood = 'friendly') {
+        function speak(text, mood = 'friendly', onDone) {
             text = cleanForSpeech(text);
-            if (!text) return;
+            if (!text) { if (onDone) onDone(); return; }
             if (appSettings.lifelike) {
                 triggerSFX(text);
                 const base = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
@@ -1806,12 +1943,15 @@ function initVoice() {
                   .then(blob => {
                       const audio = new Audio(URL.createObjectURL(blob));
                       audio.volume = Math.min(1, Math.max(0, (typeof appSettings.volume === 'number' ? appSettings.volume : 100) / 100));
+                      audio.onended = () => { setBuddyTalking(false); if (onDone) onDone(); };
+                      audio.onerror = () => { setBuddyTalking(false); if (onDone) onDone(); };
+                      setBuddyTalking(true);
                       audio.play();
                   })
-                  .catch(() => browserSpeak(text, mood));
+                  .catch(() => browserSpeak(text, mood, onDone));
                 return;
             }
-            browserSpeak(text, mood);
+            browserSpeak(text, mood, onDone);
         }
 
         function browserSpeakLegacy(text, mood = 'friendly') { // retired: Voice 2.0 engine below replaces this
@@ -1892,7 +2032,7 @@ function initVoice() {
             if (hf) hf.style.visibility = 'hidden';
             const el = document.createElement('div');
             el.className = 'buddy-face buddy-free';
-            el.innerHTML = '<div class="mouth"></div>';
+            el.innerHTML = '<div class="mouth"></div><span class="skin-badge">' + (buddySkins[currentBuddySkin] || buddySkins['default']).emoji + '</span>';
             const skin = buddySkins[currentBuddySkin] || buddySkins['default'];
             el.style.background = 'radial-gradient(circle, ' + skin.colors.accent + ', ' + skin.colors.primary + ')';
             document.body.appendChild(el);
@@ -1976,19 +2116,51 @@ function initVoice() {
             el.addEventListener('dblclick', () => recolorBuddy());
         }
 
+        function buddyAnim(cls, ms) {
+            if (!bd.el) return;
+            bd.el.classList.remove(cls);
+            void bd.el.offsetWidth;
+            bd.el.classList.add(cls);
+            setTimeout(() => { if (bd.el) bd.el.classList.remove(cls); }, ms);
+        }
+
+        function danceBuddy(cx, cy) {
+            buddyAnim('buddy-dance', 1800);
+            [523, 659, 523, 784, 659, 880].forEach((f, i) => setTimeout(() => popSound(f), i * 240));
+            for (let i = 0; i < 4; i++) {
+                setTimeout(() => buddySay(bd.x + 20 + Math.random() * 60, bd.y - 15 - Math.random() * 20, ['🎵', '🎶', '♪', '♫'][i]), i * 380);
+            }
+        }
+
         function pokeBuddy(cx, cy) {
             bd.pokes++;
-            squashBuddy();
-            buddySay(cx, cy - 55, buddySays[Math.floor(Math.random() * buddySays.length)]);
+            const skin = buddySkins[currentBuddySkin] || buddySkins['default'];
             if (bd.pokes % 10 === 0) {
                 bd.el.classList.add('buddy-disco');
-                buddySay(cx, cy - 100, '🎉 DISCO BUDDY! 🎉');
+                buddySay(cx, cy - 100, '🎉 DISCO ' + skin.name.toUpperCase() + '! 🎉');
                 popSound(400); setTimeout(() => popSound(600), 150); setTimeout(() => popSound(800), 300);
                 setTimeout(() => { if (bd.el) bd.el.classList.remove('buddy-disco'); }, 4000);
             } else if (bd.pokes % 7 === 0) {
                 buddyStuntZoom();
+                buddySay(cx, cy - 55, 'INCOMING!');
             } else {
-                bd.vy -= 3; bd.vx += (Math.random() - 0.5) * 5;
+                const mv = ['dance', 'jump', 'spin', 'hop'][Math.floor(Math.random() * 4)];
+                if (mv === 'dance') {
+                    danceBuddy(cx, cy);
+                    buddySay(cx, cy - 55, skin.emoji + ' Dance party!');
+                } else if (mv === 'jump') {
+                    buddyAnim('buddy-jump', 700);
+                    popSound(500); setTimeout(() => popSound(700), 250);
+                    buddySay(cx, cy - 55, skin.emoji + ' ' + buddySays[Math.floor(Math.random() * buddySays.length)]);
+                } else if (mv === 'spin') {
+                    buddyAnim('buddy-spin', 800);
+                    popSound(650);
+                    buddySay(cx, cy - 55, skin.emoji + ' Wheee!');
+                } else {
+                    squashBuddy();
+                    bd.vy -= 3; bd.vx += (Math.random() - 0.5) * 5;
+                    buddySay(cx, cy - 55, skin.emoji + ' ' + buddySays[Math.floor(Math.random() * buddySays.length)]);
+                }
             }
         }
 
@@ -2055,8 +2227,8 @@ function initVoice() {
         // ===== Voice 2.0: sentence pacing, age/mode tone, live sound effects =====
         function toneFor() {
             const g = getAgeGroup(currentAge);
-            const age = { '3': { p: 1.32, r: 0.85 }, '6': { p: 1.22, r: 0.92 }, '12': { p: 1.1, r: 1.0 }, '15': { p: 1.0, r: 1.05 }, 'adult': { p: 0.95, r: 1.0 } }[g] || { p: 1.1, r: 1.0 };
-            const m = currentMode === 'teacher' ? { p: 0.95, r: 0.88, gap: 1.5 } : { p: 1.05, r: 1.0, gap: 1.0 };
+            const age = { '3': { p: 1.16, r: 0.95 }, '6': { p: 1.1, r: 1.02 }, '12': { p: 1.04, r: 1.12 }, '15': { p: 1.0, r: 1.18 }, 'adult': { p: 0.96, r: 1.12 } }[g] || { p: 1.05, r: 1.1 };
+            const m = currentMode === 'teacher' ? { p: 0.95, r: 0.95, gap: 1.25 } : { p: 1.05, r: 1.05, gap: 1.0 };
             return { pitch: age.p * m.p, rate: age.r * m.r, gap: m.gap };
         }
 
@@ -2067,7 +2239,7 @@ function initVoice() {
 
         function pauseAfter(sentence, gapScale) {
             const end = sentence.slice(-1);
-            const base = end === '.' ? 450 : end === '?' ? 380 : end === '!' ? 300 : 250;
+            const base = end === '.' ? 280 : end === '?' ? 240 : end === '!' ? 200 : 140;
             return Math.round(base * gapScale);
         }
 
@@ -2146,20 +2318,52 @@ function initVoice() {
             }
         }
 
+        // ===== Input lock + done chime =====
+        let inputLocked = false;
+        function lockInput() {
+            inputLocked = true;
+            const inp = document.getElementById('messageInput');
+            inp.disabled = true;
+            inp.placeholder = buddyName + ' is talking... 🗣️';
+            document.querySelector('.input-container button').disabled = true;
+            document.getElementById('micBtn').disabled = true;
+            clearTimeout(lockInput._t);
+            lockInput._t = setTimeout(unlockInput, 45000); // failsafe: never stay stuck
+        }
+        function unlockInput() {
+            inputLocked = false;
+            clearTimeout(lockInput._t);
+            const inp = document.getElementById('messageInput');
+            inp.disabled = false;
+            inp.placeholder = 'Type your message here...';
+            document.querySelector('.input-container button').disabled = false;
+            document.getElementById('micBtn').disabled = false;
+            inp.focus();
+        }
+        function doneChime() {
+            sfxTone(880, 884, 0.12, 'sine', 0.12);
+            setTimeout(() => sfxTone(1318, 1322, 0.28, 'sine', 0.12), 130);
+        }
+        function responseDone() {
+            doneChime();
+            unlockInput();
+        }
+
         let speechRun = 0; // newer speech cancels older queues
-        function browserSpeak(text, mood = 'friendly') {
+        function browserSpeak(text, mood = 'friendly', onDone) {
             if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
             const run = ++speechRun;
+            setBuddyTalking(true); // mic goes deaf to Buddy instantly
             const sentences = splitSentences(text);
             const tone = toneFor();
             const moodMap = {
-                'friendly':   { rate: 0.95, pitch: 1.05, volume: 0.92 },
-                'excited':    { rate: 1.05, pitch: 1.18, volume: 0.98 },
-                'happy':      { rate: 1.0,  pitch: 1.12, volume: 0.95 },
-                'caring':     { rate: 0.85, pitch: 0.98, volume: 0.88 },
-                'thoughtful': { rate: 0.78, pitch: 0.94, volume: 0.85 },
-                'playful':    { rate: 1.0,  pitch: 1.1,  volume: 0.93 }
+                'friendly':   { rate: 0.97, pitch: 1.02, volume: 0.92 },
+                'excited':    { rate: 1.06, pitch: 1.09, volume: 0.98 },
+                'happy':      { rate: 1.01, pitch: 1.06, volume: 0.95 },
+                'caring':     { rate: 0.88, pitch: 0.99, volume: 0.88 },
+                'thoughtful': { rate: 0.84, pitch: 0.96, volume: 0.85 },
+                'playful':    { rate: 1.02, pitch: 1.05, volume: 0.93 }
             };
             const m = moodMap[mood] || moodMap['friendly'];
             const userRate = (appSettings.rate || 100) / 100;
@@ -2167,14 +2371,17 @@ function initVoice() {
             const userVol = (typeof appSettings.volume === 'number' ? appSettings.volume : 100) / 100;
 
             function speakNext(i) {
-                if (run !== speechRun || i >= sentences.length) return;
+                if (run !== speechRun) return;
+                if (i >= sentences.length) { setBuddyTalking(false); if (onDone) onDone(); return; }
                 const raw = sentences[i];
                 triggerSFX(raw);
                 const clean = cleanForSpeech(raw);
                 if (!clean) { setTimeout(() => speakNext(i + 1), 150); return; }
                 const u = new SpeechSynthesisUtterance(clean);
-                u.rate = Math.min(2, Math.max(0.3, m.rate * tone.rate * userRate));
-                u.pitch = Math.min(2, Math.max(0.3, m.pitch * tone.pitch * userPitch));
+                // subtle human cadence: every sentence varies a touch
+                const humanize = 0.97 + Math.random() * 0.06;
+                u.rate = Math.min(2, Math.max(0.3, m.rate * tone.rate * userRate * humanize));
+                u.pitch = Math.min(2, Math.max(0.3, m.pitch * tone.pitch * userPitch * (0.99 + Math.random() * 0.02)));
                 u.volume = Math.min(1, Math.max(0, m.volume * userVol));
                 let chosenVoice = null;
                 if (appSettings.voiceName) {
@@ -2200,6 +2407,11 @@ function initVoice() {
 
         document.getElementById('messageInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
+        });
+
+        // Tap anywhere outside the settings panel: everything's already saved, just close it
+        document.getElementById('settingsModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('settingsModal')) closeSettings();
         });
 
         // Mode selector (Friend / Teacher)
@@ -2241,14 +2453,83 @@ function initVoice() {
             }
         });
         
+        // ===== Add to Home Screen (installable app) =====
+        let deferredInstall = null;
+        function isStandalone() {
+            return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        }
+        function installSnoozed() {
+            const t = parseInt(localStorage.getItem('buddy_install_snooze') || '0', 10);
+            return Date.now() - t < 7 * 86400000; // ask again after a week
+        }
+        function showInstallBanner(iosMode) {
+            if (isStandalone() || installSnoozed() || document.getElementById('installBanner')) return;
+            const b = document.createElement('div');
+            b.className = 'install-banner';
+            b.id = 'installBanner';
+            b.innerHTML = '<span class="ib-icon">📲</span><span class="ib-text"><b>Put ' + escapeHtml(buddyName) + ' on your home screen!</b><br>' +
+                (iosMode ? 'Tap the Share button below, then "Add to Home Screen"' : 'One tap and Buddy becomes a real app on this device') + '</span>';
+            const actions = document.createElement('span');
+            actions.className = 'ib-actions';
+            if (!iosMode) {
+                const add = document.createElement('button');
+                add.className = 'ib-add';
+                add.textContent = '📲 Add!';
+                add.onclick = async () => {
+                    if (deferredInstall) {
+                        deferredInstall.prompt();
+                        try { await deferredInstall.userChoice; } catch (e) {}
+                        deferredInstall = null;
+                    }
+                    b.remove();
+                };
+                actions.appendChild(add);
+            }
+            const later = document.createElement('button');
+            later.className = 'ib-later';
+            later.textContent = iosMode ? 'Got it!' : 'Later';
+            later.onclick = () => {
+                localStorage.setItem('buddy_install_snooze', String(Date.now()));
+                b.remove();
+            };
+            actions.appendChild(later);
+            b.appendChild(actions);
+            document.body.appendChild(b);
+            popSound(600); setTimeout(() => popSound(800), 120);
+        }
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstall = e;
+            setTimeout(() => showInstallBanner(false), 12000);
+        });
+        window.addEventListener('appinstalled', () => {
+            deferredInstall = null;
+            const b = document.getElementById('installBanner');
+            if (b) b.remove();
+            showAIResponse('🎉 I live on your device now! Look for my smiley face on your home screen any time you want me!', 'excited');
+        });
+        if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => { /* offline shell is optional */ });
+            });
+        }
+        // iPhones/iPads have no install popup - show friendly how-to instead
+        (function () {
+            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            const isSafari = /safari/i.test(navigator.userAgent) && !/crios|fxios|chrome/i.test(navigator.userAgent);
+            if (isIOS && isSafari && !isStandalone()) {
+                setTimeout(() => showInstallBanner(true), 15000);
+            }
+        })();
+
         window.addEventListener('load', () => {
             updateHeader();
             document.getElementById('modeSelect').value = currentMode;
             // Click Buddy's face to set him free!
             const hf = headerFace();
             if (hf) {
-                hf.title = 'Click me to set me free!';
-                hf.addEventListener('click', () => {
+                hf.title = 'Touch me to set me free!';
+                hf.addEventListener('pointerdown', () => {
                     const r = hf.getBoundingClientRect();
                     freeBuddy(r.left, r.top);
                     buddySay(r.left + 40, r.top + 95, "I'm FREE! Poke me, drag me, toss me!");
@@ -2265,8 +2546,10 @@ function initVoice() {
             updateBuddySkinCards();
             applySettings();
             populateVoiceList();
+            window.__buddyLoaded = true;
         });
     </script>
     <script src="games.js"></script>
+    <script src="visuals.js"></script>
 </body>
 </html>

@@ -1,0 +1,16 @@
+{
+  "name": "Kids Korner - Chat with Buddy",
+  "short_name": "Buddy",
+  "description": "Your AI friend who chats, draws pictures, plays 24 games, and learns with you!",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ff9a9e",
+  "theme_color": "#667eea",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
