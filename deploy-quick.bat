@@ -10,14 +10,19 @@ taskkill /F /IM ngrok.exe >nul 2>&1
 echo     [DONE] Servers stopped
 
 :: Set environment and start Flask
+:: Keys load from keys.local.bat if it exists (example format: OPENROUTER_API_KEY=sk-or-v1-your-api-key-here)
 echo [2/4] Setting environment variables...
-set /p OPENROUTER_API_KEY=Enter OPENROUTER_API_KEY: 
-if "%OPENROUTER_API_KEY%"=="" (
-    echo     [ERROR] API Key is required!
-    pause
-    exit /b 1
+if exist keys.local.bat (
+    call keys.local.bat
+    echo     [DONE] Keys loaded from keys.local.bat
+) else (
+    set /p OPENROUTER_API_KEY=Enter OPENROUTER_API_KEY ^(example: sk-or-v1-your-api-key-here^):
+    if "%OPENROUTER_API_KEY%"=="" (
+        echo     [WARN] No key entered - Buddy will run in no-key mode
+    ) else (
+        echo     [DONE] OPENROUTER_API_KEY set
+    )
 )
-echo     [DONE] OPENROUTER_API_KEY set
 
 echo [3/4] Starting Flask server...
 cd /d "C:\Users\thego\Desktop\kids-Korner"

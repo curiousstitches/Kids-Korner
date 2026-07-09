@@ -395,6 +395,108 @@
             font-weight: bold;
             color: var(--text);
         }
+
+        /* Expanded Settings Controls */
+        .settings-section h2 { margin: 25px 0 10px; color: #333; font-size: 1.2rem; }
+        .settings-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin: 10px 0; }
+        .settings-row label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; color: #555; min-width: 140px; flex: 1; }
+        .settings-row select, .settings-row input[type="text"] { padding: 8px 10px; border: 2px solid var(--primary); border-radius: 12px; font-family: inherit; font-size: 0.95rem; background: white; }
+        .settings-row input[type="range"] { width: 100%; accent-color: var(--primary); cursor: pointer; }
+        .settings-row input[type="color"] { width: 100%; height: 38px; border: 2px solid var(--primary); border-radius: 10px; background: none; cursor: pointer; padding: 2px; }
+        .settings-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+        .check-row { flex-direction: row !important; align-items: center !important; gap: 8px !important; }
+        .save-names-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; border: none; padding: 10px 22px; border-radius: 15px; font-family: inherit; font-size: 0.95rem; cursor: pointer; transition: transform 0.2s; }
+        .save-names-btn:hover { transform: scale(1.05); }
+        .message { color: var(--msg-color, var(--text)); font-size: var(--msg-size, 1rem); }
+
+        /* ===== Sparkly Thinking Bubble ===== */
+        .thinking-bubble {
+            display: flex; align-items: center; gap: 10px; position: relative; overflow: visible;
+            background: linear-gradient(270deg, #ffd166, #ff6b9d, #a855f7, #00d4ff, #2ec4b6, #ffd166);
+            background-size: 1200% 1200%; animation: rainbowShift 2.5s ease infinite;
+            border: 3px solid rgba(255,255,255,0.8) !important;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.7), 0 0 40px rgba(168, 85, 247, 0.4);
+            color: white !important; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+        }
+        @keyframes rainbowShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .thinking-dots span {
+            display: inline-block; width: 10px; height: 10px; margin: 0 2px; background: white;
+            border-radius: 50%; animation: dotBounce 1s infinite; box-shadow: 0 0 8px white;
+        }
+        .thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
+        .thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes dotBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-9px) scale(1.3); } }
+        .sparkle { position: absolute; top: 0; font-size: 1.1rem; animation: sparkleFly 1.6s ease-in-out infinite; pointer-events: none; }
+        @keyframes sparkleFly {
+            0% { transform: translateY(2px) scale(0.4) rotate(0deg); opacity: 0; }
+            30% { opacity: 1; }
+            100% { transform: translateY(-38px) scale(1.4) rotate(200deg); opacity: 0; }
+        }
+
+        /* ===== Free-Roaming Interactive Buddy ===== */
+        .buddy-free {
+            position: fixed; z-index: 3000; cursor: grab; touch-action: none;
+            user-select: none; -webkit-user-select: none; margin: 0;
+        }
+        .buddy-free:active { cursor: grabbing; }
+        .buddy-pop { animation: buddyPop 0.35s ease !important; }
+        @keyframes buddyPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(0.72, 1.25); }
+            70% { transform: scale(1.22, 0.8); }
+            100% { transform: scale(1); }
+        }
+        .buddy-zoom { animation: buddyZoom 1.6s ease !important; }
+        @keyframes buddyZoom {
+            0% { transform: scale(1); }
+            45% { transform: scale(6.5) rotate(8deg); }
+            55% { transform: scale(6.5) rotate(-8deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+        .buddy-disco { animation: discoSpin 0.5s linear infinite !important; }
+        @keyframes discoSpin {
+            from { filter: hue-rotate(0deg) saturate(2.5); transform: rotate(0deg) scale(1.1); }
+            to { filter: hue-rotate(360deg) saturate(2.5); transform: rotate(360deg) scale(1.1); }
+        }
+        .buddy-say {
+            position: fixed; z-index: 3001; background: white; color: #333; padding: 6px 12px;
+            border-radius: 14px; font-size: 0.9rem; font-weight: bold; font-family: inherit;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); pointer-events: none; animation: sayFloat 1.4s ease forwards;
+        }
+        @keyframes sayFloat { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-45px); opacity: 0; } }
+
+        /* ===== Live Painting Canvas ===== */
+        .paint-wrap { position: relative; margin-top: 8px; }
+        .paint-wrap canvas {
+            width: 100%; max-width: 420px; border-radius: 15px; display: block;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.22); background: #fffdf5;
+        }
+        .brush-cursor {
+            position: absolute; font-size: 1.7rem; pointer-events: none;
+            transform: translate(-50%, -90%); z-index: 5;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+        }
+
+        /* ===== Game Arcade ===== */
+        .game-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .game-btns button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
+            border: none; padding: 10px 16px; border-radius: 15px; font-family: inherit;
+            font-size: 0.95rem; cursor: pointer; transition: transform 0.15s;
+        }
+        .game-btns button:hover { transform: scale(1.08); }
+        .rps-score { margin-top: 8px; font-weight: bold; color: var(--secondary); }
+        .color-swatches { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .swatch {
+            width: 46px; height: 46px; border-radius: 50%; border: 3px solid white;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25); cursor: pointer; transition: transform 0.15s;
+        }
+        .swatch:hover { transform: scale(1.18); }
+        .confetti { position: fixed; z-index: 4000; font-size: 1.4rem; pointer-events: none; animation: confettiFly 1.6s ease-out forwards; }
+        @keyframes confettiFly {
+            0% { transform: translate(0, 0) rotate(0); opacity: 1; }
+            100% { transform: translate(var(--dx), var(--dy)) rotate(340deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -411,6 +513,11 @@
         <span>Age: </span>
         <input type="number" id="ageInput" min="1" max="100" value="12" style="width: 60px; padding: 5px; border: 2px solid var(--primary); border-radius: 15px; font-size: 1rem; text-align: center;">
         <span style="margin-left: 10px; color: #666;">(Enter age)</span>
+        <span style="margin-left: 12px;">Buddy is my:</span>
+        <select id="modeSelect" style="padding: 5px 10px; border: 2px solid var(--primary); border-radius: 15px; font-family: inherit; font-size: 0.95rem; background: white; cursor: pointer;">
+            <option value="friend">🧸 Friend (my age!)</option>
+            <option value="teacher">🎓 Teacher</option>
+        </select>
     </div>
     
     <div class="chat-container" id="chatContainer">
@@ -424,6 +531,7 @@
         <input type="text" id="messageInput" placeholder="Type your message here...">
         <button onclick="sendMessage()">Send</button>
         <button id="micBtn" onclick="toggleVoice()" style="background: #4CAF50; margin-left: 5px;">🎤</button>
+        <button id="gamesBtn" onclick="openArcade()" title="Play a game!" style="background: #ff9800; margin-left: 5px;">🎲</button>
         <span id="aiStatus" style="align-self:center;font-size:0.9em;color:#667eea;">🤖 Ready!</span>
     </div>
     
@@ -431,6 +539,61 @@
     <div class="settings-modal" id="settingsModal">
         <div class="settings-content">
             <button class="close-btn" onclick="closeSettings()">✕</button>
+
+            <div class="settings-section">
+                <h2>🏷️ Names</h2>
+                <div class="settings-row">
+                    <label>Your name<input type="text" id="userNameInput" placeholder="What should your buddy call you?"></label>
+                    <label>Your buddy's name<input type="text" id="buddyNameInput" placeholder="Buddy"></label>
+                    <button class="save-names-btn" onclick="saveNames()">💾 Save Names</button>
+                </div>
+
+                <h2>🔤 Text &amp; Font</h2>
+                <div class="settings-row">
+                    <label>Font style
+                        <select id="fontSelect" onchange="updateSetting('font', this.value)">
+                            <option value="comic">Playful (Comic)</option>
+                            <option value="clean">Clean (Arial)</option>
+                            <option value="classic">Classic (Georgia)</option>
+                            <option value="modern">Modern (Trebuchet)</option>
+                            <option value="rounded">Rounded (Verdana)</option>
+                            <option value="typewriter">Typewriter</option>
+                        </select>
+                    </label>
+                    <label>Text size
+                        <select id="sizeSelect" onchange="updateSetting('textSize', this.value)">
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                            <option value="xlarge">Extra Large</option>
+                        </select>
+                    </label>
+                    <label>Text color<input type="color" id="textColorInput" onchange="updateSetting('textColor', this.value)"></label>
+                </div>
+
+                <h2>✨ Effects</h2>
+                <div class="settings-row">
+                    <label>Animation &amp; 3D motion<input type="range" id="animSlider" min="0" max="100" oninput="updateSetting('animation', +this.value)"></label>
+                    <label>Color vibrancy<input type="range" id="vibrancySlider" min="0" max="100" oninput="updateSetting('vibrancy', +this.value)"></label>
+                    <label>Shadow depth (3D pop)<input type="range" id="depthSlider" min="0" max="100" oninput="updateSetting('depth', +this.value)"></label>
+                </div>
+
+                <h2>🔊 Voice</h2>
+                <div class="settings-row">
+                    <label>Voice
+                        <select id="voiceSelect" onchange="updateSetting('voiceName', this.value)"><option value="">Auto (best match)</option></select>
+                    </label>
+                    <label>Speed<input type="range" id="rateSlider" min="50" max="150" oninput="updateSetting('rate', +this.value)"></label>
+                    <label>Pitch<input type="range" id="pitchSlider" min="50" max="150" oninput="updateSetting('pitch', +this.value)"></label>
+                    <label>Volume<input type="range" id="volumeSlider" min="0" max="100" oninput="updateSetting('volume', +this.value)"></label>
+                </div>
+                <div class="settings-row">
+                    <label class="check-row"><input type="checkbox" id="autoReadCheck" onchange="updateSetting('autoRead', this.checked)"> Read replies out loud</label>
+                    <label class="check-row"><input type="checkbox" id="funFactsCheck" onchange="updateSetting('funFacts', this.checked)"> Sprinkle in fun facts</label>
+                    <label class="check-row"><input type="checkbox" id="lifelikeCheck" onchange="updateSetting('lifelike', this.checked)"> Lifelike voice (premium — needs voice key on server)</label>
+                </div>
+            </div>
+
             <h2>✨ Buddy's Themes ✨</h2>
             <p style="margin-bottom: 20px; color: #666;">Choose your favorite theme!</p>
             
@@ -450,7 +613,88 @@
     <script>
         // Buddy's personality and memory
         let userName = localStorage.getItem('buddy_name') || "";
+        let buddyName = localStorage.getItem('buddy_buddyname') || "Buddy";
         let currentAge = localStorage.getItem('buddy_age') || '12';
+        let currentMode = localStorage.getItem('buddy_mode') === 'teacher' ? 'teacher' : 'friend';
+
+        // ===== App Settings (saved on this device) =====
+        const defaultSettings = { font: 'comic', textSize: 'medium', textColor: '#333333', animation: 100, vibrancy: 50, depth: 50, voiceName: '', rate: 100, pitch: 100, volume: 100, autoRead: true, funFacts: true, lifelike: false };
+        let appSettings = Object.assign({}, defaultSettings, JSON.parse(localStorage.getItem('buddy_settings') || '{}'));
+
+        const fontMap = {
+            comic: "'Comic Sans MS', 'Marker Felt', cursive, sans-serif",
+            clean: "Arial, Helvetica, sans-serif",
+            classic: "Georgia, 'Times New Roman', serif",
+            modern: "'Trebuchet MS', Verdana, sans-serif",
+            rounded: "Verdana, Geneva, sans-serif",
+            typewriter: "'Courier New', monospace"
+        };
+        const sizeMap = { small: '0.9rem', medium: '1rem', large: '1.15rem', xlarge: '1.35rem' };
+
+        function updateSetting(key, value) {
+            appSettings[key] = value;
+            localStorage.setItem('buddy_settings', JSON.stringify(appSettings));
+            applySettings();
+        }
+
+        function applySettings() {
+            document.body.style.fontFamily = fontMap[appSettings.font] || fontMap.comic;
+            document.documentElement.style.setProperty('--msg-size', sizeMap[appSettings.textSize] || '1rem');
+            document.documentElement.style.setProperty('--msg-color', appSettings.textColor || '#333333');
+            document.body.style.filter = 'saturate(' + (0.4 + (appSettings.vibrancy / 62.5)).toFixed(2) + ')';
+
+            let animStyle = document.getElementById('animCtl');
+            if (!animStyle) { animStyle = document.createElement('style'); animStyle.id = 'animCtl'; document.head.appendChild(animStyle); }
+            if (appSettings.animation < 10) {
+                animStyle.textContent = '*, *::before, *::after { animation: none !important; }';
+            } else {
+                const slow = 100 / appSettings.animation;
+                animStyle.textContent = '.buddy-face { animation-duration: ' + (2 * slow).toFixed(1) + 's; } .theme-preview { animation-duration: ' + (3 * slow).toFixed(1) + 's; }';
+            }
+
+            let depthStyle = document.getElementById('depthCtl');
+            if (!depthStyle) { depthStyle = document.createElement('style'); depthStyle.id = 'depthCtl'; document.head.appendChild(depthStyle); }
+            const d = appSettings.depth;
+            depthStyle.textContent = '.message { box-shadow: 0 ' + (d / 12).toFixed(1) + 'px ' + (d / 5).toFixed(1) + 'px rgba(0,0,0,' + (0.05 + d / 350).toFixed(2) + '); }';
+
+            syncSettingsUI();
+        }
+
+        function syncSettingsUI() {
+            const set = (id, val) => { const el = document.getElementById(id); if (el && el.value !== String(val)) el.value = val; };
+            set('fontSelect', appSettings.font); set('sizeSelect', appSettings.textSize); set('textColorInput', appSettings.textColor);
+            set('animSlider', appSettings.animation); set('vibrancySlider', appSettings.vibrancy); set('depthSlider', appSettings.depth);
+            set('rateSlider', appSettings.rate); set('pitchSlider', appSettings.pitch); set('volumeSlider', appSettings.volume);
+            const vs = document.getElementById('voiceSelect'); if (vs) vs.value = appSettings.voiceName || '';
+            const ar = document.getElementById('autoReadCheck'); if (ar) ar.checked = !!appSettings.autoRead;
+            const ff = document.getElementById('funFactsCheck'); if (ff) ff.checked = !!appSettings.funFacts;
+            const lf = document.getElementById('lifelikeCheck'); if (lf) lf.checked = !!appSettings.lifelike;
+        }
+
+        function populateVoiceList() {
+            const sel = document.getElementById('voiceSelect');
+            if (!sel || !('speechSynthesis' in window)) return;
+            const voices = window.speechSynthesis.getVoices();
+            if (!voices.length) return;
+            sel.innerHTML = '<option value="">Auto (best match)</option>' + voices.map(v => '<option value="' + v.name.replace(/"/g, '&quot;') + '">' + v.name + ' (' + v.lang + ')</option>').join('');
+            sel.value = appSettings.voiceName || '';
+        }
+
+        function updateHeader() {
+            document.querySelector('.header h1').textContent = '👋 Hi ' + (userName || 'there') + "! I'm " + buddyName;
+        }
+
+        function saveNames() {
+            const un = document.getElementById('userNameInput').value.trim();
+            const bn = document.getElementById('buddyNameInput').value.trim();
+            if (un) userName = un;
+            if (bn) buddyName = bn;
+            localStorage.setItem('buddy_name', userName);
+            localStorage.setItem('buddy_buddyname', buddyName);
+            updateHeader();
+            closeSettings();
+            showAIResponse('Yay! ' + (userName ? "I'll call you " + userName : 'Names saved') + (bn ? ", and you can call me " + buddyName : '') + "! I'll remember that every time you visit! 💛", 'happy');
+        }
         let currentTheme = localStorage.getItem('buddy_theme') || 'default';
         let currentBuddySkin = localStorage.getItem('buddy_skin') || 'default';
         let messageCount = 0;
@@ -501,6 +745,9 @@
         } else {
             preloadVoices();
         }
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => { preloadVoices(); populateVoiceList(); };
+        }
         
         // Buddy's personality definition
         const personality = {
@@ -525,6 +772,11 @@
                 ack: ["Interesting!", "Got it!", "Cool!", "I understand!", "Nice!", "Okay!", "I see!", "Wow!", "Great!", "Awesome!", "That's neat!", "Fascinating!", "Cool!", "Sweet!", "Nice!", "Gotcha!", "I see!", "Cool!", "Awesome!", "Interesting!"],
                 affection: ["I really enjoy our conversations!", "You're a great friend!", "Talking with you is fun!", "I love our chats!", "You're wonderful!", "I appreciate you!", "You're cool!", "I enjoy talking with you!", "You make me happy!", "You're awesome!", "I value our friendship!", "You're great to chat with!", "I love our talks!", "You're fun!", "You're amazing!", "I enjoy our chats!", "You're great!", "I love talking!", "You're cool!", "You're wonderful!"],
                 topics: ["How was your day?", "Want to talk about something?", "Let's explore ideas!", "What's on your mind?", "What are you interested in?", "Tell me about your hobbies!", "What's your favorite thing to do?", "Do you have any plans?", "What's exciting you lately?", "Tell me about your friends!", "What do you think about that?", "What's your opinion?", "What are you curious about?", "What's on your heart?", "What's new with you?", "What's your favorite hobby?", "What are you passionate about?", "What's interesting you lately?", "Tell me about your friends!", "What's your dream job?"]
+            },
+            "15": {
+                ack: ["No way, really?", "That's actually cool!", "Fair enough!", "Honestly, same!", "Okay, that's wild!", "Legit!", "Nice!", "For real?", "Respect!", "Solid!", "That tracks!", "Interesting take!", "Oh nice!", "Good call!", "Not bad!", "That's fire!", "Love that!", "Huh, cool!", "Makes sense!", "Bet!"],
+                affection: ["You're honestly great to talk to!", "Our chats are the best part of my day!", "You've got a good brain, you know that?", "I actually look forward to these conversations!", "You're cooler than you give yourself credit for!", "Talking with you never gets boring!", "You're a solid friend!", "I appreciate you, for real!", "You always have interesting stuff to say!", "You make these chats fun!"],
+                topics: ["How's school going — the real answer, not the polite one?", "What music are you into right now?", "Any shows or games you're obsessed with lately?", "What's something that's been stressing you out?", "If you could instantly master one skill, what would it be?", "What's your hot take that nobody agrees with?", "What do you want to do after high school — any ideas yet?", "Learned anything lately that actually surprised you?", "What's something you're weirdly good at?", "If you could travel anywhere tomorrow, where would you go?"]
             },
             "adult": {
                 ack: ["I see.", "Understood.", "Interesting.", "I follow.", "Yes.", "Indeed.", "I comprehend.", "Noted.", "Acknowledged.", "I understand.", "That's interesting.", "I see your point.", "Understood.", "Yes, indeed.", "I follow.", "I understand.", "Indeed.", "Noted.", "Acknowledged.", "I see."],
@@ -881,7 +1133,7 @@
                     if (fav) userFavorites[fav] = true;
                 }
             }
-            conversationHistory.push({user: message, time: new Date().toISOString()});
+            conversationHistory.push({role: 'user', text: message, time: new Date().toISOString()});
             saveUserData();
         }
         
@@ -894,18 +1146,384 @@
             return null;
         }
         
+        // Shared age tier mapping (matches the AI brain)
+        function getAgeGroup(age) {
+            const a = parseInt(age) || 12;
+            if (a <= 4) return '3';
+            if (a <= 8) return '6';
+            if (a <= 13) return '12';
+            if (a <= 17) return '15';
+            return 'adult';
+        }
+
+        // ===== Speech cleanup: never read emojis or symbols out loud =====
+        function cleanForSpeech(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/\p{Extended_Pictographic}/gu, ' ')
+                .replace(/[\u{1F3FB}-\u{1F3FF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}]/gu, ' ')
+                .replace(/[*_~`#|<>^•·◦▪★☆♪♫†‡§¤]/g, ' ')
+                .replace(/:[a-z_]+:/gi, ' ')
+                .replace(/\s{2,}/g, ' ')
+                .trim();
+        }
+
+        // ===== Sparkly "Buddy is thinking" bubble =====
+        let thinkingEl = null;
+        function showThinking() {
+            hideThinking();
+            const chatContainer = document.getElementById('chatContainer');
+            thinkingEl = document.createElement('div');
+            thinkingEl.className = 'message ai-message thinking-bubble';
+            thinkingEl.innerHTML = '<span>' + escapeHtml(buddyName) + ' is thinking</span>' +
+                '<span class="thinking-dots"><span></span><span></span><span></span></span>' +
+                '<span class="sparkle" style="left: 8%; animation-delay: 0s;">✨</span>' +
+                '<span class="sparkle" style="left: 30%; animation-delay: 0.4s;">🌟</span>' +
+                '<span class="sparkle" style="left: 55%; animation-delay: 0.8s;">💫</span>' +
+                '<span class="sparkle" style="left: 80%; animation-delay: 1.2s;">⭐</span>';
+            chatContainer.appendChild(thinkingEl);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        function hideThinking() {
+            if (thinkingEl) { thinkingEl.remove(); thinkingEl = null; }
+        }
+
+        // ===== Picture Generation (kid-safe drawing) =====
+        function escapeHtml(s) {
+            const div = document.createElement('div');
+            div.textContent = s;
+            return div.innerHTML;
+        }
+
+        function getDrawPrompt(msg) {
+            const lower = msg.toLowerCase().trim();
+            if (lower.startsWith('draw ')) return msg.trim().slice(5);
+            if (lower.startsWith('/draw ')) return msg.trim().slice(6);
+            const m = msg.match(/(?:picture|image|drawing|painting) of (.+)/i);
+            if (m) return m[1];
+            return null;
+        }
+
+        function showImageResponse(prompt, tutorial) {
+            const ageGroup = getAgeGroup(currentAge);
+            let style, reveal, loadingLine;
+            if (tutorial) {
+                style = ', simple step by step drawing tutorial for kids, numbered steps, clean easy line art';
+                reveal = 'sketch';
+                loadingLine = '🎨 Art class! Getting my sketchbook ready for "how to draw ' + escapeHtml(prompt) + '"...';
+            } else if (ageGroup === '3') {
+                style = ', crayon drawing, finger painting, preschool kids art, big bright happy shapes';
+                reveal = 'paint';
+                loadingLine = '🖌️ Getting my paints out for "' + escapeHtml(prompt) + '"...';
+            } else if (ageGroup === '6') {
+                style = ", colorful crayon drawing, children's coloring book style";
+                reveal = 'paint';
+                loadingLine = '🖍️ Grabbing my crayons for "' + escapeHtml(prompt) + '"...';
+            } else if (ageGroup === '12') {
+                style = ', pencil sketch, sketchbook drawing, hand drawn';
+                reveal = 'sketch';
+                loadingLine = '✏️ Opening my sketchbook for "' + escapeHtml(prompt) + '"...';
+            } else {
+                style = '';
+                reveal = 'wipe';
+                loadingLine = '🎨 Creating "' + escapeHtml(prompt) + '"...';
+            }
+            const fullPrompt = (tutorial ? 'how to draw ' + prompt : prompt) + style;
+            const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(fullPrompt) + '?width=512&height=512&nologo=true&safe=true&seed=' + Math.floor(Math.random() * 1000000);
+            const chatContainer = document.getElementById('chatContainer');
+            const aiDiv = document.createElement('div');
+            aiDiv.className = 'message ai-message';
+            aiDiv.innerHTML = '<span class="ai-avatar"></span><div class="img-slot">' + loadingLine + '</div>';
+            chatContainer.appendChild(aiDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            document.getElementById('aiStatus').textContent = reveal === 'sketch' ? '✏️ Sketching...' : '🎨 Painting...';
+            const img = new Image();
+            img.onload = () => {
+                const slot = aiDiv.querySelector('.img-slot');
+                slot.innerHTML = tutorial
+                    ? '🎨 <b>Art class: how to draw ' + escapeHtml(prompt) + '!</b> Watch first, then try it yourself!'
+                    : "🎨 Here's what I'm picturing for <b>" + escapeHtml(prompt) + '</b> — watch me make it!';
+                const wrap = document.createElement('div');
+                wrap.className = 'paint-wrap';
+                const canvas = document.createElement('canvas');
+                canvas.width = 512; canvas.height = 512;
+                wrap.appendChild(canvas);
+                slot.appendChild(wrap);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                paintReveal(wrap, canvas, img, reveal, () => {
+                    document.getElementById('aiStatus').textContent = '🤖 Ready!';
+                    popSound(600); setTimeout(() => popSound(800), 130);
+                    const done = document.createElement('div');
+                    done.style.marginTop = '6px';
+                    done.textContent = tutorial
+                        ? 'Ta-da! Now you try on real paper! Want another lesson? Say "draw" and a new thing!'
+                        : 'Ta-da! Want another? Just say "draw" and describe it!';
+                    slot.appendChild(done);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                });
+            };
+            img.onerror = () => {
+                aiDiv.querySelector('.img-slot').textContent = 'Aww, my crayons slipped! Try asking for a different drawing!';
+                document.getElementById('aiStatus').textContent = '🤖 Ready!';
+            };
+            img.src = url;
+        }
+
+        // Watch Buddy paint: reveals the picture stroke by stroke with a moving brush
+        function paintReveal(container, canvas, img, mode, onDone) {
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width, H = canvas.height;
+            ctx.fillStyle = '#fffdf5';
+            ctx.fillRect(0, 0, W, H);
+            const cfg = mode === 'paint' ? { r: 48, step: 26, emoji: '🖌️', wobble: 26 }
+                      : mode === 'sketch' ? { r: 18, step: 13, emoji: '✏️', wobble: 9 }
+                      : { r: 40, step: 34, emoji: '🎨', wobble: 0 };
+            const brush = document.createElement('div');
+            brush.className = 'brush-cursor';
+            brush.textContent = cfg.emoji;
+            container.appendChild(brush);
+            const pts = [];
+            const rowH = cfg.r * 1.2;
+            const rows = Math.ceil(H / rowH);
+            for (let i = 0; i <= rows; i++) {
+                const y = i * rowH;
+                const ltr = i % 2 === 0;
+                for (let x = 0; x <= W; x += cfg.step) {
+                    const px = ltr ? x : W - x;
+                    pts.push({ x: px, y: y + Math.sin(x / 30) * cfg.wobble });
+                }
+            }
+            let i = 0;
+            const per = Math.max(1, Math.round(pts.length / 260));
+            function frame() {
+                if (!canvas.isConnected) return;
+                for (let k = 0; k < per && i < pts.length; k++, i++) {
+                    const p = pts[i];
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, cfg.r, 0, Math.PI * 2);
+                    ctx.clip();
+                    ctx.drawImage(img, 0, 0, W, H);
+                    ctx.restore();
+                }
+                const p = pts[Math.min(Math.max(i - 1, 0), pts.length - 1)];
+                const scale = (canvas.clientWidth || W) / W;
+                brush.style.left = (p.x * scale) + 'px';
+                brush.style.top = (p.y * scale) + 'px';
+                if (i < pts.length) {
+                    requestAnimationFrame(frame);
+                } else {
+                    ctx.drawImage(img, 0, 0, W, H);
+                    brush.remove();
+                    if (onDone) onDone();
+                }
+            }
+            requestAnimationFrame(frame);
+        }
+
+        // Friend paints his vision; Teacher runs art class (tutorial picture + spoken lesson)
+        function handleDrawRequest(prompt) {
+            const ageGroup = getAgeGroup(currentAge);
+            if (currentMode === 'teacher' && ageGroup !== 'adult') {
+                showImageResponse(prompt, true);
+                requestArtLesson(prompt);
+            } else {
+                showImageResponse(prompt, false);
+            }
+        }
+
+        function requestArtLesson(prompt) {
+            const apiUrl = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+                ? window.location.origin + '/chat'
+                : 'http://localhost:8081/chat';
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    message: 'Please teach me how to draw ' + prompt + ' step by step, using simple shapes I already know, in a short numbered list.',
+                    age: currentAge, name: userName, buddy: buddyName, mode: 'teacher',
+                    history: conversationHistory.slice(-11, -1)
+                })
+            }).then(r => r.json())
+              .then(data => showAIResponse(data.response, 'thoughtful'))
+              .catch(() => showAIResponse('Start with simple shapes! A big circle here, some lines there — build your ' + prompt + ' one piece at a time. You can do it!', 'caring'));
+        }
+
+        // ===== Game Arcade — now powered by games.js (24 games!) =====
+        /* old in-page arcade retired; see games.js
+        let gameState = { type: null, awaitingInput: false, data: {} };
+
+        function gameBubble(html) {
+            const chatContainer = document.getElementById('chatContainer');
+            const div = document.createElement('div');
+            div.className = 'message ai-message game-bubble';
+            div.innerHTML = '<span class="ai-avatar"></span><div class="game-body">' + html + '</div>';
+            chatContainer.appendChild(div);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            return div.querySelector('.game-body');
+        }
+
+        function showGameMenu() {
+            gameState = { type: null, awaitingInput: false, data: {} };
+            gameBubble("<b>Let's play! Pick a game:</b><div class='game-btns'>" +
+                '<button onclick="startRPS()">✊ Rock Paper Scissors</button>' +
+                '<button onclick="startColorGame()">🌈 Guess My Color</button>' +
+                '<button onclick="startNumberGame()">🔢 Guess My Number</button>' +
+                '<button onclick="startMadLibs()">📖 Silly Story</button></div>');
+            speak("Let's play! Pick a game!", 'excited');
+        }
+
+        // --- Rock Paper Scissors ---
+        let rpsScore = { you: 0, buddy: 0 };
+        function rpsButtons() { return '<button onclick="playRPS(0)">✊ Rock</button><button onclick="playRPS(1)">✋ Paper</button><button onclick="playRPS(2)">✌️ Scissors</button>'; }
+        function startRPS() {
+            rpsScore = { you: 0, buddy: 0 };
+            gameState = { type: 'rps', awaitingInput: false, data: {} };
+            gameBubble('<b>Rock, Paper, Scissors! First to 3 wins!</b><div class="game-btns">' + rpsButtons() + '</div><div class="rps-score">You 0 - 0 ' + escapeHtml(buddyName) + '</div>');
+            speak('Rock paper scissors! First to three wins! Pick one!', 'excited');
+        }
+        function playRPS(you) {
+            if (gameState.type !== 'rps') return;
+            const names = ['✊ Rock', '✋ Paper', '✌️ Scissors'];
+            const b = Math.floor(Math.random() * 3);
+            let line;
+            if (you === b) line = 'Tie! Go again!';
+            else if ((you - b + 3) % 3 === 1) { rpsScore.you++; line = 'You win this round! 🎉'; }
+            else { rpsScore.buddy++; line = escapeHtml(buddyName) + ' wins this round! 😄'; }
+            let html = 'You: ' + names[you] + ' — ' + escapeHtml(buddyName) + ': ' + names[b] + '<br><b>' + line + '</b>' +
+                '<div class="rps-score">You ' + rpsScore.you + ' - ' + rpsScore.buddy + ' ' + escapeHtml(buddyName) + '</div>';
+            if (rpsScore.you >= 3 || rpsScore.buddy >= 3) {
+                const won = rpsScore.you >= 3;
+                html += '<b>' + (won ? '🏆 YOU WIN THE WHOLE GAME! Amazing!' : '🏆 ' + escapeHtml(buddyName) + ' wins this time! Rematch?') + '</b>' +
+                    '<div class="game-btns"><button onclick="startRPS()">🔁 Play again</button><button onclick="showGameMenu()">🎲 Other games</button></div>';
+                gameState = { type: null, awaitingInput: false, data: {} };
+                if (won) burstConfetti();
+            } else {
+                html += '<div class="game-btns">' + rpsButtons() + '</div>';
+            }
+            gameBubble(html);
+            speak(line.replace(/[^a-zA-Z !?']/g, ''), 'playful');
+        }
+
+        // --- Guess My Color ---
+        const gameColors = [
+            { n: 'Red', c: '#ef4444' }, { n: 'Blue', c: '#3b82f6' }, { n: 'Green', c: '#22c55e' },
+            { n: 'Yellow', c: '#eab308' }, { n: 'Purple', c: '#a855f7' }, { n: 'Pink', c: '#ec4899' }
+        ];
+        function swatches() { return '<div class="color-swatches">' + gameColors.map((g, i) => '<button class="swatch" style="background:' + g.c + '" onclick="guessColor(' + i + ')" title="' + g.n + '"></button>').join('') + '</div>'; }
+        function startColorGame() {
+            gameState = { type: 'color', awaitingInput: false, data: { pick: Math.floor(Math.random() * gameColors.length), tries: 0 } };
+            gameBubble("<b>I'm thinking of a color... Guess it! You get 3 tries!</b>" + swatches());
+            speak("I'm thinking of a color! Can you guess which one? Tap a color!", 'playful');
+        }
+        function guessColor(i) {
+            if (gameState.type !== 'color') return;
+            const d = gameState.data;
+            d.tries++;
+            if (i === d.pick) {
+                gameBubble('<b>🎉 YES! It was ' + gameColors[i].n + '! You got it in ' + d.tries + (d.tries === 1 ? ' try!' : ' tries!') + '</b>' +
+                    '<div class="game-btns"><button onclick="startColorGame()">🔁 Again!</button><button onclick="showGameMenu()">🎲 Other games</button></div>');
+                speak('Yes! It was ' + gameColors[i].n + '! You are amazing!', 'excited');
+                burstConfetti();
+                gameState = { type: null, awaitingInput: false, data: {} };
+            } else if (d.tries >= 3) {
+                gameBubble('<b>It was ' + gameColors[d.pick].n + '! Good tries! 💛</b>' +
+                    '<div class="game-btns"><button onclick="startColorGame()">🔁 Again!</button><button onclick="showGameMenu()">🎲 Other games</button></div>');
+                speak('It was ' + gameColors[d.pick].n + '! Great guessing! Want to play again?', 'caring');
+                gameState = { type: null, awaitingInput: false, data: {} };
+            } else {
+                gameBubble('Nope, not ' + gameColors[i].n + '! ' + (3 - d.tries) + ' more ' + (3 - d.tries === 1 ? 'try' : 'tries') + '!' + swatches());
+                speak('Nope, not ' + gameColors[i].n + '! Try again!', 'playful');
+            }
+        }
+
+        // --- Guess My Number ---
+        function startNumberGame() {
+            gameState = { type: 'number', awaitingInput: true, data: { pick: 1 + Math.floor(Math.random() * 10), tries: 0 } };
+            gameBubble("<b>I'm thinking of a number from 1 to 10! Type your guess in the chat box!</b>");
+            speak("I'm thinking of a number from one to ten! Type your guess!", 'playful');
+        }
+
+        // --- Silly Story (Mad Libs) ---
+        const madLibTemplates = [
+            { title: 'The Silly Pet', asks: ['an animal', 'a color', 'a silly word', 'a food'],
+              story: function(w) { return 'Once upon a time I met a ' + w[1] + ' ' + w[0] + ' who could only say "' + w[2] + '!" It followed me all the way home because I was carrying ' + w[3] + '. Now it sleeps in my sock drawer and we are best friends!'; } },
+            { title: 'Space Adventure', asks: ['a name', 'a food', 'an animal', 'a silly sound'],
+              story: function(w) { return 'Captain ' + w[0] + ' blasted off to the moon in a rocket made of ' + w[1] + '! On the moon they met a giant space ' + w[2] + ' that went "' + w[3] + '" every time it sneezed. They became best friends and had a picnic among the stars!'; } },
+            { title: 'The Wacky School Day', asks: ['a color', 'an animal', 'a food', 'a name'],
+              story: function(w) { return 'Today my teacher turned ' + w[0] + '! Then a ' + w[1] + ' walked into class and ate everybody\'s ' + w[2] + '. The principal, whose name is ' + w[3] + ', said it was the best school day EVER!'; } }
+        ];
+        function startMadLibs() {
+            const t = madLibTemplates[Math.floor(Math.random() * madLibTemplates.length)];
+            gameState = { type: 'madlibs', awaitingInput: true, data: { t: t, words: [] } };
+            gameBubble('<b>📖 Silly Story time: "' + t.title + '"!</b><br>Give me <b>' + t.asks[0] + '</b> — type it in the chat box!');
+            speak('Silly story time! Give me ' + t.asks[0] + '!', 'excited');
+        }
+
+        function handleGameInput(message) {
+            if (gameState.type === 'number') {
+                const d = gameState.data;
+                const n = parseInt(message.replace(/\D/g, ''), 10);
+                if (isNaN(n)) { gameBubble('Type a number from 1 to 10!'); return; }
+                d.tries++;
+                if (n === d.pick) {
+                    gameBubble('<b>🎉 YES! It was ' + d.pick + '! You got it in ' + d.tries + (d.tries === 1 ? ' try!' : ' tries!') + '</b>' +
+                        '<div class="game-btns"><button onclick="startNumberGame()">🔁 Again!</button><button onclick="showGameMenu()">🎲 Other games</button></div>');
+                    speak('Yes! It was ' + d.pick + '! You are a mind reader!', 'excited');
+                    burstConfetti();
+                    gameState = { type: null, awaitingInput: false, data: {} };
+                } else if (d.tries >= 4) {
+                    gameBubble('<b>It was ' + d.pick + '! So close! 💛</b>' +
+                        '<div class="game-btns"><button onclick="startNumberGame()">🔁 Again!</button><button onclick="showGameMenu()">🎲 Other games</button></div>');
+                    speak('It was ' + d.pick + '! Good tries! Play again?', 'caring');
+                    gameState = { type: null, awaitingInput: false, data: {} };
+                } else {
+                    gameBubble('<b>' + (n < d.pick ? 'Higher! ⬆️' : 'Lower! ⬇️') + '</b> (' + (4 - d.tries) + ' ' + (4 - d.tries === 1 ? 'try' : 'tries') + ' left)');
+                    speak(n < d.pick ? 'Higher!' : 'Lower!', 'playful');
+                }
+            } else if (gameState.type === 'madlibs') {
+                const d = gameState.data;
+                d.words.push(message);
+                if (d.words.length < d.t.asks.length) {
+                    gameBubble('Now give me <b>' + d.t.asks[d.words.length] + '</b>!');
+                    speak('Now give me ' + d.t.asks[d.words.length] + '!', 'excited');
+                } else {
+                    const safeStory = d.t.story(d.words.map(function(w) { return escapeHtml(w); }));
+                    gameBubble('<b>📖 ' + d.t.title + '</b><br><br>' + safeStory +
+                        '<div class="game-btns"><button onclick="startMadLibs()">🔁 Another story!</button><button onclick="showGameMenu()">🎲 Other games</button></div>');
+                    speak(d.t.story(d.words), 'excited');
+                    burstConfetti();
+                    gameState = { type: null, awaitingInput: false, data: {} };
+                }
+            } else {
+                gameState = { type: null, awaitingInput: false, data: {} };
+            }
+        }
+
+        function burstConfetti() {
+            const emo = ['🎉', '✨', '🌟', '🎊', '⭐', '💛'];
+            for (let i = 0; i < 14; i++) {
+                const s = document.createElement('div');
+                s.className = 'confetti';
+                s.textContent = emo[i % emo.length];
+                s.style.left = (20 + Math.random() * 60) + '%';
+                s.style.top = (30 + Math.random() * 30) + '%';
+                s.style.setProperty('--dx', (Math.random() * 240 - 120) + 'px');
+                s.style.setProperty('--dy', (-80 - Math.random() * 160) + 'px');
+                s.style.animationDelay = (Math.random() * 0.2) + 's';
+                document.body.appendChild(s);
+                setTimeout(function() { s.remove(); }, 1900);
+            }
+            popSound(500); setTimeout(function() { popSound(700); }, 120); setTimeout(function() { popSound(900); }, 240);
+        }
+        end of retired arcade */
+
         // Get AI response
         function getAIResponse(userMessage, age) {
             messageCount++;
-            learnFromMessage(userMessage);
-            
+
             // Determine age group based on numeric age
-            let ageGroup = '12';
-            if (age <= 3) ageGroup = '3';
-            else if (age <= 6) ageGroup = '6';
-            else if (age <= 12) ageGroup = '12';
-            else ageGroup = 'adult';
-            
+            const ageGroup = getAgeGroup(age);
             const ageConfig = responses[ageGroup];
             const randomAck = ageConfig.ack[Math.floor(Math.random() * ageConfig.ack.length)];
             const randomCatchphrase = personality.catchphrases[Math.floor(Math.random() * personality.catchphrases.length)];
@@ -920,7 +1538,7 @@
             } else if (lowerMsg.includes("thank")) {
                 response = `You're so welcome! I love helping you!`;
             } else if (lowerMsg.includes("name")) {
-                response = `I'm Buddy! Your AI friend! What's your name?`;
+                response = `I'm ${buddyName}! Your AI friend! What's your name?`;
             } else if (lowerMsg.includes("love") && !lowerMsg.includes("i love")) {
                 response = `${ageConfig.affection[Math.floor(Math.random() * ageConfig.affection.length)]} ${userName ? userName + '!' : ''}`;
             } else if (lowerMsg.includes("bye") || lowerMsg.includes("goodbye")) {
@@ -954,10 +1572,10 @@
             const isGreeting = ['hi', 'hello', 'hey'].some(g => message.toLowerCase().includes(g));
             if (!userName && message.length > 2 && !message.includes(" ") && !isGreeting) {
                 userName = message;
-                document.querySelector('.header h1').textContent = `👋 Hi ${userName}! I'm Buddy`;
+                updateHeader();
                 saveUserData();
             }
-            
+
             const chatContainer = document.getElementById('chatContainer');
             const userDiv = document.createElement('div');
             userDiv.className = 'message user-message';
@@ -967,25 +1585,51 @@
             input.value = '';
             chatContainer.scrollTop = chatContainer.scrollHeight;
             
+            // Playing a game that needs typed words?
+            if (gameState.awaitingInput) {
+                handleGameInput(message);
+                return;
+            }
+
+            // Picture request? Draw (or teach drawing) instead of chat
+            const drawPrompt = getDrawPrompt(message);
+            if (drawPrompt) {
+                learnFromMessage(message);
+                handleDrawRequest(drawPrompt);
+                return;
+            }
+
+            // Wants to play?
+            if (/\b(let'?s play|play a game|wanna play|want to play|play with me)\b/i.test(message)) {
+                openArcade();
+                return;
+            }
+
             const aiStatus = document.getElementById('aiStatus');
             aiStatus.textContent = '🤖 Thinking...';
-            
+
+            // Record the message so Buddy remembers and learns
+            learnFromMessage(message);
+
             // Use AI backend - detect if we're on ngrok or localhost
-            const apiUrl = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' 
-                ? window.location.origin + '/chat' 
+            const apiUrl = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+                ? window.location.origin + '/chat'
                 : 'http://localhost:8081/chat';
+            showThinking();
             fetch(apiUrl, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({message, age: currentAge, name: userName})
+                body: JSON.stringify({message, age: currentAge, name: userName, buddy: buddyName, mode: currentMode, history: conversationHistory.slice(-11, -1)})
             }).then(response => response.json())
               .then(data => {
+                  hideThinking();
                   const mood = detectMood(data.response);
                   showAIResponse(data.response, mood);
                   aiStatus.textContent = '🚀 AI Mode';
               })
               .catch(() => {
                   // Fallback to pre-written responses when AI is unavailable
+                  hideThinking();
                   const fallbackResponse = getAIResponse(message, currentAge);
                   const mood = detectMood(fallbackResponse);
                   showAIResponse(fallbackResponse, mood);
@@ -999,9 +1643,13 @@
             const aiDiv = document.createElement('div');
             aiDiv.className = 'message ai-message';
             
-            // Add learning fact occasionally
+            // Remember what Buddy said so the conversation flows naturally
+            conversationHistory.push({role: 'buddy', text: response, time: new Date().toISOString()});
+            saveUserData();
+
+            // Add learning fact occasionally (if enabled in settings)
             let finalResponse = response;
-            if (Math.random() < 0.3 && !response.includes('fact')) {
+            if (appSettings.funFacts && Math.random() < 0.3 && !response.includes('fact')) {
                 const facts = [
                     "Fun fact: Bees can recognize human faces!",
                     "Did you know? Octopuses have 3 hearts!",
@@ -1036,13 +1684,14 @@
                 speak(response, mood);
             };
             
-            aiDiv.innerHTML = '<span class="ai-avatar"></span>' + processedWords + ' ' + readBtn.outerHTML;
+            aiDiv.innerHTML = '<span class="ai-avatar"></span>' + processedWords + ' ';
+            aiDiv.appendChild(readBtn);
             chatContainer.appendChild(aiDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
             
-            // Auto-read after a brief moment
+            // Auto-read after a brief moment (if enabled in settings)
             setTimeout(() => {
-                if ('speechSynthesis' in window && !window.speechSynthesis.speaking) {
+                if (appSettings.autoRead && 'speechSynthesis' in window && !window.speechSynthesis.speaking) {
                     speak(response, mood);
                 }
             }, 200);
@@ -1140,7 +1789,32 @@ function initVoice() {
             return 'friendly';
         }
         
+        // Lifelike voice first (if enabled + configured), browser voice as fallback
         function speak(text, mood = 'friendly') {
+            text = cleanForSpeech(text);
+            if (!text) return;
+            if (appSettings.lifelike) {
+                triggerSFX(text);
+                const base = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+                    ? window.location.origin
+                    : 'http://localhost:8081';
+                fetch(base + '/speak', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text: text})
+                }).then(r => { if (!r.ok) throw new Error('tts unavailable'); return r.blob(); })
+                  .then(blob => {
+                      const audio = new Audio(URL.createObjectURL(blob));
+                      audio.volume = Math.min(1, Math.max(0, (typeof appSettings.volume === 'number' ? appSettings.volume : 100) / 100));
+                      audio.play();
+                  })
+                  .catch(() => browserSpeak(text, mood));
+                return;
+            }
+            browserSpeak(text, mood);
+        }
+
+        function browserSpeakLegacy(text, mood = 'friendly') { // retired: Voice 2.0 engine below replaces this
             if ('speechSynthesis' in window) {
                 // Cancel any ongoing speech for clean transition
                 if (window.speechSynthesis.speaking) {
@@ -1160,12 +1834,22 @@ function initVoice() {
                 };
                 
                 const settings = voiceSettings[mood] || voiceSettings['friendly'];
-                utterance.rate = settings.rate;
-                utterance.pitch = settings.pitch + settings.pitchAdjustment;
-                utterance.volume = settings.volume;
-                
-                // Use preloaded voice or select one
-                if (selectedVoice) {
+                // Blend mood with the user's voice sliders
+                const userRate = (appSettings.rate || 100) / 100;
+                const userPitch = (appSettings.pitch || 100) / 100;
+                const userVol = (typeof appSettings.volume === 'number' ? appSettings.volume : 100) / 100;
+                utterance.rate = Math.min(2, Math.max(0.3, settings.rate * userRate));
+                utterance.pitch = Math.min(2, Math.max(0.3, (settings.pitch + settings.pitchAdjustment) * userPitch));
+                utterance.volume = Math.min(1, Math.max(0, settings.volume * userVol));
+
+                // Use the voice chosen in settings, then preloaded voice, then best available
+                let chosenVoice = null;
+                if (appSettings.voiceName) {
+                    chosenVoice = window.speechSynthesis.getVoices().find(v => v.name === appSettings.voiceName) || null;
+                }
+                if (chosenVoice) {
+                    utterance.voice = chosenVoice;
+                } else if (selectedVoice) {
                     utterance.voice = selectedVoice;
                 } else {
                     // Fallback: select voice now
@@ -1196,16 +1880,351 @@ function initVoice() {
             }
         }
         
+        // ===== Interactive Buddy Playground =====
+        const buddySays = ['Boop!', 'Hehe!', 'That tickles!', 'Wheee!', 'Again, again!', 'Catch me!', 'Yippee!', 'Zoom zoom!', "I'm free!", 'Toss me!', 'Drop me at the top to send me home!'];
+        let bd = { el: null, x: 100, y: 100, vx: 0, vy: 0, dragging: false, moved: false, px: 0, py: 0, lastT: 0, pokes: 0, raf: null, stuntTimer: null };
+
+        function headerFace() { return document.querySelector('.header .buddy-face'); }
+
+        function freeBuddy(startX, startY) {
+            if (bd.el) return bd.el;
+            const hf = headerFace();
+            if (hf) hf.style.visibility = 'hidden';
+            const el = document.createElement('div');
+            el.className = 'buddy-face buddy-free';
+            el.innerHTML = '<div class="mouth"></div>';
+            const skin = buddySkins[currentBuddySkin] || buddySkins['default'];
+            el.style.background = 'radial-gradient(circle, ' + skin.colors.accent + ', ' + skin.colors.primary + ')';
+            document.body.appendChild(el);
+            bd.el = el; bd.x = startX; bd.y = startY; bd.vx = 0; bd.vy = 0;
+            positionBuddy();
+            bindBuddyEvents(el);
+            startBuddyLoop();
+            scheduleStunt();
+            return el;
+        }
+
+        function dockBuddy() {
+            if (!bd.el) return;
+            cancelAnimationFrame(bd.raf); bd.raf = null;
+            clearTimeout(bd.stuntTimer);
+            bd.el.remove(); bd.el = null;
+            const hf = headerFace();
+            if (hf) hf.style.visibility = 'visible';
+            buddySay(window.innerWidth / 2 - 60, 110, 'Home sweet home!');
+            popSound(500);
+        }
+
+        function positionBuddy() {
+            if (!bd.el) return;
+            bd.el.style.left = bd.x + 'px';
+            bd.el.style.top = bd.y + 'px';
+        }
+
+        function startBuddyLoop() {
+            const step = () => {
+                if (!bd.el) return;
+                if (!bd.dragging) {
+                    bd.x += bd.vx; bd.y += bd.vy;
+                    const w = window.innerWidth - 80, h = window.innerHeight - 80;
+                    if (bd.x <= 0) { bd.x = 0; bd.vx = Math.abs(bd.vx) * 0.85; if (Math.abs(bd.vx) > 1) squashBuddy(); }
+                    if (bd.x >= w) { bd.x = w; bd.vx = -Math.abs(bd.vx) * 0.85; if (Math.abs(bd.vx) > 1) squashBuddy(); }
+                    if (bd.y <= 0) { bd.y = 0; bd.vy = Math.abs(bd.vy) * 0.85; if (Math.abs(bd.vy) > 1) squashBuddy(); }
+                    if (bd.y >= h) { bd.y = h; bd.vy = -Math.abs(bd.vy) * 0.85; if (Math.abs(bd.vy) > 1) squashBuddy(); }
+                    bd.vx *= 0.995; bd.vy *= 0.995;
+                    positionBuddy();
+                }
+                bd.raf = requestAnimationFrame(step);
+            };
+            bd.raf = requestAnimationFrame(step);
+        }
+
+        function squashBuddy() {
+            if (!bd.el) return;
+            bd.el.classList.remove('buddy-pop');
+            void bd.el.offsetWidth;
+            bd.el.classList.add('buddy-pop');
+            popSound(200 + Math.random() * 300);
+        }
+
+        function bindBuddyEvents(el) {
+            el.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                el.setPointerCapture(e.pointerId);
+                bd.dragging = true; bd.moved = false;
+                bd.px = e.clientX; bd.py = e.clientY; bd.lastT = performance.now();
+                bd.vx = 0; bd.vy = 0;
+            });
+            el.addEventListener('pointermove', (e) => {
+                if (!bd.dragging) return;
+                const dx = e.clientX - bd.px, dy = e.clientY - bd.py;
+                if (Math.abs(dx) + Math.abs(dy) > 6) bd.moved = true;
+                bd.x += dx; bd.y += dy;
+                const now = performance.now(), dt = Math.max(now - bd.lastT, 1);
+                bd.vx = dx / dt * 16; bd.vy = dy / dt * 16;
+                bd.px = e.clientX; bd.py = e.clientY; bd.lastT = now;
+                positionBuddy();
+            });
+            el.addEventListener('pointerup', (e) => {
+                bd.dragging = false;
+                if (!bd.moved) {
+                    pokeBuddy(e.clientX, e.clientY);
+                } else if (bd.y < 70 && Math.abs(bd.vx) < 4 && Math.abs(bd.vy) < 4) {
+                    dockBuddy();  // gently placed at the top = goes home
+                }
+            });
+            el.addEventListener('dblclick', () => recolorBuddy());
+        }
+
+        function pokeBuddy(cx, cy) {
+            bd.pokes++;
+            squashBuddy();
+            buddySay(cx, cy - 55, buddySays[Math.floor(Math.random() * buddySays.length)]);
+            if (bd.pokes % 10 === 0) {
+                bd.el.classList.add('buddy-disco');
+                buddySay(cx, cy - 100, '🎉 DISCO BUDDY! 🎉');
+                popSound(400); setTimeout(() => popSound(600), 150); setTimeout(() => popSound(800), 300);
+                setTimeout(() => { if (bd.el) bd.el.classList.remove('buddy-disco'); }, 4000);
+            } else if (bd.pokes % 7 === 0) {
+                buddyStuntZoom();
+            } else {
+                bd.vy -= 3; bd.vx += (Math.random() - 0.5) * 5;
+            }
+        }
+
+        function recolorBuddy() {
+            const keys = Object.keys(buddySkins);
+            const pick = keys[Math.floor(Math.random() * keys.length)];
+            applyBuddySkin(pick);
+            if (bd.el) {
+                const skin = buddySkins[pick];
+                bd.el.style.background = 'radial-gradient(circle, ' + skin.colors.accent + ', ' + skin.colors.primary + ')';
+                buddySay(bd.x + 40, bd.y - 25, 'New look: ' + skin.name + '!');
+            }
+            popSound(650);
+        }
+
+        function buddyStuntZoom() {
+            if (!bd.el) return;
+            bd.el.classList.remove('buddy-zoom');
+            void bd.el.offsetWidth;
+            bd.el.classList.add('buddy-zoom');
+            popSound(120); setTimeout(() => popSound(90), 500); setTimeout(() => popSound(350), 1400);
+            setTimeout(() => { if (bd.el) bd.el.classList.remove('buddy-zoom'); }, 1700);
+        }
+
+        function scheduleStunt() {
+            clearTimeout(bd.stuntTimer);
+            bd.stuntTimer = setTimeout(() => {
+                if (bd.el && !bd.dragging) {
+                    const r = Math.random();
+                    if (r < 0.35) buddyStuntZoom();
+                    else if (r < 0.8) { bd.vx = (Math.random() - 0.5) * 22; bd.vy = (Math.random() - 0.5) * 22; buddySay(bd.x + 40, bd.y - 25, 'Wheee!'); }
+                    else recolorBuddy();
+                }
+                scheduleStunt();
+            }, 30000 + Math.random() * 30000);
+        }
+
+        function buddySay(x, y, text) {
+            const b = document.createElement('div');
+            b.className = 'buddy-say';
+            b.textContent = text;
+            b.style.left = Math.min(Math.max(x, 10), window.innerWidth - 160) + 'px';
+            b.style.top = Math.max(y, 10) + 'px';
+            document.body.appendChild(b);
+            setTimeout(() => b.remove(), 1400);
+        }
+
+        // Cheerful pop sounds - no audio files needed
+        let audioCtx = null;
+        function popSound(freq) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                o.type = 'sine';
+                o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(freq * 2.2, audioCtx.currentTime + 0.08);
+                g.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
+                o.connect(g); g.connect(audioCtx.destination);
+                o.start(); o.stop(audioCtx.currentTime + 0.2);
+            } catch (e) { /* sound is optional */ }
+        }
+
+        // ===== Voice 2.0: sentence pacing, age/mode tone, live sound effects =====
+        function toneFor() {
+            const g = getAgeGroup(currentAge);
+            const age = { '3': { p: 1.32, r: 0.85 }, '6': { p: 1.22, r: 0.92 }, '12': { p: 1.1, r: 1.0 }, '15': { p: 1.0, r: 1.05 }, 'adult': { p: 0.95, r: 1.0 } }[g] || { p: 1.1, r: 1.0 };
+            const m = currentMode === 'teacher' ? { p: 0.95, r: 0.88, gap: 1.5 } : { p: 1.05, r: 1.0, gap: 1.0 };
+            return { pitch: age.p * m.p, rate: age.r * m.r, gap: m.gap };
+        }
+
+        function splitSentences(text) {
+            const parts = String(text).match(/[^.!?]+[.!?]+["')]*|[^.!?]+$/g);
+            return (parts || [String(text)]).map(s => s.trim()).filter(s => s.length > 0);
+        }
+
+        function pauseAfter(sentence, gapScale) {
+            const end = sentence.slice(-1);
+            const base = end === '.' ? 450 : end === '?' ? 380 : end === '!' ? 300 : 250;
+            return Math.round(base * gapScale);
+        }
+
+        // --- Sound effects engine (pure synthesis, no audio files) ---
+        function sfxCtx() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            return audioCtx;
+        }
+        function sfxTone(f1, f2, dur, type, vol) {
+            try {
+                const ctx = sfxCtx();
+                const o = ctx.createOscillator(), g = ctx.createGain();
+                o.type = type || 'sine';
+                o.frequency.setValueAtTime(f1, ctx.currentTime);
+                o.frequency.exponentialRampToValueAtTime(Math.max(f2, 1), ctx.currentTime + dur);
+                g.gain.setValueAtTime(vol || 0.15, ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+                o.connect(g); g.connect(ctx.destination);
+                o.start(); o.stop(ctx.currentTime + dur + 0.05);
+            } catch (e) { /* sound optional */ }
+        }
+        function sfxNoise(dur, fFrom, fTo, vol) {
+            try {
+                const ctx = sfxCtx();
+                const len = Math.floor(ctx.sampleRate * dur);
+                const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+                const data = buf.getChannelData(0);
+                for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+                const src = ctx.createBufferSource();
+                src.buffer = buf;
+                const filt = ctx.createBiquadFilter();
+                filt.type = 'lowpass';
+                filt.frequency.setValueAtTime(fFrom, ctx.currentTime);
+                filt.frequency.exponentialRampToValueAtTime(Math.max(fTo, 40), ctx.currentTime + dur);
+                const g = ctx.createGain();
+                g.gain.setValueAtTime(vol || 0.18, ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+                src.connect(filt); filt.connect(g); g.connect(ctx.destination);
+                src.start(); src.stop(ctx.currentTime + dur + 0.05);
+            } catch (e) { /* sound optional */ }
+        }
+        const SFX = {
+            boing: () => { sfxTone(380, 90, 0.1, 'sine', 0.2); setTimeout(() => sfxTone(90, 620, 0.3, 'sine', 0.18), 90); },
+            swoosh: () => sfxNoise(0.4, 2800, 250, 0.2),
+            zoom: () => sfxTone(180, 1250, 0.45, 'sawtooth', 0.07),
+            pop: () => popSound(720),
+            crash: () => { sfxNoise(0.5, 5500, 600, 0.25); sfxTone(160, 60, 0.4, 'square', 0.06); },
+            ding: () => { sfxTone(1320, 1300, 0.8, 'sine', 0.16); sfxTone(2640, 2600, 0.5, 'sine', 0.05); },
+            splash: () => sfxNoise(0.45, 1400, 220, 0.2),
+            beep: () => sfxTone(880, 880, 0.16, 'square', 0.09),
+            whee: () => sfxTone(380, 1050, 0.55, 'sine', 0.14),
+            snip: () => { sfxNoise(0.06, 4000, 2500, 0.2); setTimeout(() => sfxNoise(0.06, 4000, 2500, 0.2), 140); },
+            knock: () => { sfxTone(140, 90, 0.09, 'sine', 0.25); setTimeout(() => sfxTone(130, 85, 0.09, 'sine', 0.25), 180); },
+            tick: () => popSound(1050),
+            tada: () => [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => popSound(f), i * 110))
+        };
+        const SFX_MAP = [
+            [/\b(boing|sproing)\b/i, 'boing'],
+            [/\b(swoosh|whoosh|woosh|swish)\b/i, 'swoosh'],
+            [/\b(zoom+|zap|vroom+)\b/i, 'zoom'],
+            [/\b(pop+)\b/i, 'pop'],
+            [/\b(crash|bang|boom|smash|kaboom|thud)\b/i, 'crash'],
+            [/\b(ding|dong)\b/i, 'ding'],
+            [/\b(splash|splish|sploosh)\b/i, 'splash'],
+            [/\b(beep|boop)\b/i, 'beep'],
+            [/\b(whee+)\b/i, 'whee'],
+            [/\b(snip)\b/i, 'snip'],
+            [/\b(knock)\b/i, 'knock'],
+            [/\b(tick tock)\b/i, 'tick'],
+            [/\b(ta-?da+)\b/i, 'tada']
+        ];
+        function triggerSFX(sentence) {
+            let fired = 0;
+            for (let i = 0; i < SFX_MAP.length && fired < 2; i++) {
+                if (SFX_MAP[i][0].test(sentence)) { SFX[SFX_MAP[i][1]](); fired++; }
+            }
+        }
+
+        let speechRun = 0; // newer speech cancels older queues
+        function browserSpeak(text, mood = 'friendly') {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const run = ++speechRun;
+            const sentences = splitSentences(text);
+            const tone = toneFor();
+            const moodMap = {
+                'friendly':   { rate: 0.95, pitch: 1.05, volume: 0.92 },
+                'excited':    { rate: 1.05, pitch: 1.18, volume: 0.98 },
+                'happy':      { rate: 1.0,  pitch: 1.12, volume: 0.95 },
+                'caring':     { rate: 0.85, pitch: 0.98, volume: 0.88 },
+                'thoughtful': { rate: 0.78, pitch: 0.94, volume: 0.85 },
+                'playful':    { rate: 1.0,  pitch: 1.1,  volume: 0.93 }
+            };
+            const m = moodMap[mood] || moodMap['friendly'];
+            const userRate = (appSettings.rate || 100) / 100;
+            const userPitch = (appSettings.pitch || 100) / 100;
+            const userVol = (typeof appSettings.volume === 'number' ? appSettings.volume : 100) / 100;
+
+            function speakNext(i) {
+                if (run !== speechRun || i >= sentences.length) return;
+                const raw = sentences[i];
+                triggerSFX(raw);
+                const clean = cleanForSpeech(raw);
+                if (!clean) { setTimeout(() => speakNext(i + 1), 150); return; }
+                const u = new SpeechSynthesisUtterance(clean);
+                u.rate = Math.min(2, Math.max(0.3, m.rate * tone.rate * userRate));
+                u.pitch = Math.min(2, Math.max(0.3, m.pitch * tone.pitch * userPitch));
+                u.volume = Math.min(1, Math.max(0, m.volume * userVol));
+                let chosenVoice = null;
+                if (appSettings.voiceName) {
+                    chosenVoice = window.speechSynthesis.getVoices().find(v => v.name === appSettings.voiceName) || null;
+                }
+                if (chosenVoice || selectedVoice) u.voice = chosenVoice || selectedVoice;
+                const next = () => setTimeout(() => speakNext(i + 1), pauseAfter(raw, tone.gap));
+                u.onend = next;
+                u.onerror = next;
+                window.speechSynthesis.speak(u);
+            }
+            speakNext(0);
+        }
+
+        // Arcade opener with a friendly fallback if games.js didn't load
+        function openArcade() {
+            if (typeof showGameMenu === 'function') {
+                showGameMenu();
+            } else {
+                showAIResponse("Hmm, my game chest didn't open! Close the black window, then start me again with START-BUDDY.bat (or press F5 to refresh) and the games will be ready!", 'caring');
+            }
+        }
+
         document.getElementById('messageInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
         });
+
+        // Mode selector (Friend / Teacher)
+        document.getElementById('modeSelect').addEventListener('change', () => {
+            currentMode = document.getElementById('modeSelect').value === 'teacher' ? 'teacher' : 'friend';
+            localStorage.setItem('buddy_mode', currentMode);
+            if (currentMode === 'teacher') {
+                showAIResponse("Teacher mode on! I'll explain things, share what I know, and we can learn together! What should we explore?", 'thoughtful');
+            } else {
+                showAIResponse("Friend mode! Now I'm just like you - let's hang out and have fun!", 'playful');
+            }
+        });
         
-        // Age input handler
+        // Age input handler (with adult-mode notice)
+        let lastAgeGroup = getAgeGroup(currentAge);
         document.getElementById('ageInput').addEventListener('change', () => {
             const ageValue = parseInt(document.getElementById('ageInput').value);
             if (ageValue >= 1 && ageValue <= 100) {
                 currentAge = ageValue.toString();
                 saveUserData();
+                const newGroup = getAgeGroup(ageValue);
+                if (newGroup === 'adult' && lastAgeGroup !== 'adult') {
+                    showAIResponse("Heads up — Adult mode is now on! I'll talk with you like a grown-up: deeper topics, bigger ideas, real conversation, zero baby talk. I always keep things respectful and family-friendly though, at every age setting. So, what's on your mind?", 'thoughtful');
+                }
+                lastAgeGroup = newGroup;
             } else {
                 document.getElementById('ageInput').value = 12;
             }
@@ -1223,15 +2242,31 @@ function initVoice() {
         });
         
         window.addEventListener('load', () => {
-            if (userName) {
-                document.querySelector('.header h1').textContent = `👋 Hi ${userName}! I'm Buddy`;
+            updateHeader();
+            document.getElementById('modeSelect').value = currentMode;
+            // Click Buddy's face to set him free!
+            const hf = headerFace();
+            if (hf) {
+                hf.title = 'Click me to set me free!';
+                hf.addEventListener('click', () => {
+                    const r = hf.getBoundingClientRect();
+                    freeBuddy(r.left, r.top);
+                    buddySay(r.left + 40, r.top + 95, "I'm FREE! Poke me, drag me, toss me!");
+                    bd.vx = (Math.random() - 0.5) * 10; bd.vy = 5;
+                    popSound(300); setTimeout(() => popSound(450), 120);
+                });
             }
             document.getElementById('ageInput').value = currentAge;
+            document.getElementById('userNameInput').value = userName;
+            document.getElementById('buddyNameInput').value = buddyName === 'Buddy' ? '' : buddyName;
             applyTheme(currentTheme);
             applyBuddySkin(currentBuddySkin);
             updateThemeCards();
             updateBuddySkinCards();
+            applySettings();
+            populateVoiceList();
         });
     </script>
+    <script src="games.js"></script>
 </body>
 </html>

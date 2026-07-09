@@ -11,7 +11,13 @@ echo     [DONE] Servers stopped
 
 echo [2/4] Starting Flask server...
 cd /d "C:\Users\thego\Desktop\kids-Korner"
-set OPENROUTER_API_KEY=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
+:: Keys live in keys.local.bat (NOT in git - see .gitignore). Copy keys.local.bat.example to get started.
+if exist keys.local.bat (
+    call keys.local.bat
+    echo     [OK] Keys loaded from keys.local.bat
+) else (
+    echo     [WARN] keys.local.bat not found - running in no-key mode ^(Buddy Mode fallback^)
+)
 start /B python app.py
 timeout /t 3 /nobreak >nul
 echo     [DONE] Flask server running

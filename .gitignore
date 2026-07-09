@@ -1,0 +1,14 @@
+# NEVER commit keys or secrets
+keys.local.bat
+.env
+*.env
+buddy-keys.env
+vault-backup*.json
+
+# Python junk
+__pycache__/
+*.pyc
+
+# OS junk
+Thumbs.db
+.DS_Store

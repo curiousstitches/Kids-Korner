@@ -1,0 +1,23 @@
+:: ============================================================
+:: KEYS FILE TEMPLATE - Kids Korner / Buddy Lounge
+:: ============================================================
+:: 1. COPY this file and rename the copy to:  keys.local.bat
+:: 2. Paste your real keys below (get them via Buddy-Vault\vault.html)
+:: 3. keys.local.bat is protected by .gitignore - it will NEVER
+::    be uploaded to GitHub or seen by anyone you share this with.
+:: NEVER put real keys in this .example file or any other file!
+:: ============================================================
+
+:: Chat AI (free models) - https://openrouter.ai/keys
+:: (example key shown - replace with your real one)
+set OPENROUTER_API_KEY=sk-or-v1-your-api-key-here
+
+:: Lifelike voice, optional - https://elevenlabs.io
+:: set ELEVENLABS_API_KEY=your-api-key-here
+:: set ELEVENLABS_VOICE_ID=21m00Tcm4TlvDq8ikWAM
+
+:: Different chat model, optional
+:: set BUDDY_MODEL=poolside/laguna-m.1:free
+
+:: Age tier for SMS texters, optional (default 12 = family-safe)
+:: set BUDDY_SMS_AGE=12

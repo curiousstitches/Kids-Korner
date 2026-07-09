@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔐 Buddy Key Vault</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --bg: linear-gradient(135deg, #0d1421, #1a2332);
+    --surface: #16202e;
+    --surface-2: #1f2d3f;
+    --line: #2c3e54;
+    --primary: #4fc3f7;
+    --accent: #81d4fa;
+    --good: #66bb6a;
+    --warn: #ffb74d;
+    --text: #e3edf7;
+    --muted: #8fa5bb;
+}
+body { font-family: 'Trebuchet MS', Verdana, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 60px; }
+.topbar {
+    background: var(--surface); border-bottom: 1px solid var(--line); padding: 16px 22px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap; position: sticky; top: 0; z-index: 100;
+}
+.topbar h1 { font-size: 1.25rem; margin-right: auto; }
+.topbar h1 small { display: block; font-size: 0.72rem; color: var(--muted); font-weight: normal; }
+.btn {
+    background: var(--surface-2); color: var(--text); border: 1px solid var(--line);
+    padding: 9px 16px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 0.85rem;
+    transition: all 0.2s;
+}
+.btn:hover { border-color: var(--primary); transform: translateY(-1px); }
+.btn.primary { background: linear-gradient(135deg, #0277bd, #01579b); border-color: #0288d1; }
+.btn.danger:hover { border-color: #ef5350; color: #ef9a9a; }
+.wrap { max-width: 1060px; margin: 0 auto; padding: 20px; }
+.notice {
+    background: rgba(255, 183, 77, 0.08); border: 1px solid rgba(255, 183, 77, 0.35);
+    border-radius: 12px; padding: 12px 16px; margin: 16px 0; font-size: 0.85rem; color: #ffd9a0; line-height: 1.5;
+}
+.cat { margin-top: 30px; }
+.cat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.cat-head h2 { font-size: 1.05rem; }
+.cat-head .btn { padding: 5px 12px; font-size: 0.78rem; margin-left: auto; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+.card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px;
+    display: flex; flex-direction: column; gap: 10px; transition: border-color 0.25s;
+}
+.card.active { border-color: var(--good); box-shadow: 0 0 0 1px var(--good); }
+.card-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.card-top b { font-size: 0.98rem; }
+.badge { font-size: 0.62rem; padding: 3px 8px; border-radius: 999px; letter-spacing: 0.5px; font-weight: bold; }
+.badge.on { background: rgba(102, 187, 106, 0.18); color: var(--good); border: 1px solid var(--good); }
+.badge.nokey { background: rgba(79, 195, 247, 0.14); color: var(--accent); border: 1px solid var(--primary); }
+.badge.empty { background: rgba(255, 183, 77, 0.14); color: var(--warn); border: 1px solid var(--warn); }
+.links { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.78rem; }
+.links a { color: var(--accent); text-decoration: none; }
+.links a:hover { text-decoration: underline; }
+.kv { font-size: 0.72rem; color: var(--muted); word-break: break-all; }
+.kv .cp { cursor: pointer; color: var(--accent); margin-left: 6px; }
+.field { display: flex; flex-direction: column; gap: 3px; }
+.field .lbl { font-size: 0.7rem; color: var(--muted); display: flex; justify-content: space-between; }
+.field .lbl code { color: #b0c4d8; }
+.frow { display: flex; gap: 6px; }
+.frow input {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+    border-radius: 8px; padding: 8px 10px; font-family: 'Courier New', monospace; font-size: 0.8rem; outline: none;
+}
+.frow input:focus { border-color: var(--primary); }
+.icon-btn { background: var(--surface-2); border: 1px solid var(--line); color: var(--muted); border-radius: 8px; width: 34px; cursor: pointer; font-size: 0.85rem; }
+.icon-btn:hover { color: var(--text); border-color: var(--primary); }
+.notes { font-size: 0.76rem; color: var(--muted); line-height: 1.45; }
+.card-actions { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+.card-actions .btn { padding: 6px 12px; font-size: 0.76rem; }
+/* modal */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 500; }
+.modal.open { display: flex; }
+.modal-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px; width: 520px; max-width: 92%; max-height: 88vh; overflow-y: auto; }
+.modal-card h3 { margin-bottom: 14px; font-size: 1rem; }
+.modal-card label { display: block; font-size: 0.75rem; color: var(--muted); margin: 10px 0 4px; }
+.modal-card input[type="text"], .modal-card textarea, .modal-card select {
+    width: 100%; background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+    border-radius: 8px; padding: 9px 10px; font-family: inherit; font-size: 0.85rem; outline: none;
+}
+.modal-card textarea { min-height: 60px; resize: vertical; }
+.mf-row { display: flex; gap: 6px; margin-top: 6px; align-items: center; }
+.mf-row input { flex: 1; }
+.modal-actions { display: flex; gap: 10px; margin-top: 18px; justify-content: flex-end; }
+/* lock screen */
+.lock { position: fixed; inset: 0; background: #0a111c; display: none; align-items: center; justify-content: center; z-index: 1000; }
+.lock.open { display: flex; }
+.lock-card { text-align: center; max-width: 380px; width: 90%; }
+.lock-card h2 { margin-bottom: 10px; }
+.lock-card p { color: var(--muted); font-size: 0.85rem; margin-bottom: 16px; }
+.lock-card input { width: 100%; background: var(--surface-2); border: 1px solid var(--line); color: var(--text); border-radius: 10px; padding: 12px; font-size: 1rem; text-align: center; outline: none; }
+.lock-card .btn { width: 100%; margin-top: 12px; padding: 12px; }
+.lock-err { color: #ef9a9a; font-size: 0.8rem; margin-top: 10px; min-height: 1em; }
+.toast {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #263646; color: var(--text); padding: 11px 22px; border-radius: 999px;
+    border: 1px solid var(--primary); font-size: 0.85rem; transition: transform 0.3s; z-index: 2000;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="lock" id="lockScreen">
+    <div class="lock-card">
+        <h2>🔐 Buddy Key Vault</h2>
+        <p>This vault is locked. Enter your passphrase to open it.</p>
+        <input type="password" id="unlockPass" placeholder="Passphrase" onkeypress="if(event.key==='Enter')unlockVault()">
+        <button class="btn primary" onclick="unlockVault()">Unlock</button>
+        <div class="lock-err" id="lockErr"></div>
+    </div>
+</div>
+
+<div class="topbar">
+    <h1>🔐 Buddy Key Vault<small>Your keys, your machine — nothing leaves this computer</small></h1>
+    <button class="btn" onclick="copyEnv()">📋 Copy .env block</button>
+    <button class="btn" onclick="copyKeysBat()">📋 Copy keys.local.bat</button>
+    <button class="btn" onclick="exportBackup()">💾 Export backup</button>
+    <button class="btn" onclick="document.getElementById('importFile').click()">📂 Import backup</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBackup(this)">
+    <button class="btn" id="lockBtn" onclick="toggleLock()">🔒 Set passphrase</button>
+</div>
+
+<div class="wrap">
+    <div class="notice">
+        <b>How this works:</b> keys are saved only in this browser on this computer. The green-bordered card in each category is your <b>active provider</b> — "Copy .env block" and "Copy keys.local.bat" grab the filled-in keys from active providers, ready to paste. Providers marked <b>NO KEY NEEDED</b> work instantly — download and go. Sharing the app folder never shares this vault's contents. For real protection, set a passphrase (lock button, top right).
+    </div>
+    <div id="categories"></div>
+</div>
+
+<!-- Edit/Add provider modal -->
+<div class="modal" id="editModal">
+    <div class="modal-card">
+        <h3 id="modalTitle">Edit provider</h3>
+        <label>Name</label>
+        <input type="text" id="mName">
+        <label>Category</label>
+        <select id="mCat">
+            <option value="chat">💬 Chat AI</option>
+            <option value="images">🎨 Picture Generation</option>
+            <option value="voice">🔊 Voice (Text-to-Speech)</option>
+            <option value="sms">📱 Texting (SMS)</option>
+            <option value="other">🧰 Other</option>
+        </select>
+        <label>Sign-up / dashboard link</label>
+        <input type="text" id="mSignup" placeholder="https://...">
+        <label>Endpoint / API URL</label>
+        <input type="text" id="mEndpoint" placeholder="https://api...">
+        <label>Notes</label>
+        <textarea id="mNotes"></textarea>
+        <label>Fields (key, token, ID... — env var name is what the apps read)</label>
+        <div id="mFields"></div>
+        <button class="btn" style="margin-top:8px" onclick="addModalField()">➕ Add field</button>
+        <div class="modal-actions">
+            <button class="btn" onclick="closeModal()">Cancel</button>
+            <button class="btn primary" onclick="saveModal()">Save</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ================= Catalog of ready-made providers =================
+const CATS = {
+    chat:   { icon: '💬', title: 'Chat AI' },
+    images: { icon: '🎨', title: 'Picture Generation' },
+    voice:  { icon: '🔊', title: 'Voice (Text-to-Speech)' },
+    sms:    { icon: '📱', title: 'Texting (SMS)' },
+    other:  { icon: '🧰', title: 'Other' }
+};
+
+const DEFAULT_PROVIDERS = [
+    { id: 'openrouter', category: 'chat', name: 'OpenRouter', keyNeeded: true,
+      signupUrl: 'https://openrouter.ai/keys', endpoint: 'https://openrouter.ai/api/v1/chat/completions',
+      notes: 'The one Buddy uses out of the box. One free key unlocks many AI models - pick ones tagged ":free" and you never pay. Key starts with sk-or-.',
+      fields: [{ label: 'API Key', envVar: 'OPENROUTER_API_KEY', value: '' }] },
+    { id: 'groq', category: 'chat', name: 'Groq Cloud', keyNeeded: true,
+      signupUrl: 'https://console.groq.com/keys', endpoint: 'https://api.groq.com/openai/v1/chat/completions',
+      notes: 'Lightning fast, generous free limits. Key starts with gsk_.',
+      fields: [{ label: 'API Key', envVar: 'GROQ_API_KEY', value: '' }] },
+    { id: 'gemini', category: 'chat', name: 'Google AI Studio (Gemini)', keyNeeded: true,
+      signupUrl: 'https://aistudio.google.com/apikey', endpoint: 'https://generativelanguage.googleapis.com/v1beta',
+      notes: 'Google\'s free tier. Key starts with AIza.',
+      fields: [{ label: 'API Key', envVar: 'GEMINI_API_KEY', value: '' }] },
+    { id: 'ollama', category: 'chat', name: 'Ollama (runs on your PC)', keyNeeded: false,
+      signupUrl: 'https://ollama.com', endpoint: 'http://localhost:11434/v1/chat/completions',
+      notes: '100% free forever, no key, no internet needed once installed. Download the app, run a model, done. Needs a reasonably strong computer.',
+      fields: [] },
+    { id: 'pollinations', category: 'images', name: 'Pollinations.ai', keyNeeded: false,
+      signupUrl: 'https://pollinations.ai', endpoint: 'https://image.pollinations.ai/prompt/{your-prompt}',
+      notes: 'Already built into Kids Korner and The Lounge. No key, no signup, safety filter always on. Just type "draw ..." in the chat.',
+      fields: [] },
+    { id: 'huggingface', category: 'images', name: 'Hugging Face', keyNeeded: true,
+      signupUrl: 'https://huggingface.co/settings/tokens', endpoint: 'https://api-inference.huggingface.co/models/{model}',
+      notes: 'Free-tier image models. Token starts with hf_.',
+      fields: [{ label: 'Access Token', envVar: 'HF_TOKEN', value: '' }] },
+    { id: 'browser-voice', category: 'voice', name: 'Browser Voices', keyNeeded: false,
+      signupUrl: '', endpoint: '(built into Chrome / Edge / Safari)',
+      notes: 'The default. 100% free, works offline, mood-based pitch and speed already wired in.',
+      fields: [] },
+    { id: 'elevenlabs', category: 'voice', name: 'ElevenLabs', keyNeeded: true,
+      signupUrl: 'https://elevenlabs.io', endpoint: 'https://api.elevenlabs.io/v1/text-to-speech/{voice_id}',
+      notes: 'Stunningly human voices. Free tier ~10k credits/month. Add the key, then flip "Lifelike voice" in Buddy\'s settings. Voice ID is optional (default is Rachel).',
+      fields: [
+          { label: 'API Key', envVar: 'ELEVENLABS_API_KEY', value: '' },
+          { label: 'Voice ID (optional)', envVar: 'ELEVENLABS_VOICE_ID', value: '' }
+      ] },
+    { id: 'twilio', category: 'sms', name: 'Twilio', keyNeeded: true,
+      signupUrl: 'https://www.twilio.com/try-twilio', endpoint: 'https://your-app.onrender.com/sms  (paste into your Twilio number\'s "A message comes in")',
+      notes: 'Free trial credit. Buddy\'s /sms webhook is already built - texters get family-safe replies.',
+      fields: [
+          { label: 'Account SID', envVar: 'TWILIO_ACCOUNT_SID', value: '' },
+          { label: 'Auth Token', envVar: 'TWILIO_AUTH_TOKEN', value: '' },
+          { label: 'Phone Number', envVar: 'TWILIO_PHONE_NUMBER', value: '' }
+      ] },
+    { id: 'textbelt', category: 'sms', name: 'TextBelt', keyNeeded: true,
+      signupUrl: 'https://textbelt.com', endpoint: 'https://textbelt.com/text',
+      notes: 'Quick and dirty: 1 free outgoing text per day using the key "textbelt". Paid beyond that.',
+      fields: [{ label: 'API Key', envVar: 'TEXTBELT_KEY', value: 'textbelt' }] }
+];
+
+const DEFAULT_ACTIVE = { chat: 'openrouter', images: 'pollinations', voice: 'browser-voice', sms: 'twilio' };
+
+// ================= State + storage =================
+const STORE_KEY = 'buddy_vault_v1';
+let vault = null;          // { providers: [...], active: {...} }
+let passphrase = null;     // in-memory only while unlocked
+let editingId = null;
+
+function freshVault() {
+    return { providers: JSON.parse(JSON.stringify(DEFAULT_PROVIDERS)), active: Object.assign({}, DEFAULT_ACTIVE) };
+}
+
+// ---- crypto helpers (AES-GCM with PBKDF2) ----
+const enc = new TextEncoder();
+const dec = new TextDecoder();
+function b64(buf) { return btoa(String.fromCharCode(...new Uint8Array(buf))); }
+function unb64(s) { return Uint8Array.from(atob(s), c => c.charCodeAt(0)); }
+
+async function deriveKey(pass, salt) {
+    const base = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: salt, iterations: 150000, hash: 'SHA-256' },
+        base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+    );
+}
+
+async function encryptVault(data, pass) {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await deriveKey(pass, salt);
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(JSON.stringify(data)));
+    return { enc: true, salt: b64(salt), iv: b64(iv), ct: b64(ct) };
+}
+
+async function decryptVault(blob, pass) {
+    const key = await deriveKey(pass, unb64(blob.salt));
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(blob.iv) }, key, unb64(blob.ct));
+    return JSON.parse(dec.decode(pt));
+}
+
+async function persist() {
+    if (passphrase) {
+        localStorage.setItem(STORE_KEY, JSON.stringify(await encryptVault(vault, passphrase)));
+    } else {
+        localStorage.setItem(STORE_KEY, JSON.stringify(vault));
+    }
+}
+
+// ================= Boot =================
+async function boot() {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) {
+        vault = freshVault();
+        await persist();
+        render();
+        return;
+    }
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.enc) {
+        document.getElementById('lockScreen').classList.add('open');
+        setTimeout(() => document.getElementById('unlockPass').focus(), 50);
+    } else {
+        vault = parsed;
+        mergeNewDefaults();
+        render();
+    }
+}
+
+async function unlockVault() {
+    const pass = document.getElementById('unlockPass').value;
+    const blob = JSON.parse(localStorage.getItem(STORE_KEY));
+    try {
+        vault = await decryptVault(blob, pass);
+        passphrase = pass;
+        document.getElementById('lockScreen').classList.remove('open');
+        document.getElementById('unlockPass').value = '';
+        mergeNewDefaults();
+        render();
+    } catch (e) {
+        document.getElementById('lockErr').textContent = 'Wrong passphrase — try again.';
+    }
+}
+
+function mergeNewDefaults() {
+    // If the app ships new default providers later, add any the user doesn't have (without touching theirs).
+    let added = false;
+    DEFAULT_PROVIDERS.forEach(dp => {
+        if (!vault.providers.some(p => p.id === dp.id)) {
+            vault.providers.push(JSON.parse(JSON.stringify(dp)));
+            added = true;
+        }
+    });
+    Object.keys(DEFAULT_ACTIVE).forEach(c => { if (!vault.active[c]) vault.active[c] = DEFAULT_ACTIVE[c]; });
+    if (added) persist();
+}
+
+// ================= Render =================
+function isFilled(p) {
+    if (!p.keyNeeded && p.fields.length === 0) return true;
+    return p.fields.length > 0 && p.fields.every(f => f.label.includes('optional') || f.value.trim() !== '');
+}
+
+function render() {
+    const host = document.getElementById('categories');
+    host.innerHTML = '';
+    Object.entries(CATS).forEach(([catKey, cat]) => {
+        const provs = vault.providers.filter(p => p.category === catKey);
+        if (catKey === 'other' && provs.length === 0) return;
+        const section = document.createElement('div');
+        section.className = 'cat';
+        const head = document.createElement('div');
+        head.className = 'cat-head';
+        head.innerHTML = '<h2>' + cat.icon + ' ' + cat.title + '</h2>';
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn';
+        addBtn.textContent = '➕ Add provider';
+        addBtn.onclick = () => openModal(null, catKey);
+        head.appendChild(addBtn);
+        section.appendChild(head);
+        const grid = document.createElement('div');
+        grid.className = 'grid';
+        provs.forEach(p => grid.appendChild(cardFor(p, catKey)));
+        section.appendChild(grid);
+        host.appendChild(section);
+    });
+    document.getElementById('lockBtn').textContent = passphrase ? '🔓 Remove passphrase' : '🔒 Set passphrase';
+}
+
+function cardFor(p, catKey) {
+    const card = document.createElement('div');
+    const active = vault.active[catKey] === p.id;
+    card.className = 'card' + (active ? ' active' : '');
+
+    const top = document.createElement('div');
+    top.className = 'card-top';
+    top.innerHTML = '<b>' + escapeHtml(p.name) + '</b>';
+    if (active) top.innerHTML += '<span class="badge on">ACTIVE</span>';
+    if (!p.keyNeeded && p.fields.length === 0) top.innerHTML += '<span class="badge nokey">NO KEY NEEDED</span>';
+    else if (!isFilled(p)) top.innerHTML += '<span class="badge empty">KEY MISSING</span>';
+    card.appendChild(top);
+
+    if (p.signupUrl) {
+        const links = document.createElement('div');
+        links.className = 'links';
+        links.innerHTML = '<a href="' + escapeHtml(p.signupUrl) + '" target="_blank" rel="noopener">🔗 Sign up / get key</a>';
+        card.appendChild(links);
+    }
+
+    if (p.endpoint) {
+        const kv = document.createElement('div');
+        kv.className = 'kv';
+        kv.innerHTML = 'Endpoint: <span>' + escapeHtml(p.endpoint) + '</span><span class="cp" title="Copy endpoint">📋</span>';
+        kv.querySelector('.cp').onclick = () => copyText(p.endpoint, 'Endpoint copied');
+        card.appendChild(kv);
+    }
+
+    p.fields.forEach((f, idx) => {
+        const fd = document.createElement('div');
+        fd.className = 'field';
+        const lbl = document.createElement('div');
+        lbl.className = 'lbl';
+        lbl.innerHTML = '<span>' + escapeHtml(f.label) + '</span><code>' + escapeHtml(f.envVar) + '</code>';
+        fd.appendChild(lbl);
+        const row = document.createElement('div');
+        row.className = 'frow';
+        const input = document.createElement('input');
+        input.type = 'password';
+        input.value = f.value;
+        input.placeholder = 'paste ' + f.label.toLowerCase() + ' here';
+        input.onchange = () => { f.value = input.value.trim(); persist(); render(); toast('Saved'); };
+        const eye = document.createElement('button');
+        eye.className = 'icon-btn';
+        eye.textContent = '👁';
+        eye.title = 'Show / hide';
+        eye.onclick = () => { input.type = input.type === 'password' ? 'text' : 'password'; };
+        const cp = document.createElement('button');
+        cp.className = 'icon-btn';
+        cp.textContent = '📋';
+        cp.title = 'Copy';
+        cp.onclick = () => copyText(f.value, f.label + ' copied');
+        row.appendChild(input); row.appendChild(eye); row.appendChild(cp);
+        fd.appendChild(row);
+        card.appendChild(fd);
+    });
+
+    if (p.notes) {
+        const n = document.createElement('div');
+        n.className = 'notes';
+        n.textContent = p.notes;
+        card.appendChild(n);
+    }
+
+    const actions = document.createElement('div');
+    actions.className = 'card-actions';
+    if (!active) {
+        const act = document.createElement('button');
+        act.className = 'btn';
+        act.textContent = '⭐ Set active';
+        act.onclick = () => { vault.active[catKey] = p.id; persist(); render(); toast(p.name + ' is now the active ' + CATS[catKey].title + ' provider'); };
+        actions.appendChild(act);
+    }
+    const edit = document.createElement('button');
+    edit.className = 'btn';
+    edit.textContent = '✏️ Edit';
+    edit.onclick = () => openModal(p.id, null);
+    actions.appendChild(edit);
+    const del = document.createElement('button');
+    del.className = 'btn danger';
+    del.textContent = '🗑 Remove';
+    del.onclick = () => {
+        if (!confirm('Remove ' + p.name + ' from the vault? Its saved keys will be deleted.')) return;
+        vault.providers = vault.providers.filter(x => x.id !== p.id);
+        if (vault.active[catKey] === p.id) vault.active[catKey] = (vault.providers.find(x => x.category === catKey) || {}).id || '';
+        persist(); render(); toast(p.name + ' removed');
+    };
+    actions.appendChild(del);
+    card.appendChild(actions);
+    return card;
+}
+
+// ================= Edit modal =================
+function openModal(id, presetCat) {
+    editingId = id;
+    const p = id ? vault.providers.find(x => x.id === id) : null;
+    document.getElementById('modalTitle').textContent = p ? 'Edit ' + p.name : 'Add provider';
+    document.getElementById('mName').value = p ? p.name : '';
+    document.getElementById('mCat').value = p ? p.category : (presetCat || 'other');
+    document.getElementById('mSignup').value = p ? p.signupUrl : '';
+    document.getElementById('mEndpoint').value = p ? p.endpoint : '';
+    document.getElementById('mNotes').value = p ? p.notes : '';
+    const host = document.getElementById('mFields');
+    host.innerHTML = '';
+    (p ? p.fields : [{ label: 'API Key', envVar: '', value: '' }]).forEach(f => addModalField(f));
+    document.getElementById('editModal').classList.add('open');
+}
+
+function addModalField(f) {
+    const host = document.getElementById('mFields');
+    const row = document.createElement('div');
+    row.className = 'mf-row';
+    row.innerHTML = '<input type="text" placeholder="Label (e.g. API Key)" class="mf-label">' +
+                    '<input type="text" placeholder="ENV_VAR_NAME" class="mf-env">' +
+                    '<button class="icon-btn" title="Remove field">✕</button>';
+    row.querySelector('.mf-label').value = f && f.label ? f.label : '';
+    row.querySelector('.mf-env').value = f && f.envVar ? f.envVar : '';
+    row.dataset.value = f && f.value ? f.value : '';
+    row.querySelector('button').onclick = () => row.remove();
+    host.appendChild(row);
+}
+
+function saveModal() {
+    const name = document.getElementById('mName').value.trim();
+    if (!name) { alert('Give it a name.'); return; }
+    const fields = [...document.querySelectorAll('#mFields .mf-row')].map(r => ({
+        label: r.querySelector('.mf-label').value.trim() || 'Key',
+        envVar: (r.querySelector('.mf-env').value.trim() || 'MY_KEY').toUpperCase().replace(/[^A-Z0-9_]/g, '_'),
+        value: r.dataset.value || ''
+    }));
+    if (editingId) {
+        const p = vault.providers.find(x => x.id === editingId);
+        // keep existing values where env vars match
+        fields.forEach(nf => {
+            const old = p.fields.find(of => of.envVar === nf.envVar);
+            if (old && !nf.value) nf.value = old.value;
+        });
+        Object.assign(p, {
+            name, category: document.getElementById('mCat').value,
+            signupUrl: document.getElementById('mSignup').value.trim(),
+            endpoint: document.getElementById('mEndpoint').value.trim(),
+            notes: document.getElementById('mNotes').value.trim(),
+            keyNeeded: fields.length > 0, fields
+        });
+    } else {
+        vault.providers.push({
+            id: 'custom-' + Date.now(), name,
+            category: document.getElementById('mCat').value,
+            signupUrl: document.getElementById('mSignup').value.trim(),
+            endpoint: document.getElementById('mEndpoint').value.trim(),
+            notes: document.getElementById('mNotes').value.trim(),
+            keyNeeded: fields.length > 0, fields
+        });
+    }
+    persist(); closeModal(); render(); toast('Saved');
+}
+
+function closeModal() { document.getElementById('editModal').classList.remove('open'); }
+
+// ================= Export / import / env =================
+function activeFilledLines() {
+    const lines = [];
+    Object.entries(vault.active).forEach(([cat, id]) => {
+        const p = vault.providers.find(x => x.id === id);
+        if (!p) return;
+        const filled = p.fields.filter(f => f.value.trim());
+        if (filled.length) {
+            lines.push({ comment: CATS[cat].title + ' - ' + p.name, fields: filled });
+        }
+    });
+    return lines;
+}
+
+function copyEnv() {
+    const groups = activeFilledLines();
+    if (!groups.length) { toast('No keys filled in on active providers yet'); return; }
+    const out = groups.map(g => '# ' + g.comment + '\n' + g.fields.map(f => f.envVar + '=' + f.value).join('\n')).join('\n\n');
+    copyText(out, '.env block copied - paste into Render or a .env file');
+}
+
+function copyKeysBat() {
+    const groups = activeFilledLines();
+    if (!groups.length) { toast('No keys filled in on active providers yet'); return; }
+    const out = groups.map(g => ':: ' + g.comment + '\n' + g.fields.map(f => 'set ' + f.envVar + '=' + f.value).join('\n')).join('\n\n');
+    copyText(out, 'keys.local.bat content copied - paste into that file');
+}
+
+function exportBackup() {
+    const blob = new Blob([JSON.stringify(vault, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'vault-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    a.click();
+    toast('Backup downloaded - keep it somewhere private! It contains your keys in plain text.');
+}
+
+function importBackup(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        try {
+            const data = JSON.parse(reader.result);
+            if (!data.providers || !data.active) throw new Error('bad format');
+            vault = data;
+            persist(); render(); toast('Backup imported');
+        } catch (e) { alert('That file is not a valid vault backup.'); }
+        input.value = '';
+    };
+    reader.readAsText(file);
+}
+
+// ================= Lock =================
+async function toggleLock() {
+    if (passphrase) {
+        if (!confirm('Remove the passphrase? The vault will be stored unprotected on this computer.')) return;
+        passphrase = null;
+        await persist();
+        render(); toast('Passphrase removed');
+    } else {
+        const p1 = prompt('Choose a passphrase (you will need it every time you open the vault):');
+        if (!p1) return;
+        const p2 = prompt('Type it again to confirm:');
+        if (p1 !== p2) { alert("They didn't match - try again."); return; }
+        passphrase = p1;
+        await persist();
+        render(); toast('Vault locked with your passphrase 🔐');
+    }
+}
+
+// ================= Utils =================
+function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
+}
+
+function copyText(text, msg) {
+    if (!text) { toast('Nothing to copy yet'); return; }
+    const done = () => toast(msg || 'Copied');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    } else {
+        fallbackCopy(text, done);
+    }
+}
+
+function fallbackCopy(text, done) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) { alert('Copy failed - select and copy manually:\n\n' + text); }
+    ta.remove();
+}
+
+let toastTimer = null;
+function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+boot();
+</script>
+</body>
+</html>
