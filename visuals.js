@@ -34,10 +34,20 @@
 .vfx-xpbar { position:fixed; top:0; left:0; height:4px; width:0%; z-index:7500; background:linear-gradient(90deg,#ffd166,#ff6b9d,#a855f7,#00d4ff); transition:width .6s ease; border-radius:0 4px 4px 0; }
 .vfx-level { position:fixed; bottom:12px; left:12px; z-index:2900; background:linear-gradient(135deg,var(--primary,#667eea),var(--secondary,#764ba2)); color:white; padding:8px 14px; border-radius:999px; font-weight:bold; font-size:.85rem; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.3); font-family:inherit; border:2px solid rgba(255,255,255,.5); transition:transform .15s; }
 .vfx-level:hover { transform:scale(1.08); }
-.vfx-sky { position:fixed; top:8px; left:10px; z-index:2800; font-size:1.5rem; pointer-events:none; animation:vfxSkyBob 5s ease-in-out infinite; filter:drop-shadow(0 0 8px rgba(255,255,200,.7)); }
-@keyframes vfxSkyBob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
-.vfx-twinkle { position:fixed; pointer-events:none; z-index:2800; font-size:.8rem; animation:vfxTwinkle 2.4s ease-in-out infinite; }
-@keyframes vfxTwinkle { 0%,100% { opacity:.15; } 50% { opacity:.9; } }
+.vfx-orb { position:fixed; z-index:2800; font-size:1.7rem; pointer-events:none; transition:left 55s linear, top 55s linear, opacity 80s linear; filter:drop-shadow(0 0 10px rgba(255,255,200,.8)); }
+#vfxCity { position:fixed; left:0; right:0; bottom:0; height:22vh; pointer-events:none; z-index:-1; opacity:.55; }
+.vfx-bldg { position:absolute; bottom:0; border-radius:4px 4px 0 0; background:linear-gradient(#93a0bd,#6d7898); transition:background 8s linear; }
+body.vfx-night .vfx-bldg { background:linear-gradient(#2b2f4e,#171a2e); }
+.vfx-bldg::after { content:''; position:absolute; inset:10% 16% 4% 16%; background-image:radial-gradient(rgba(255,219,112,.9) 1.3px, transparent 1.8px); background-size:9px 13px; opacity:.1; transition:opacity 8s linear; }
+body.vfx-night .vfx-bldg::after { opacity:.8; }
+.vfx-twinkle { position:fixed; pointer-events:none; z-index:2800; font-size:.85rem; color:white; animation:starGlow 8s linear infinite; }
+body:not(.vfx-night) .vfx-twinkle { visibility:hidden; }
+@keyframes starGlow {
+  0%,100% { text-shadow:0 0 6px #ff8fb3, 0 0 14px #ff8fb3; opacity:.5; }
+  25% { text-shadow:0 0 8px #ffd166, 0 0 16px #ffd166; opacity:.85; }
+  50% { text-shadow:0 0 6px #7be1a8, 0 0 14px #7be1a8; opacity:.55; }
+  75% { text-shadow:0 0 8px #7cc7ff, 0 0 16px #7cc7ff; opacity:.85; }
+}
 .vfx-shoot { position:fixed; z-index:3450; font-size:1.4rem; pointer-events:none; transition:transform 1.2s linear, opacity 1.2s; }
 .vfx-glow { box-shadow:0 0 22px var(--accent, gold) !important; transition:box-shadow 1.6s; }
 .vfx-speaking { animation:vfxTalkPulse 0.6s ease-in-out infinite !important; }
@@ -221,7 +231,7 @@ function vfxAmbientConfig() {
 }
 setInterval(function () {
     if (document.hidden) return;
-    if (document.querySelectorAll('.vfx-drop2, .vfx-rise').length >= 9) return;
+    if (document.querySelectorAll('.vfx-drop2, .vfx-rise').length >= 4) return;
     const cfg = vfxAmbientConfig();
     const p = document.createElement('button');
     p.className = cfg.rise ? 'vfx-rise' : 'vfx-drop2';
@@ -236,27 +246,64 @@ setInterval(function () {
     };
     document.body.appendChild(p);
     setTimeout(() => p.remove(), 18000);
-}, 3500);
+}, 8000);
 
-// ---------- Sky fixture: sun or moon + twinkling stars ----------
+// ---------- Living sky: real-time sun/moon arc + rainbow stars + cityscape ----------
 (function () {
-    const cfg = vfxAmbientConfig();
-    const sky = document.createElement('div');
-    sky.className = 'vfx-sky';
-    sky.textContent = cfg.night ? '🌙' : '☀️';
-    document.body.appendChild(sky);
-    if (cfg.night) {
-        for (let i = 0; i < 4; i++) {
-            const st = document.createElement('div');
-            st.className = 'vfx-twinkle';
-            st.textContent = '✦';
-            st.style.color = 'white';
-            st.style.left = (Math.random() < 0.5 ? (3 + Math.random() * 22) : (74 + Math.random() * 22)) + '%';
-            st.style.top = (2 + Math.random() * 10) + '%';
-            st.style.animationDelay = (Math.random() * 2) + 's';
-            document.body.appendChild(st);
-        }
+    // skyline silhouette (paints behind everything, windows light up at night)
+    const city = document.createElement('div');
+    city.id = 'vfxCity';
+    let bldgs = '', x = 0;
+    while (x < 108) {
+        const w = 4 + Math.random() * 7;
+        const h = 5 + Math.random() * 15;
+        bldgs += '<div class="vfx-bldg" style="left:' + x.toFixed(1) + 'vw;width:' + w.toFixed(1) + 'vw;height:' + h.toFixed(1) + 'vh;"></div>';
+        x += w + 0.7;
     }
+    city.innerHTML = bldgs;
+    document.body.appendChild(city);
+
+    // rainbow-glow stars (visible at night, glow-only - they never move)
+    for (let i = 0; i < 6; i++) {
+        const st = document.createElement('div');
+        st.className = 'vfx-twinkle';
+        st.textContent = '✦';
+        st.style.left = (Math.random() < 0.5 ? (3 + Math.random() * 24) : (72 + Math.random() * 24)) + '%';
+        st.style.top = (2 + Math.random() * 11) + '%';
+        st.style.animationDelay = (Math.random() * 8) + 's';
+        document.body.appendChild(st);
+    }
+
+    // sun + moon travel a slow arc across the top, trading places at dawn and dusk
+    const sun = document.createElement('div');
+    sun.className = 'vfx-orb';
+    sun.textContent = '☀️';
+    const moon = document.createElement('div');
+    moon.className = 'vfx-orb';
+    moon.textContent = '🌙';
+    document.body.appendChild(sun);
+    document.body.appendChild(moon);
+    function clamp01(n) { return Math.max(0, Math.min(1, n)); }
+    function placeOrb(el, t) {
+        t = clamp01(t);
+        const arc = Math.sin(t * Math.PI);
+        el.style.left = (5 + t * 88) + 'vw';
+        el.style.top = (11 - arc * 8.5) + 'vh';
+    }
+    function skyUpdate() {
+        const now = new Date();
+        const mins = now.getHours() * 60 + now.getMinutes();
+        const dayT = (mins - 360) / 840;   // sun: 6:00 -> 20:00
+        const nightT = mins >= 1200 ? (mins - 1200) / 600 : (mins + 240) / 600; // moon: 20:00 -> 6:00
+        placeOrb(sun, dayT);
+        placeOrb(moon, nightT);
+        const dayA = clamp01(Math.min((mins - 330) / 60, (1230 - mins) / 60)); // hour-long dawn/dusk crossfades
+        sun.style.opacity = dayA;
+        moon.style.opacity = 1 - dayA;
+        document.body.classList.toggle('vfx-night', dayA < 0.5);
+    }
+    skyUpdate();
+    setInterval(skyUpdate, 60000);
 })();
 
 // ---------- Shooting stars (and meteor showers) ----------

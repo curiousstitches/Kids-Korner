@@ -3,6 +3,10 @@
 :: Kids Korner - Quick Deploy Script
 :: ========================================
 
+:: Always run from the project root, no matter where this script lives
+cd /d "%~dp0.."
+if not exist app.py cd /d "%~dp0"
+
 :: Kill all existing processes
 echo [1/4] Stopping existing servers...
 taskkill /F /IM python.exe >nul 2>&1
@@ -25,7 +29,6 @@ if exist keys.local.bat (
 )
 
 echo [3/4] Starting Flask server...
-cd /d "C:\Users\thego\Desktop\kids-Korner"
 start /B python app.py
 timeout /t 2 /nobreak >nul
 echo     [DONE] Flask server running on port 8081

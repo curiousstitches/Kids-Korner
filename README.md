@@ -15,18 +15,14 @@ A friendly AI chat app for kids 3+ (and adults). Buddy talks at your child's lev
 | `manifest.json` / `sw.js` / `icon-*.png` | Makes Buddy installable as a real app with offline support. |
 | `START-BUDDY.bat` | Double-click to run everything. |
 | `app.py` | The AI brain server (Flask). Connects to OpenRouter for real AI, ElevenLabs for lifelike voice, Twilio for SMS. Run with `python app.py` → http://localhost:8081 |
-| `server.py` | Tiny basic web server (port 8080) for serving the page without the AI brain. Rarely needed — use `app.py` instead. |
+| `tools/` | Grown-up scripts: `deploy.bat` (push online) and `deploy-quick.bat`. |
+| `data/` | Buddy's editable content: offline replies, vocabulary words, and stories. |
 | `responses.json` | Buddy's built-in offline replies by age group (used when no AI key is set). |
 | `requirements.txt` | Python packages needed: `pip install -r requirements.txt` |
 | `render.yaml` | Auto-deploy recipe for free hosting on Render.com. |
-| `deploy.bat` | One-click local start + ngrok tunnel + GitHub push. Loads keys from `keys.local.bat`. |
 | `deploy-quick.bat` | Faster version of the above. |
 | `keys.local.bat.example` | Template for your private keys file. Copy → rename to `keys.local.bat` → paste keys. Never uploaded (protected by `.gitignore`). |
 | `.gitignore` | Keeps keys and junk files out of GitHub. |
-| `assets/` | App assets (see its README). |
-| `language/` | Vocabulary word lists by age (see its README). |
-| `stories/` | Built-in story library by age (see its README). |
-| `src/` | Empty placeholder folder — safe to delete. |
 | `Buddy-Vault/` | 🔐 The Key Vault app — stores and organizes all your API keys (see its README). |
 | `Buddy-Lounge-Adults/` | 🌙 The adults-only sister app, 18+ gate, mature (non-explicit) conversation (see its README). |
 
@@ -50,7 +46,7 @@ A friendly AI chat app for kids 3+ (and adults). Buddy talks at your child's lev
 | Link | What it is |
 |---|---|
 | **http://localhost:8081** | Local version — runs on THIS computer only. Start it with `START-BUDDY.bat` (keep the black window open). Full AI via your `keys.local.bat`. |
-| **https://kids-korner.onrender.com** | Online version — works on any phone/tablet/computer, anywhere. Update it by running `deploy.bat` (pushes to GitHub, Render rebuilds automatically). Key lives in Render's Environment settings. Free tier naps when idle, so the first visit of the day takes ~30-60 seconds to wake up. |
+| **https://kids-korner.onrender.com** | Online version — works on any phone/tablet/computer, anywhere. Update it by running `tools\deploy.bat` (pushes to GitHub, Render rebuilds automatically). Key lives in Render's Environment settings. Free tier naps when idle, so the first visit of the day takes ~30-60 seconds to wake up. |
 | **index.html** (double-click) | Instant no-key mode — chat (built-in replies), all 46 games, drawing, and voices work with zero setup. |
 | **http://localhost:8082** | The Lounge (adults) — start with `Buddy-Lounge-Adults\START-LOUNGE.bat`. |
 
@@ -58,7 +54,7 @@ A friendly AI chat app for kids 3+ (and adults). Buddy talks at your child's lev
 
 1. `pip install -r requirements.txt`
 2. Copy `keys.local.bat.example` → `keys.local.bat`, paste your free OpenRouter key — example format: `OPENROUTER_API_KEY=sk-or-v1-your-api-key-here` (see INSTALL.md)
-3. Double-click `deploy.bat` (or run `python app.py`)
+3. Double-click `START-BUDDY.bat`
 4. Open http://localhost:8081
 
 No keys? Just open `index.html` — chat (canned replies), drawing, and voices still work.

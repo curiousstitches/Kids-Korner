@@ -10,7 +10,8 @@ taskkill /F /IM ngrok.exe >nul 2>&1
 echo     [DONE] Servers stopped
 
 echo [2/4] Starting Flask server...
-cd /d "C:\Users\thego\Desktop\kids-Korner"
+cd /d "%~dp0.."
+if not exist app.py cd /d "%~dp0"
 :: Keys live in keys.local.bat (NOT in git - see .gitignore). Copy keys.local.bat.example to get started.
 if exist keys.local.bat (
     call keys.local.bat

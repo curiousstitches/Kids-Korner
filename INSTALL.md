@@ -22,7 +22,7 @@ Works immediately, 100% free, nothing to sign up for:
 4. Copy `keys.local.bat.example` → rename the copy `keys.local.bat` → paste your key in it.
    Inside, the line looks like this (example key — swap in your real one):
    `set OPENROUTER_API_KEY=sk-or-v1-your-api-key-here`
-5. Double-click `deploy.bat` → open http://localhost:8081
+5. Double-click `START-BUDDY.bat` → it opens http://localhost:8081 for you
 
 The default model is a free one. Never pay: on OpenRouter, only pick models tagged `:free`.
 
@@ -79,6 +79,6 @@ Store and manage all of these with the Key Vault: `Buddy-Vault/vault.html`
 ## 🔐 Golden rules for keys
 
 1. Keys live ONLY in `keys.local.bat`, the Vault, or Render's Environment screen.
-2. Never in `index.html`, `app.py`, `deploy.bat`, or anything Git uploads — `.gitignore` protects `keys.local.bat` automatically.
+2. Never in `index.html`, `app.py`, `tools\deploy.bat`, or anything Git uploads — `.gitignore` protects `keys.local.bat` automatically.
 3. Sharing the folder or repo? That's fine — it contains no keys. Your friends add their own (that's the recommended way) or run Level 0 with none.
 4. If a key ever leaks, log in to the provider and delete/rotate it immediately.

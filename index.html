@@ -490,11 +490,11 @@
            At rest: ONE smooth bob on a GPU layer (no competing rules = no shaking).
            Talking: bob switches OFF, a plain !important transform grows him - nothing can hide him. */
         .buddy-face { will-change: transform; backface-visibility: hidden; }
-        .header .buddy-face { animation: buddyBob 3.4s ease-in-out infinite; }
+        .header .buddy-face { animation: buddyBob 6s ease-in-out infinite; }
         .header .buddy-face:hover { animation-play-state: paused; } /* holds perfectly still when you point at him */
         @keyframes buddyBob {
             0%, 100% { transform: translateY(0) translateZ(0); }
-            50% { transform: translateY(-6px) translateZ(0); }
+            50% { transform: translateY(-3px) translateZ(0); }
         }
         .header .buddy-face.buddy-mega,
         .buddy-free.buddy-mega {
