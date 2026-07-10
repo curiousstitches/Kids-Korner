@@ -2833,8 +2833,14 @@
             speakNext(0);
         }
 
-        // Arcade opener with a friendly fallback if games.js didn't load
+        // Arcade opener — tapping 🎲 again (or during any game) closes it right back to chat
         function openArcade() {
+            if (document.getElementById('gsRoot') && typeof closeSpace === 'function') {
+                closeSpace();
+                popSound(380);
+                document.getElementById('aiStatus').textContent = '🤖 Ready!';
+                return;
+            }
             if (typeof showGameMenu === 'function') {
                 showGameMenu();
             } else {

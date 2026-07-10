@@ -72,7 +72,7 @@ function openSpace(title, hint) {
     const root = document.createElement('div');
     root.id = 'gsRoot';
     root.innerHTML = '<div class="gs-head"><h2>' + title + '</h2><span class="gs-score" id="gsScore"></span>' +
-        '<button class="gs-btn gs-sec" onclick="showGameMenu()">🎮 Games</button><button class="gs-x" onclick="closeSpace()">✕</button></div>' +
+        '<button class="gs-btn gs-sec" onclick="showGameMenu()">🎮 Games</button><button class="gs-btn" onclick="closeSpace()">💬 Back to Chat</button><button class="gs-x" onclick="closeSpace()" title="Back to chat">✕</button></div>' +
         '<div class="gs-stage" id="gsStage"></div>' +
         (hint ? '<div class="gs-hint">' + hint + '</div>' : '');
     document.body.appendChild(root);
@@ -1091,7 +1091,7 @@ function spMathAst() {
             ast.innerHTML = '<div style="font-size:2.6rem;">💥</div>';
             ui.score('🚀 wave ' + wave + ' | ❤️ ' + lives);
             gsT(() => ast.remove(), 500);
-            if (lives <= 0) gsWin('☄️ You blasted ' + (wave - 3 + lives + 2) + ' asteroids across ' + wave + ' waves!', spMathAst);
+            if (lives <= 0) gsWin('☄️ You survived ' + wave + ' waves of asteroids!', spMathAst);
             else gsT(wave1, 900);
         }, fallMs);
         opts.forEach(v => {
@@ -1126,7 +1126,7 @@ function spRhythm() {
     const lanes = ['💜', '💙', '💚', '💛'];
     const keys = ['d', 'f', 'j', 'k'];
     const freqs = [392, 494, 587, 698];
-    let score = 0, combo = 0, notesLeft = 36;
+    let score = 0, combo = 0;
     const field = document.createElement('div');
     field.style.cssText = 'position:relative;width:min(92vw,480px);height:100%;min-height:340px;display:flex;flex-direction:column;background:#17123a;border-radius:20px;overflow:hidden;';
     const sky = document.createElement('div');
@@ -1163,7 +1163,7 @@ function spRhythm() {
     let spawned = 0;
     const spawner = gsI(() => {
         if (spawned >= 36) { clearInterval(spawner); gsT(() => gsWin('🎸 FINAL SCORE: ' + score + '!' + (score > 320 ? ' ROCKSTAR!' : ''), spRhythm), 3500); return; }
-        spawned++; notesLeft--;
+        spawned++;
         const i = gsRand(4);
         const n = document.createElement('div');
         n.className = 'gs-fall';

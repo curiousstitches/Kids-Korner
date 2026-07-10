@@ -45,6 +45,15 @@ A friendly AI chat app for kids 3+ (and adults). Buddy talks at your child's lev
 - **Texting**: `/sms` webhook lets Buddy answer real text messages via Twilio
 - **Custom everything**: 20 themes, 20 buddy skins, fonts, text size/color, animation/vibrancy/3D sliders, voice speed/pitch/volume
 
+## Where to open Buddy
+
+| Link | What it is |
+|---|---|
+| **http://localhost:8081** | Local version — runs on THIS computer only. Start it with `START-BUDDY.bat` (keep the black window open). Full AI via your `keys.local.bat`. |
+| **https://kids-korner.onrender.com** | Online version — works on any phone/tablet/computer, anywhere. Update it by running `deploy.bat` (pushes to GitHub, Render rebuilds automatically). Key lives in Render's Environment settings. Free tier naps when idle, so the first visit of the day takes ~30-60 seconds to wake up. |
+| **index.html** (double-click) | Instant no-key mode — chat (built-in replies), all 46 games, drawing, and voices work with zero setup. |
+| **http://localhost:8082** | The Lounge (adults) — start with `Buddy-Lounge-Adults\START-LOUNGE.bat`. |
+
 ## Quick start
 
 1. `pip install -r requirements.txt`
