@@ -485,10 +485,29 @@
         }
         .buddy-spin { animation: buddySpinX 0.8s ease !important; }
         @keyframes buddySpinX { to { transform: rotate(720deg); } }
-        /* Buddy grows huge and lip-syncs while talking (keyframe-driven, so it never fights his idle bob = no shaking) */
-        .buddy-mega { animation: megaGrow 0.45s ease forwards !important; transform-origin: top center; z-index: 3600; position: relative; }
+        /* ===== Rock-solid talking Buddy =====
+           At rest: ONE smooth bob on a GPU layer (no competing rules = no shaking).
+           Talking: bob switches OFF, a plain !important transform grows him - nothing can hide him. */
+        .buddy-face { will-change: transform; backface-visibility: hidden; }
+        .header .buddy-face { animation: buddyBob 3.4s ease-in-out infinite; }
+        @keyframes buddyBob {
+            0%, 100% { transform: translateY(0) translateZ(0); }
+            50% { transform: translateY(-6px) translateZ(0); }
+        }
+        .header .buddy-face.buddy-mega,
+        .buddy-free.buddy-mega {
+            animation: none !important;
+            transform: scale(2.6) translateZ(0) !important;
+            transition: transform 0.4s ease;
+            z-index: 3600;
+            position: relative;
+        }
+        .header .buddy-face.buddy-mega { transform-origin: top center; }
         .buddy-free.buddy-mega { transform-origin: center center; }
-        @keyframes megaGrow { from { transform: scale(1); } to { transform: scale(2.6); } }
+        /* Talking eyes: quick glances left / right / wide */
+        .buddy-face.look-l::before, .buddy-face.look-l::after { margin-left: -5px; }
+        .buddy-face.look-r::before, .buddy-face.look-r::after { margin-left: 5px; }
+        .buddy-face.look-wide::before, .buddy-face.look-wide::after { width: 15px !important; height: 15px !important; }
         .buddy-face .mouth { transition: height 0.09s ease, width 0.09s ease, background 0.09s ease; }
         .buddy-say {
             position: fixed; z-index: 3001; background: white; color: #333; padding: 6px 12px;
@@ -900,7 +919,7 @@
                 animStyle.textContent = '*, *::before, *::after { animation: none !important; }';
             } else {
                 const slow = 100 / appSettings.animation;
-                animStyle.textContent = '.buddy-face { animation-duration: ' + (2 * slow).toFixed(1) + 's; } .theme-preview { animation-duration: ' + (3 * slow).toFixed(1) + 's; }';
+                animStyle.textContent = '.theme-preview { animation-duration: ' + (3 * slow).toFixed(1) + 's; }';
             }
 
             let depthStyle = document.getElementById('depthCtl');
@@ -2097,27 +2116,44 @@
 
         function talkingFace() { return bd.el || headerFace(); }
         let mouthTimer = null;
+        let currentTalkMood = 'friendly';
+        const MOOD_GLOW = {
+            happy: '#ffd166', excited: '#ff6b9d', playful: '#f472b6', caring: '#4ade80',
+            thoughtful: '#a78bfa', sad: '#60a5fa', surprised: '#facc15', confused: '#2dd4bf', friendly: '#93c5fd'
+        };
         function startMouth() {
-            stopMouth(false);
+            stopMouth();
             const f = talkingFace();
             if (!f) return;
             f.classList.add('buddy-mega');
+            f.style.boxShadow = '0 0 26px 7px ' + (MOOD_GLOW[currentTalkMood] || MOOD_GLOW.friendly);
+            let tick = 0;
             mouthTimer = setInterval(() => {
                 const fc = talkingFace();
-                const m = fc && fc.querySelector('.mouth');
-                if (!m) return;
-                const open = Math.random();
-                m.style.height = (5 + open * 20) + 'px';
-                m.style.width = (24 + open * 14) + 'px';
-                m.style.background = open > 0.35 ? 'rgba(60,25,40,0.85)' : 'transparent';
-                m.style.borderRadius = open > 0.6 ? '50%' : '0 0 18px 18px';
+                if (!fc) return;
+                const m = fc.querySelector('.mouth');
+                if (m) {
+                    const open = Math.random();
+                    m.style.height = (5 + open * 22) + 'px';
+                    m.style.width = (24 + open * 15) + 'px';
+                    m.style.background = open > 0.35 ? 'rgba(60,25,40,0.85)' : 'transparent';
+                    m.style.borderRadius = open > 0.6 ? '50%' : '0 0 18px 18px';
+                }
+                // eyes glance around while talking
+                if (tick % 7 === 0) {
+                    fc.classList.remove('look-l', 'look-r', 'look-wide');
+                    const g = ['', 'look-l', 'look-r', 'look-wide', ''][Math.floor(Math.random() * 5)];
+                    if (g) fc.classList.add(g);
+                }
+                tick++;
             }, 120);
         }
-        function stopMouth(reset) {
+        function stopMouth() {
             clearInterval(mouthTimer);
             mouthTimer = null;
             document.querySelectorAll('.buddy-face').forEach(f => {
-                f.classList.remove('buddy-mega');
+                f.classList.remove('buddy-mega', 'look-l', 'look-r', 'look-wide');
+                f.style.boxShadow = '';
                 const m = f.querySelector('.mouth');
                 if (m) { m.style.height = ''; m.style.width = ''; m.style.background = ''; m.style.borderRadius = ''; }
             });
@@ -2254,6 +2290,7 @@
         
         // Lifelike voice first (if enabled + configured), browser voice as fallback
         function speak(text, mood = 'friendly', onDone) {
+            currentTalkMood = mood; // Buddy's glow color matches the feeling of what he's saying
             text = cleanForSpeech(text);
             if (!text) { if (onDone) onDone(); return; }
             if (appSettings.lifelike) {
