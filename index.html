@@ -485,10 +485,10 @@
         }
         .buddy-spin { animation: buddySpinX 0.8s ease !important; }
         @keyframes buddySpinX { to { transform: rotate(720deg); } }
-        /* Buddy grows huge and lip-syncs while talking */
-        .buddy-face { transition: transform 0.45s ease; }
-        .buddy-mega { transform: scale(2.6); transform-origin: top center; z-index: 3600; position: relative; }
-        .buddy-free.buddy-mega { transform: scale(2.6); transform-origin: center center; }
+        /* Buddy grows huge and lip-syncs while talking (keyframe-driven, so it never fights his idle bob = no shaking) */
+        .buddy-mega { animation: megaGrow 0.45s ease forwards !important; transform-origin: top center; z-index: 3600; position: relative; }
+        .buddy-free.buddy-mega { transform-origin: center center; }
+        @keyframes megaGrow { from { transform: scale(1); } to { transform: scale(2.6); } }
         .buddy-face .mouth { transition: height 0.09s ease, width 0.09s ease, background 0.09s ease; }
         .buddy-say {
             position: fixed; z-index: 3001; background: white; color: #333; padding: 6px 12px;
@@ -581,6 +581,24 @@
         .b-chefhat::before { content: ''; position: absolute; top: -10px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; box-shadow: 12px -3px 0 white, 25px 0 0 white; }
         .b-cowhat { top: -14px; left: 50%; transform: translateX(-50%); width: 56px; height: 10px; background: #7a4a21; border-radius: 50%; }
         .b-cowhat::before { content: ''; position: absolute; top: -14px; left: 15px; width: 26px; height: 16px; background: #7a4a21; border-radius: 9px 9px 0 0; }
+        .b-tail { bottom: -2px; right: -24px; width: 0; height: 0; border-top: 11px solid transparent; border-bottom: 11px solid transparent; border-left: 30px solid var(--bd-accent2, #228B22); transform: rotate(26deg); }
+        .b-tongue { bottom: 10px; left: 56%; width: 14px; height: 18px; background: #ff8fa3; border-radius: 0 0 10px 10px; }
+        .b-whiskers { inset: 0; }
+        .b-whiskers::before, .b-whiskers::after { content: ''; position: absolute; top: 44px; width: 24px; height: 8px; border-top: 2px solid rgba(60,60,70,0.75); border-bottom: 2px solid rgba(60,60,70,0.75); }
+        .b-whiskers::before { left: -19px; transform: rotate(9deg); }
+        .b-whiskers::after { right: -19px; transform: rotate(-9deg); }
+        .b-wings { inset: 0; }
+        .b-wings::before, .b-wings::after { content: ''; position: absolute; top: 12px; width: 0; height: 0; border-top: 28px solid var(--bd-accent2, #8B0000); }
+        .b-wings::before { left: -26px; border-left: 26px solid transparent; transform: rotate(16deg); }
+        .b-wings::after { right: -26px; border-right: 26px solid transparent; transform: rotate(-16deg); }
+        .b-fin { bottom: -17px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 20px solid var(--bd-accent2, #228B22); }
+        .b-cape { bottom: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-top: 24px solid #dc2626; }
+        .b-bandana { top: 5px; left: 4px; right: 4px; height: 13px; background: #b91c1c; border-radius: 10px 10px 2px 2px; }
+        .b-bandana::after { content: ''; position: absolute; right: -9px; top: 4px; width: 14px; height: 9px; background: #b91c1c; border-radius: 3px; transform: rotate(24deg); }
+        .b-bolts { inset: 0; }
+        .b-bolts::before, .b-bolts::after { content: ''; position: absolute; top: 33px; width: 10px; height: 10px; border-radius: 50%; background: #9ca3af; }
+        .b-bolts::before { left: -5px; }
+        .b-bolts::after { right: -5px; }
 
         /* ===== New poke tricks ===== */
         .buddy-giggle { animation: buddyGiggle 0.6s linear !important; }
@@ -1275,27 +1293,27 @@
         // How each skin reshapes Buddy's body (ears, horns, spikes, hats...)
         const skinShapes = {
             'default': {},
-            'panda': { parts: ['b-ears-round'] },
-            'unicorn': { parts: ['b-horn', 'b-ears-cat'] },
-            'dino': { br: '48% 52% 42% 58% / 62% 58% 42% 38%', parts: ['b-spikes'] },
-            'pirate': { top: '🦜' },
-            'astronaut': { parts: ['b-halo'] },
-            'robot': { br: '22%', parts: ['b-ant'] },
-            'dragon': { br: '50% 50% 45% 55% / 58% 58% 42% 42%', parts: ['b-horns', 'b-spikes'] },
-            'mermaid': { top: '🐚' },
-            'superhero': { top: '⚡' },
-            'cowboy': { parts: ['b-cowhat'] },
+            'panda': { br: '50% 50% 46% 46% / 52% 52% 48% 48%', parts: ['b-ears-round'] },
+            'unicorn': { parts: ['b-horn', 'b-ears-cat', 'b-tail'] },
+            'dino': { br: '48% 52% 42% 58% / 62% 58% 42% 38%', parts: ['b-spikes', 'b-tail'] },
+            'pirate': { top: '🦜', parts: ['b-bandana'] },
+            'astronaut': { parts: ['b-halo', 'b-ant'] },
+            'robot': { br: '22%', parts: ['b-ant', 'b-bolts'] },
+            'dragon': { br: '50% 50% 45% 55% / 58% 58% 42% 42%', parts: ['b-horns', 'b-spikes', 'b-wings', 'b-tail'] },
+            'mermaid': { top: '🐚', parts: ['b-fin'] },
+            'superhero': { top: '⚡', parts: ['b-cape'] },
+            'cowboy': { parts: ['b-cowhat', 'b-bandana'] },
             'princess': { top: '👑' },
             'viking': { parts: ['b-horns'] },
             'chef': { parts: ['b-chefhat'] },
             'musician': { top: '🎵' },
-            'scientist': { top: '🧪' },
-            'knight': { top: '⚔️' },
-            'wizard': { top: '🌟' },
-            'farmer': { top: '🌾' },
-            'pilot': { top: '✈️' },
-            'dog': { br: '50% 50% 48% 48% / 55% 55% 45% 45%', parts: ['b-ears-floppy'] },
-            'cat': { br: '48%', parts: ['b-ears-cat'] }
+            'scientist': { top: '🧪', parts: ['b-halo'] },
+            'knight': { top: '⚔️', parts: ['b-halo'] },
+            'wizard': { top: '🌟', parts: ['b-cape'] },
+            'farmer': { top: '🌾', parts: ['b-cowhat'] },
+            'pilot': { top: '✈️', parts: ['b-halo'] },
+            'dog': { br: '50% 50% 48% 48% / 55% 55% 45% 45%', parts: ['b-ears-floppy', 'b-tongue', 'b-tail'] },
+            'cat': { br: '48%', parts: ['b-ears-cat', 'b-whiskers', 'b-tail'] }
         };
 
         // Dress a buddy face: colors, body shape, parts, and emoji badge
@@ -2461,14 +2479,14 @@
         function pokeShapeShift(cx, cy) {
             if (!bd.el) return;
             const shapes = ['60% 40% 55% 45% / 45% 55% 40% 60%', '30%', '50% 20% 50% 20%', '70% 30% 60% 40% / 30% 70% 40% 60%', '20% 80% 20% 80%'];
-            const orig = bd.el.style.borderRadius;
             bd.el.style.transition = 'border-radius 0.4s ease';
             bd.el.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
             buddySay(cx, cy - 55, '🌀 Shape shift!');
             popSound(700); setTimeout(() => popSound(500), 300);
             setTimeout(() => {
                 if (!bd.el) return;
-                bd.el.style.borderRadius = orig || '50%';
+                // always morph back to whoever Buddy is RIGHT NOW (skin shapes stay true)
+                bd.el.style.borderRadius = (skinShapes[currentBuddySkin] || {}).br || '50%';
                 setTimeout(() => { if (bd.el) bd.el.style.transition = 'none'; }, 450);
             }, 1500);
         }
