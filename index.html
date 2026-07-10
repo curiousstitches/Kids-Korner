@@ -3021,7 +3021,7 @@
         });
         if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(() => { /* offline shell is optional */ });
+                navigator.serviceWorker.register('sw.js?v=4').catch(() => { /* offline shell is optional */ });
             });
         }
         // iPhones/iPads have no install popup - show friendly how-to instead
@@ -3064,8 +3064,8 @@
             window.__buddyLoaded = true;
         });
     </script>
-    <script src="games.js"></script>
-    <script src="visuals.js"></script>
-    <script src="space.js"></script>
+    <script src="games.js?v=4"></script>
+    <script src="visuals.js?v=4"></script>
+    <script src="space.js?v=4"></script>
 </body>
 </html>

@@ -258,6 +258,15 @@ def get_ai_response(message, age, user_name="friend", buddy_name="Buddy", histor
     return None
 
 
+@app.after_request
+def never_cache(resp):
+    """Kill every cache layer - updates must ALWAYS reach the screen instantly."""
+    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp
+
+
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
