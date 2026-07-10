@@ -755,6 +755,7 @@
                     <label class="check-row"><input type="checkbox" id="autoReadCheck" onchange="updateSetting('autoRead', this.checked)"> Read replies out loud</label>
                     <label class="check-row"><input type="checkbox" id="funFactsCheck" onchange="updateSetting('funFacts', this.checked)"> Sprinkle in fun facts</label>
                     <label class="check-row"><input type="checkbox" id="lifelikeCheck" onchange="updateSetting('lifelike', this.checked)"> Lifelike voice (premium — needs voice key on server)</label>
+                    <label class="check-row"><input type="checkbox" id="skyCheck" onchange="updateSetting('sky', this.checked)"> Sky scenery (moon, stars, city, snow)</label>
                 </div>
             </div>
 
@@ -849,7 +850,7 @@
         }
 
         // ===== App Settings (saved on this device) =====
-        const defaultSettings = { font: 'comic', textSize: 'medium', textColor: '#333333', animation: 100, vibrancy: 50, depth: 50, voiceName: '', voiceStyle: 'normal', rate: 100, pitch: 100, volume: 100, autoRead: true, funFacts: true, lifelike: false };
+        const defaultSettings = { font: 'comic', textSize: 'medium', textColor: '#333333', animation: 100, vibrancy: 50, depth: 50, voiceName: '', voiceStyle: 'normal', rate: 100, pitch: 100, volume: 100, autoRead: true, funFacts: true, lifelike: false, sky: true };
         let appSettings = Object.assign({}, defaultSettings, JSON.parse(localStorage.getItem('buddy_settings') || '{}'));
 
         const fontMap = {
@@ -922,6 +923,7 @@
                 const el = document.querySelector(sel);
                 if (el) el.style.filter = filterVal;
             });
+            document.body.classList.toggle('sky-off', appSettings.sky === false);
 
             let animStyle = document.getElementById('animCtl');
             if (!animStyle) { animStyle = document.createElement('style'); animStyle.id = 'animCtl'; document.head.appendChild(animStyle); }
@@ -950,6 +952,7 @@
             const ar = document.getElementById('autoReadCheck'); if (ar) ar.checked = !!appSettings.autoRead;
             const ff = document.getElementById('funFactsCheck'); if (ff) ff.checked = !!appSettings.funFacts;
             const lf = document.getElementById('lifelikeCheck'); if (lf) lf.checked = !!appSettings.lifelike;
+            const sk = document.getElementById('skyCheck'); if (sk) sk.checked = appSettings.sky !== false;
         }
 
         function populateVoiceList() {

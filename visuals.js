@@ -34,20 +34,16 @@
 .vfx-xpbar { position:fixed; top:0; left:0; height:4px; width:0%; z-index:7500; background:linear-gradient(90deg,#ffd166,#ff6b9d,#a855f7,#00d4ff); transition:width .6s ease; border-radius:0 4px 4px 0; }
 .vfx-level { position:fixed; bottom:12px; left:12px; z-index:2900; background:linear-gradient(135deg,var(--primary,#667eea),var(--secondary,#764ba2)); color:white; padding:8px 14px; border-radius:999px; font-weight:bold; font-size:.85rem; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.3); font-family:inherit; border:2px solid rgba(255,255,255,.5); transition:transform .15s; }
 .vfx-level:hover { transform:scale(1.08); }
-.vfx-orb { position:fixed; z-index:2800; font-size:1.7rem; pointer-events:none; transition:left 55s linear, top 55s linear, opacity 80s linear; filter:drop-shadow(0 0 10px rgba(255,255,200,.8)); }
+.vfx-orb { position:fixed; left:0; top:0; z-index:2800; font-size:1.7rem; pointer-events:none; will-change:transform,opacity; transition:transform 55s linear, opacity 80s linear; filter:drop-shadow(0 0 10px rgba(255,255,200,.8)); }
+body.sky-off .vfx-orb, body.sky-off .vfx-twinkle, body.sky-off #vfxCity, body.sky-off .vfx-drop2, body.sky-off .vfx-rise, body.sky-off .vfx-shoot { display:none !important; }
 #vfxCity { position:fixed; left:0; right:0; bottom:0; height:22vh; pointer-events:none; z-index:-1; opacity:.55; }
 .vfx-bldg { position:absolute; bottom:0; border-radius:4px 4px 0 0; background:linear-gradient(#93a0bd,#6d7898); transition:background 8s linear; }
 body.vfx-night .vfx-bldg { background:linear-gradient(#2b2f4e,#171a2e); }
 .vfx-bldg::after { content:''; position:absolute; inset:10% 16% 4% 16%; background-image:radial-gradient(rgba(255,219,112,.9) 1.3px, transparent 1.8px); background-size:9px 13px; opacity:.1; transition:opacity 8s linear; }
 body.vfx-night .vfx-bldg::after { opacity:.8; }
-.vfx-twinkle { position:fixed; pointer-events:none; z-index:2800; font-size:.85rem; color:white; animation:starGlow 8s linear infinite; }
+.vfx-twinkle { position:fixed; pointer-events:none; z-index:2800; font-size:.85rem; color:white; will-change:opacity; animation:starBreathe 7s ease-in-out infinite; }
 body:not(.vfx-night) .vfx-twinkle { visibility:hidden; }
-@keyframes starGlow {
-  0%,100% { text-shadow:0 0 6px #ff8fb3, 0 0 14px #ff8fb3; opacity:.5; }
-  25% { text-shadow:0 0 8px #ffd166, 0 0 16px #ffd166; opacity:.85; }
-  50% { text-shadow:0 0 6px #7be1a8, 0 0 14px #7be1a8; opacity:.55; }
-  75% { text-shadow:0 0 8px #7cc7ff, 0 0 16px #7cc7ff; opacity:.85; }
-}
+@keyframes starBreathe { 0%,100% { opacity:.35; } 50% { opacity:.9; } }
 .vfx-shoot { position:fixed; z-index:3450; font-size:1.4rem; pointer-events:none; transition:transform 1.2s linear, opacity 1.2s; }
 .vfx-glow { box-shadow:0 0 22px var(--accent, gold) !important; transition:box-shadow 1.6s; }
 .vfx-speaking { animation:vfxTalkPulse 0.6s ease-in-out infinite !important; }
@@ -264,13 +260,16 @@ setInterval(function () {
     document.body.appendChild(city);
 
     // rainbow-glow stars (visible at night, glow-only - they never move)
+    const starColors = ['#ff8fb3', '#ffd166', '#7be1a8', '#7cc7ff', '#c9a2ff', '#ffb38a'];
     for (let i = 0; i < 6; i++) {
         const st = document.createElement('div');
         st.className = 'vfx-twinkle';
         st.textContent = '✦';
         st.style.left = (Math.random() < 0.5 ? (3 + Math.random() * 24) : (72 + Math.random() * 24)) + '%';
         st.style.top = (2 + Math.random() * 11) + '%';
-        st.style.animationDelay = (Math.random() * 8) + 's';
+        st.style.animationDelay = (Math.random() * 7) + 's';
+        st.style.color = starColors[i];
+        st.style.textShadow = '0 0 7px ' + starColors[i] + ', 0 0 14px ' + starColors[i];
         document.body.appendChild(st);
     }
 
@@ -287,8 +286,7 @@ setInterval(function () {
     function placeOrb(el, t) {
         t = clamp01(t);
         const arc = Math.sin(t * Math.PI);
-        el.style.left = (5 + t * 88) + 'vw';
-        el.style.top = (11 - arc * 8.5) + 'vh';
+        el.style.transform = 'translate(' + (5 + t * 88) + 'vw, ' + (11 - arc * 8.5) + 'vh)';
     }
     function skyUpdate() {
         const now = new Date();
