@@ -37,7 +37,7 @@
 .vfx-sky { position:fixed; top:8px; left:10px; z-index:2800; font-size:1.5rem; pointer-events:none; animation:vfxSkyBob 5s ease-in-out infinite; filter:drop-shadow(0 0 8px rgba(255,255,200,.7)); }
 @keyframes vfxSkyBob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
 .vfx-twinkle { position:fixed; pointer-events:none; z-index:2800; font-size:.8rem; animation:vfxTwinkle 2.4s ease-in-out infinite; }
-@keyframes vfxTwinkle { 0%,100% { opacity:.15; transform:scale(.7); } 50% { opacity:1; transform:scale(1.15); } }
+@keyframes vfxTwinkle { 0%,100% { opacity:.15; } 50% { opacity:.9; } }
 .vfx-shoot { position:fixed; z-index:3450; font-size:1.4rem; pointer-events:none; transition:transform 1.2s linear, opacity 1.2s; }
 .vfx-glow { box-shadow:0 0 22px var(--accent, gold) !important; transition:box-shadow 1.6s; }
 .vfx-speaking { animation:vfxTalkPulse 0.6s ease-in-out infinite !important; }
@@ -226,7 +226,7 @@ setInterval(function () {
     const p = document.createElement('button');
     p.className = cfg.rise ? 'vfx-rise' : 'vfx-drop2';
     p.textContent = cfg.pool[vRnd(cfg.pool.length)];
-    p.style.left = (2 + Math.random() * 94) + '%';
+    p.style.left = (Math.random() < 0.5 ? (2 + Math.random() * 32) : (64 + Math.random() * 33)) + '%';
     p.style.setProperty('--sw', (Math.random() * 120 - 60) + 'px');
     p.style.animationDuration = (9 + Math.random() * 8) + 's';
     p.onclick = function () {
@@ -251,7 +251,7 @@ setInterval(function () {
             st.className = 'vfx-twinkle';
             st.textContent = '✦';
             st.style.color = 'white';
-            st.style.left = (5 + Math.random() * 90) + '%';
+            st.style.left = (Math.random() < 0.5 ? (3 + Math.random() * 22) : (74 + Math.random() * 22)) + '%';
             st.style.top = (2 + Math.random() * 10) + '%';
             st.style.animationDelay = (Math.random() * 2) + 's';
             document.body.appendChild(st);

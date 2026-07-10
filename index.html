@@ -254,14 +254,15 @@
             50% { transform: rotateY(180deg); }
         }
         
-        .header { 
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); 
-            color: white; 
-            padding: 20px; 
-            text-align: center; 
-            border-radius: 0 0 30px 30px; 
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             position: relative;
+            z-index: 5; /* keeps the growing/talking Buddy above the chat */
         }
         .header h1 { font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
         
@@ -490,6 +491,7 @@
            Talking: bob switches OFF, a plain !important transform grows him - nothing can hide him. */
         .buddy-face { will-change: transform; backface-visibility: hidden; }
         .header .buddy-face { animation: buddyBob 3.4s ease-in-out infinite; }
+        .header .buddy-face:hover { animation-play-state: paused; } /* holds perfectly still when you point at him */
         @keyframes buddyBob {
             0%, 100% { transform: translateY(0) translateZ(0); }
             50% { transform: translateY(-6px) translateZ(0); }
@@ -911,7 +913,15 @@
             document.body.style.fontFamily = fontMap[appSettings.font] || fontMap.comic;
             document.documentElement.style.setProperty('--msg-size', sizeMap[appSettings.textSize] || '1rem');
             document.documentElement.style.setProperty('--msg-color', appSettings.textColor || '#333333');
-            document.body.style.filter = 'saturate(' + (0.4 + (appSettings.vibrancy / 62.5)).toFixed(2) + ')';
+            // NEVER filter the whole body - it makes every floating element jitter.
+            // Vibrancy tints only the app panels; slider at 50 = no filter at all (crispest rendering).
+            document.body.style.filter = '';
+            const sat = 0.5 + (appSettings.vibrancy / 100);
+            const filterVal = Math.abs(sat - 1) < 0.04 ? '' : 'saturate(' + sat.toFixed(2) + ')';
+            ['.header', '.age-selector', '.chat-container', '.input-container'].forEach(sel => {
+                const el = document.querySelector(sel);
+                if (el) el.style.filter = filterVal;
+            });
 
             let animStyle = document.getElementById('animCtl');
             if (!animStyle) { animStyle = document.createElement('style'); animStyle.id = 'animCtl'; document.head.appendChild(animStyle); }
