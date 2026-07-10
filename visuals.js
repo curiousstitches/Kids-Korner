@@ -323,7 +323,7 @@ setInterval(function () {
     const face = document.querySelector('.buddy-face');
     const msgs = document.querySelectorAll('.ai-message');
     const last = msgs[msgs.length - 1];
-    if (face) face.classList.toggle('vfx-speaking', talking);
+    // (face pulse retired - the lip-sync mega-grow in index.html owns the face now)
     if (last) last.classList.toggle('vfx-glow', talking);
 }, 350);
 
@@ -337,7 +337,11 @@ function resetIdle() {
             ['😴', 'Zzz... anybody home?', 'Buddy dozed off waiting!'],
             ['🤹', 'Juggling practice!', 'Buddy is entertaining himself...'],
             ['👀', 'Still there, friend?', 'Buddy misses you already!'],
-            ['🎪', 'Buddy did a backflip!', 'You missed it. It was amazing.']
+            ['🎪', 'Buddy did a backflip!', 'You missed it. It was amazing.'],
+            ['🍪', 'Buddy found a cookie!', 'He is saving half for you.'],
+            ['🐌', 'Buddy is racing a snail...', 'It is closer than you would think.'],
+            ['🎨', 'Buddy painted your portrait!', 'It is mostly circles. Beautiful circles.'],
+            ['🧦', 'Buddy lost a sock!', 'How? He does not even wear socks.']
         ];
         const a = antics[vRnd(antics.length)];
         vfxToast(a[0], a[1], a[2], true);
@@ -377,7 +381,11 @@ const COMPLIMENTS = [
     ['💛', 'You ask GREAT questions!'], ['🌟', 'You have an amazing imagination!'],
     ['🧠', 'Your brain is growing so fast!'], ['🎨', 'You think like an artist!'],
     ['🚀', 'You are curious like a scientist!'], ['🤗', 'Buddy is lucky to know you!'],
-    ['⚡', 'You learn things super fast!'], ['🏆', 'You never give up. Amazing!']
+    ['⚡', 'You learn things super fast!'], ['🏆', 'You never give up. Amazing!'],
+    ['🌈', 'Talking to you is the best part of the day!'], ['🦁', 'You are braver than you know!'],
+    ['🎯', 'You notice things other people miss!'], ['🌻', 'You make people around you happier!'],
+    ['🧩', 'You are a great problem solver!'], ['✨', 'There is only one YOU in the whole universe!'],
+    ['📚', 'Your questions are smarter than most answers!'], ['💪', 'Trying counts double. And you always try!']
 ];
 
 // ---------- Hook into the app (gentle monkey-patches) ----------

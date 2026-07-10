@@ -8,7 +8,12 @@ A friendly AI chat app for kids 3+ (and adults). Buddy talks at your child's lev
 
 | Item | What it is |
 |---|---|
-| `index.html` | The whole app (chat, settings, themes, voice, drawing). Open it directly for no-key mode. |
+| `index.html` | The main app (chat, settings, themes, voice engine, live painting, interactive Buddy). Open it directly for no-key mode. |
+| `games.js` | 24 quick chat games with cinematic effects. |
+| `space.js` | The GameSpace: 22 full-screen games (paint-by-numbers, coloring book, mazes, pong...) + the big arcade menu. |
+| `visuals.js` | 27+ ambient effects, XP levels, achievements, popups. |
+| `manifest.json` / `sw.js` / `icon-*.png` | Makes Buddy installable as a real app with offline support. |
+| `START-BUDDY.bat` | Double-click to run everything. |
 | `app.py` | The AI brain server (Flask). Connects to OpenRouter for real AI, ElevenLabs for lifelike voice, Twilio for SMS. Run with `python app.py` → http://localhost:8081 |
 | `server.py` | Tiny basic web server (port 8080) for serving the page without the AI brain. Rarely needed — use `app.py` instead. |
 | `responses.json` | Buddy's built-in offline replies by age group (used when no AI key is set). |
@@ -27,6 +32,11 @@ A friendly AI chat app for kids 3+ (and adults). Buddy talks at your child's lev
 
 ## Features
 
+- **46 games**: 22 full-screen worlds (paint-by-numbers from AI art, coloring book, balloon hangman, mazes, pong, rhythm games...) + 24 quick chat games
+- **A living Buddy**: lip-syncs and grows while talking, blinks, dances, splits into mini-buddies, changes shape with 22 character skins (each with its own personality — including a dog straight out of Up!)
+- **First-visit setup**: Buddy interviews new friends for their name, age, and friend/teacher choice
+- **Long-term memory**: remembers interests, favorites, and visit streaks across days
+- **30+ voice characters**, emotional tone matching, sound effects, word-of-the-day, XP levels and achievement badges
 - **Real AI chat** with complete, never-cut-off answers (auto-finishes any clipped reply)
 - **Age-matched intelligence**: 3-4 toddler magic · 5-8 playful learner · 9-13 curious middle-schooler · 14-17 high-school vibe · 18+ adult conversation (with an on-switch notice; always non-explicit)
 - **Picture drawing**: say "draw a purple dinosaur" — free, no key, kid-safe filtered

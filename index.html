@@ -485,6 +485,11 @@
         }
         .buddy-spin { animation: buddySpinX 0.8s ease !important; }
         @keyframes buddySpinX { to { transform: rotate(720deg); } }
+        /* Buddy grows huge and lip-syncs while talking */
+        .buddy-face { transition: transform 0.45s ease; }
+        .buddy-mega { transform: scale(2.6); transform-origin: top center; z-index: 3600; position: relative; }
+        .buddy-free.buddy-mega { transform: scale(2.6); transform-origin: center center; }
+        .buddy-face .mouth { transition: height 0.09s ease, width 0.09s ease, background 0.09s ease; }
         .buddy-say {
             position: fixed; z-index: 3001; background: white; color: #333; padding: 6px 12px;
             border-radius: 14px; font-size: 0.9rem; font-weight: bold; font-family: inherit;
@@ -527,7 +532,7 @@
 
         /* Add-to-home-screen banner */
         .install-banner {
-            position: fixed; left: 50%; transform: translateX(-50%); bottom: 92px;
+            position: fixed; left: 50%; transform: translateX(-50%); bottom: 150px;
             background: white; border: 3px solid var(--primary); border-radius: 18px;
             padding: 12px 16px; z-index: 7300; display: flex; gap: 12px; align-items: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 92%; animation: bannerUp 0.5s ease;
@@ -539,6 +544,64 @@
         .install-banner .ib-add { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 10px 18px; border-radius: 14px; font-family: inherit; font-weight: bold; font-size: 0.9rem; cursor: pointer; }
         .install-banner .ib-add:hover { transform: scale(1.05); }
         .install-banner .ib-later { background: none; border: none; color: #888; font-family: inherit; font-size: 0.85rem; cursor: pointer; }
+
+        /* ===== Readable ink on every theme ===== */
+        .rps-score, .g-status { color: var(--ink, var(--secondary)) !important; }
+        .word-clickable { color: var(--ink2, var(--primary)) !important; }
+        .learning-fact { border-left-color: var(--ink2, var(--primary)); color: #4a3b00; }
+
+        /* ===== Skin-shaped Buddy bodies ===== */
+        .b-part { position: absolute; pointer-events: none; }
+        .b-top { top: -28px; left: 50%; transform: translateX(-50%); font-size: 1.5rem; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
+        .b-ears-cat::before, .b-ears-cat::after { content: ''; position: absolute; top: -16px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 24px solid var(--bd-accent, #ffd166); }
+        .b-ears-cat { inset: 0; }
+        .b-ears-cat::before { left: 8px; transform: rotate(-14deg); }
+        .b-ears-cat::after { right: 8px; transform: rotate(14deg); }
+        .b-ears-floppy { inset: 0; }
+        .b-ears-floppy::before, .b-ears-floppy::after { content: ''; position: absolute; top: 4px; width: 20px; height: 40px; border-radius: 50% 50% 60% 60%; background: var(--bd-accent2, #7a4a21); }
+        .b-ears-floppy::before { left: -11px; transform: rotate(20deg); }
+        .b-ears-floppy::after { right: -11px; transform: rotate(-20deg); }
+        .b-ears-round { inset: 0; }
+        .b-ears-round::before, .b-ears-round::after { content: ''; position: absolute; top: -13px; width: 26px; height: 26px; border-radius: 50%; background: #333; }
+        .b-ears-round::before { left: 3px; }
+        .b-ears-round::after { right: 3px; }
+        .b-spikes { top: -17px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 20px solid var(--bd-accent2, #228B22); }
+        .b-spikes::before, .b-spikes::after { content: ''; position: absolute; top: 7px; width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 17px solid var(--bd-accent2, #228B22); }
+        .b-spikes::before { left: -28px; }
+        .b-spikes::after { left: 9px; }
+        .b-horn { top: -26px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 28px solid gold; }
+        .b-horns { inset: 0; }
+        .b-horns::before, .b-horns::after { content: ''; position: absolute; top: -18px; width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 22px solid #e8e4d8; }
+        .b-horns::before { left: 8px; transform: rotate(-24deg); }
+        .b-horns::after { right: 8px; transform: rotate(24deg); }
+        .b-ant { top: -22px; left: 50%; width: 3px; height: 20px; background: #999; transform: translateX(-50%); }
+        .b-ant::after { content: ''; position: absolute; top: -9px; left: -4px; width: 11px; height: 11px; border-radius: 50%; background: #ff5252; animation: pulse 1.5s infinite; }
+        .b-halo { inset: -8px; border: 3px solid rgba(255,255,255,0.8); border-radius: 50%; }
+        .b-chefhat { top: -24px; left: 50%; transform: translateX(-50%); width: 46px; height: 20px; background: white; border-radius: 10px 10px 4px 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .b-chefhat::before { content: ''; position: absolute; top: -10px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; box-shadow: 12px -3px 0 white, 25px 0 0 white; }
+        .b-cowhat { top: -14px; left: 50%; transform: translateX(-50%); width: 56px; height: 10px; background: #7a4a21; border-radius: 50%; }
+        .b-cowhat::before { content: ''; position: absolute; top: -14px; left: 15px; width: 26px; height: 16px; background: #7a4a21; border-radius: 9px 9px 0 0; }
+
+        /* ===== New poke tricks ===== */
+        .buddy-giggle { animation: buddyGiggle 0.6s linear !important; }
+        @keyframes buddyGiggle { 0%,100% { transform: translate(0,0); } 20% { transform: translate(-4px,2px) rotate(-7deg); } 40% { transform: translate(4px,-2px) rotate(7deg); } 60% { transform: translate(-4px,-2px) rotate(-7deg); } 80% { transform: translate(4px,2px) rotate(7deg); } }
+        .buddy-inflate { animation: buddyInflate 1.6s ease !important; }
+        @keyframes buddyInflate { 0% { transform: scale(1); } 45% { transform: scale(1.9); } 55% { transform: scale(1.9) rotate(6deg); } 70% { transform: scale(0.72); } 100% { transform: scale(1); } }
+        .buddy-ghost { animation: buddyGhost 1.8s ease !important; }
+        @keyframes buddyGhost { 0%,100% { opacity: 1; filter: none; } 30% { opacity: 0.12; filter: grayscale(1); } 60% { opacity: 0.12; } 82% { opacity: 0.9; } }
+        .jug-item { position: fixed; z-index: 3002; font-size: 1.2rem; pointer-events: none; animation: jugOrbit 0.8s linear infinite; }
+        @keyframes jugOrbit { from { transform: rotate(0deg) translateX(42px) rotate(0deg); } to { transform: rotate(360deg) translateX(42px) rotate(-360deg); } }
+        .mini-buddy { position: fixed; z-index: 3000; width: 30px; height: 30px; border-radius: 50%; pointer-events: none; transition: left 0.6s ease, top 0.6s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+
+        /* Buddy blinks like a living thing */
+        .buddy-face::before, .buddy-face::after { animation: eyeBlink 4.6s infinite !important; }
+        .buddy-face::after { animation-delay: 0.05s !important; }
+        @keyframes eyeBlink { 0%, 91%, 100% { transform: scaleY(1); } 94% { transform: scaleY(0.08); } 97% { transform: scaleY(1); } }
+
+        /* Respect users who prefer less motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
+        }
     </style>
 </head>
 <body>
@@ -574,7 +637,7 @@
         <button onclick="sendMessage()">Send</button>
         <button id="micBtn" onclick="toggleVoice()" style="background: #4CAF50; margin-left: 5px;">🎤</button>
         <button id="gamesBtn" onclick="openArcade()" title="Play a game!" style="background: #ff9800; margin-left: 5px;">🎲</button>
-        <span id="aiStatus" style="align-self:center;font-size:0.9em;color:#667eea;">🤖 Ready!</span>
+        <span id="aiStatus" style="align-self:center;font-size:0.9em;color:var(--ink, #667eea);">🤖 Ready!</span>
     </div>
     
     <!-- Settings Modal -->
@@ -587,6 +650,23 @@
                 <div class="settings-row">
                     <label>Your name<input type="text" id="userNameInput" placeholder="What should your buddy call you?"></label>
                     <label>Your buddy's name<input type="text" id="buddyNameInput" placeholder="Buddy"></label>
+                    <label>Buddy's gender
+                        <select id="genderSelect" onchange="updateBuddyGender(this.value)">
+                            <option value="none">✨ Just Buddy</option>
+                            <option value="boy">👦 Boy (he/him)</option>
+                            <option value="girl">👧 Girl (she/her)</option>
+                            <option value="nonbinary">🌈 Non-binary (they/them)</option>
+                            <option value="genderfluid">💫 Genderfluid (any pronouns)</option>
+                            <option value="transboy">🏳️‍⚧️ Trans boy (he/him)</option>
+                            <option value="transgirl">🏳️‍⚧️ Trans girl (she/her)</option>
+                            <option value="agender">⚪ Agender (they/them)</option>
+                            <option value="bigender">🔷 Bigender (he/she/they)</option>
+                            <option value="demiboy">🌓 Demiboy (he/they)</option>
+                            <option value="demigirl">🌗 Demigirl (she/they)</option>
+                            <option value="twospirit">🪶 Two-Spirit (they/them)</option>
+                            <option value="questioning">❓ Still exploring (they/them)</option>
+                        </select>
+                    </label>
                     <button class="save-names-btn" onclick="saveNames()">💾 Save Names</button>
                 </div>
 
@@ -622,6 +702,9 @@
 
                 <h2>🔊 Voice</h2>
                 <div class="settings-row">
+                    <label>Voice character (30+ styles!)
+                        <select id="voiceStyleSelect" onchange="updateSetting('voiceStyle', this.value)"></select>
+                    </label>
                     <label>Voice
                         <select id="voiceSelect" onchange="updateSetting('voiceName', this.value)"><option value="">Auto (best match)</option></select>
                     </label>
@@ -658,9 +741,76 @@
         let buddyName = localStorage.getItem('buddy_buddyname') || "Buddy";
         let currentAge = localStorage.getItem('buddy_age') || '12';
         let currentMode = localStorage.getItem('buddy_mode') === 'teacher' ? 'teacher' : 'friend';
+        let buddyGender = localStorage.getItem('buddy_gender') || 'none';
+        function updateBuddyGender(g) {
+            buddyGender = g;
+            localStorage.setItem('buddy_gender', g);
+            if (window.__buddyLoaded) {
+                showAIResponse('💛 Got it! That\'s me! Thanks for letting me be myself, ' + (userName || 'friend') + '!', 'happy');
+            }
+        }
+
+        // ===== First-visit guided setup: Buddy interviews his new friend =====
+        let obStep = 0;
+        function startOnboarding() {
+            if (localStorage.getItem('buddy_onboarded') || userName) {
+                localStorage.setItem('buddy_onboarded', '1');
+                return;
+            }
+            obStep = 1;
+            setTimeout(() => showAIResponse("Hi hi hi! I'm " + buddyName + ", your new best friend! 🎉 First things first: what's YOUR name? Type it down below!", 'excited'), 900);
+        }
+        function handleOnboarding(message) {
+            if (obStep === 1) {
+                const nm = message.trim().split(/\s+/)[0].slice(0, 14);
+                if (nm) {
+                    userName = nm.charAt(0).toUpperCase() + nm.slice(1);
+                    localStorage.setItem('buddy_name', userName);
+                    updateHeader();
+                }
+                obStep = 2;
+                showAIResponse((userName ? userName + '!! ' : '') + 'I LOVE that name! Okay okay okay — how old are you? Type the number!', 'excited');
+            } else if (obStep === 2) {
+                const n = parseInt(message.replace(/\D/g, ''), 10);
+                if (!isNaN(n) && n >= 1 && n <= 100) {
+                    currentAge = String(n);
+                    document.getElementById('ageInput').value = currentAge;
+                    saveUserData();
+                }
+                obStep = 3;
+                showAIResponse("Got it! Last one: should I be your FRIEND (I'm your age and we play!) or your TEACHER (I help you learn things)? Type friend or teacher!", 'playful');
+            } else {
+                currentMode = /teach/i.test(message) ? 'teacher' : 'friend';
+                localStorage.setItem('buddy_mode', currentMode);
+                document.getElementById('modeSelect').value = currentMode;
+                obStep = 0;
+                localStorage.setItem('buddy_onboarded', '1');
+                showAIResponse((currentMode === 'teacher' ? '🎓' : '🧸') + ' PERFECT, ' + (userName || 'friend') + "! We're all set! Try saying \"draw a dragon\", tap 🎲 for 46 games, poke my face up top... or just tell me about your day!", 'excited');
+                if (typeof burstConfetti === 'function') burstConfetti();
+            }
+        }
+
+        // ===== Word of the Day (once per day, age-matched) =====
+        const WOTD = {
+            '3': [['happy', 'feeling good and smiley'], ['soft', 'gentle and nice to touch'], ['huge', 'really REALLY big'], ['share', 'letting friends have some too']],
+            '6': [['curious', 'wanting to find out more'], ['brave', 'doing it even when scared'], ['imagine', 'making pictures in your mind'], ['kindness', 'being sweet to others']],
+            '12': [['persevere', 'keep going when it gets hard'], ['genuine', 'truly real, not fake'], ['innovate', 'invent a brand-new way'], ['empathy', 'feeling what others feel']],
+            '15': [['resilient', 'strong again after hard times'], ['articulate', 'saying it clearly and well'], ['authentic', 'being truly yourself'], ['meticulous', 'careful about every detail']],
+            'adult': [['ebullient', 'bubbling over with joy'], ['sagacious', 'wise and sharp'], ['mellifluous', 'sweet and smooth sounding'], ['perspicacious', 'seeing right to the heart of things']]
+        };
+        function wordOfTheDay() {
+            const today = new Date().toDateString();
+            if (localStorage.getItem('buddy_wotd') === today) return;
+            localStorage.setItem('buddy_wotd', today);
+            const list = WOTD[getAgeGroup(currentAge)] || WOTD['6'];
+            const [w, meaning] = list[Math.floor(Math.random() * list.length)];
+            setTimeout(() => {
+                if (typeof vfxToast === 'function') vfxToast('📚', 'Word of the Day: ' + w.toUpperCase(), meaning, true);
+            }, 22000);
+        }
 
         // ===== App Settings (saved on this device) =====
-        const defaultSettings = { font: 'comic', textSize: 'medium', textColor: '#333333', animation: 100, vibrancy: 50, depth: 50, voiceName: '', rate: 100, pitch: 100, volume: 100, autoRead: true, funFacts: true, lifelike: false };
+        const defaultSettings = { font: 'comic', textSize: 'medium', textColor: '#333333', animation: 100, vibrancy: 50, depth: 50, voiceName: '', voiceStyle: 'normal', rate: 100, pitch: 100, volume: 100, autoRead: true, funFacts: true, lifelike: false };
         let appSettings = Object.assign({}, defaultSettings, JSON.parse(localStorage.getItem('buddy_settings') || '{}'));
 
         const fontMap = {
@@ -672,6 +822,47 @@
             typewriter: "'Courier New', monospace"
         };
         const sizeMap = { small: '0.9rem', medium: '1rem', large: '1.15rem', xlarge: '1.35rem' };
+
+        // 30+ voice characters - same voice, whole new personality of sound
+        const VOICE_STYLES = {
+            normal:      { n: '🙂 Buddy Classic', r: 1.0, p: 1.0, wob: 0.06 },
+            puppy:       { n: '🐶 Excited Puppy', r: 1.15, p: 1.18, wob: 0.1 },
+            kitty:       { n: '🐱 Soft Kitty', r: 0.9, p: 1.1, wob: 0.04, v: 0.85 },
+            chipmunk:    { n: '🐿️ Chipmunk', r: 1.2, p: 1.45, wob: 0.08 },
+            giant:       { n: '🗿 Friendly Giant', r: 0.82, p: 0.62, wob: 0.04 },
+            robot:       { n: '🤖 Robot', r: 0.92, p: 0.85, wob: 0 },
+            goofy:       { n: '🤪 Goofy', r: 1.05, p: 1.12, wob: 0.3 },
+            wobbly:      { n: '🌀 Wobbly Wiggler', r: 0.95, p: 1.0, wob: 0.45 },
+            mysterious:  { n: '🕵️ Mysterious', r: 0.8, p: 0.85, wob: 0.05, v: 0.8 },
+            spooky:      { n: '👻 Spooky', r: 0.72, p: 0.7, wob: 0.12, v: 0.85 },
+            whisper:     { n: '🤫 Whisperer', r: 0.85, p: 0.95, wob: 0.03, v: 0.45 },
+            speedy:      { n: '⚡ Speedy', r: 1.45, p: 1.05, wob: 0.05 },
+            sleepy:      { n: '😴 Sleepy', r: 0.62, p: 0.9, wob: 0.04, v: 0.8 },
+            grandma:     { n: '👵 Sweet Grandma', r: 0.8, p: 1.12, wob: 0.07 },
+            grandpa:     { n: '👴 Grandpa', r: 0.75, p: 0.78, wob: 0.06 },
+            hero:        { n: '🦸 Hero', r: 1.02, p: 0.88, wob: 0.05 },
+            royal:       { n: '👑 Royal', r: 0.85, p: 1.05, wob: 0.03 },
+            pirategruff: { n: '🏴‍☠️ Gruff Pirate', r: 0.95, p: 0.72, wob: 0.12 },
+            fairy:       { n: '🧚 Fairy', r: 1.05, p: 1.4, wob: 0.08, v: 0.8 },
+            monster:     { n: '👹 Silly Monster', r: 0.85, p: 0.55, wob: 0.18 },
+            mouse:       { n: '🐭 Tiny Mouse', r: 1.1, p: 1.5, wob: 0.06, v: 0.75 },
+            bear:        { n: '🐻 Big Bear', r: 0.78, p: 0.68, wob: 0.05 },
+            singer:      { n: '🎤 Singer', r: 0.95, p: 1.1, wob: 0.1, alt: true },
+            cowboydrawl: { n: '🤠 Cowboy Drawl', r: 0.72, p: 0.9, wob: 0.08 },
+            announcer:   { n: '📻 News Anchor', r: 1.08, p: 0.95, wob: 0.02 },
+            sports:      { n: '🏟️ Sports Announcer', r: 1.3, p: 1.1, wob: 0.15 },
+            storyteller: { n: '📖 Storyteller', r: 0.85, p: 1.0, wob: 0.22 },
+            dreamy:      { n: '💭 Dreamy', r: 0.8, p: 1.15, wob: 0.06, v: 0.85 },
+            bubbly:      { n: '🫧 Bubbly', r: 1.12, p: 1.22, wob: 0.12 },
+            calm:        { n: '🧘 Calm & Cozy', r: 0.75, p: 0.95, wob: 0.02, v: 0.85 },
+            alien:       { n: '👽 Alien', r: 0.95, p: 1.0, wob: 0.08, alt: true }
+        };
+        function buildVoiceStyleOptions() {
+            const sel = document.getElementById('voiceStyleSelect');
+            if (!sel) return;
+            sel.innerHTML = Object.entries(VOICE_STYLES).map(([k, s]) => '<option value="' + k + '">' + s.n + '</option>').join('');
+            sel.value = appSettings.voiceStyle || 'normal';
+        }
 
         function updateSetting(key, value) {
             appSettings[key] = value;
@@ -708,6 +899,7 @@
             set('animSlider', appSettings.animation); set('vibrancySlider', appSettings.vibrancy); set('depthSlider', appSettings.depth);
             set('rateSlider', appSettings.rate); set('pitchSlider', appSettings.pitch); set('volumeSlider', appSettings.volume);
             const vs = document.getElementById('voiceSelect'); if (vs) vs.value = appSettings.voiceName || '';
+            const vst = document.getElementById('voiceStyleSelect'); if (vst && vst.options.length) vst.value = appSettings.voiceStyle || 'normal';
             const ar = document.getElementById('autoReadCheck'); if (ar) ar.checked = !!appSettings.autoRead;
             const ff = document.getElementById('funFactsCheck'); if (ff) ff.checked = !!appSettings.funFacts;
             const lf = document.getElementById('lifelikeCheck'); if (lf) lf.checked = !!appSettings.lifelike;
@@ -1067,28 +1259,81 @@
                 name: 'Pilot Buddy',
                 colors: { primary: '#4682B4', secondary: '#C0C0C0', accent: '#FFFFFF' },
                 emoji: '✈️'
+            },
+            'dog': {
+                name: 'Doggy Buddy',
+                colors: { primary: '#a86232', secondary: '#7a4a21', accent: '#e8b04b' },
+                emoji: '🐶'
+            },
+            'cat': {
+                name: 'Kitty Buddy',
+                colors: { primary: '#8d8d94', secondary: '#5f5f66', accent: '#d9d9de' },
+                emoji: '🐱'
             }
         };
+
+        // How each skin reshapes Buddy's body (ears, horns, spikes, hats...)
+        const skinShapes = {
+            'default': {},
+            'panda': { parts: ['b-ears-round'] },
+            'unicorn': { parts: ['b-horn', 'b-ears-cat'] },
+            'dino': { br: '48% 52% 42% 58% / 62% 58% 42% 38%', parts: ['b-spikes'] },
+            'pirate': { top: '🦜' },
+            'astronaut': { parts: ['b-halo'] },
+            'robot': { br: '22%', parts: ['b-ant'] },
+            'dragon': { br: '50% 50% 45% 55% / 58% 58% 42% 42%', parts: ['b-horns', 'b-spikes'] },
+            'mermaid': { top: '🐚' },
+            'superhero': { top: '⚡' },
+            'cowboy': { parts: ['b-cowhat'] },
+            'princess': { top: '👑' },
+            'viking': { parts: ['b-horns'] },
+            'chef': { parts: ['b-chefhat'] },
+            'musician': { top: '🎵' },
+            'scientist': { top: '🧪' },
+            'knight': { top: '⚔️' },
+            'wizard': { top: '🌟' },
+            'farmer': { top: '🌾' },
+            'pilot': { top: '✈️' },
+            'dog': { br: '50% 50% 48% 48% / 55% 55% 45% 45%', parts: ['b-ears-floppy'] },
+            'cat': { br: '48%', parts: ['b-ears-cat'] }
+        };
+
+        // Dress a buddy face: colors, body shape, parts, and emoji badge
+        function decorateFace(face) {
+            const skin = buddySkins[currentBuddySkin] || buddySkins['default'];
+            const shape = skinShapes[currentBuddySkin] || {};
+            face.style.background = 'radial-gradient(circle, ' + skin.colors.accent + ', ' + skin.colors.primary + ')';
+            face.style.borderRadius = shape.br || '50%';
+            face.style.setProperty('--bd-accent', skin.colors.accent);
+            face.style.setProperty('--bd-accent2', skin.colors.secondary || skin.colors.primary);
+            face.querySelectorAll('.b-part, .skin-badge').forEach(p => p.remove());
+            (shape.parts || []).forEach(cls => {
+                const p = document.createElement('span');
+                p.className = 'b-part ' + cls;
+                face.appendChild(p);
+            });
+            if (shape.top) {
+                const t = document.createElement('span');
+                t.className = 'b-part b-top';
+                t.textContent = shape.top;
+                face.appendChild(t);
+            }
+            const badge = document.createElement('span');
+            badge.className = 'skin-badge';
+            badge.textContent = skin.emoji;
+            face.appendChild(badge);
+        }
         
         // Apply Buddy skin
         function applyBuddySkin(skinName) {
             const skin = buddySkins[skinName] || buddySkins['default'];
-            document.querySelectorAll('.buddy-face').forEach(face => {
-                face.style.background = `radial-gradient(circle, ${skin.colors.accent}, ${skin.colors.primary})`;
-                let badge = face.querySelector('.skin-badge');
-                if (!badge) {
-                    badge = document.createElement('span');
-                    badge.className = 'skin-badge';
-                    face.appendChild(badge);
-                }
-                badge.textContent = skin.emoji;
-            });
             const isChange = window.__buddyLoaded && skinName !== currentBuddySkin;
             localStorage.setItem('buddy_skin', skinName);
             currentBuddySkin = skinName;
+            document.querySelectorAll('.buddy-face').forEach(face => decorateFace(face));
             updateBuddySkinCards();
             if (isChange) {
-                showAIResponse('✨ POOF! I\'m ' + skin.name + ' now ' + skin.emoji + ' — whole new me, same best friend! Talk to me and see!', 'excited');
+                showAIResponse('✨ POOF! I\'m ' + skin.name + ' now ' + skin.emoji + ' — new body, new voice in my heart, same best friend! Talk to me and see!', 'excited');
             }
         }
         
@@ -1112,11 +1357,29 @@
         }
         
         // Apply theme
+        // Darkens any theme color until it's readable as text on light bubbles
+        function readableInk(hex) {
+            let h = (hex || '#667eea').replace('#', '');
+            if (h.length === 3) h = h.split('').map(c => c + c).join('');
+            let r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16);
+            if (isNaN(r) || isNaN(g) || isNaN(b)) return '#4a4a6a';
+            let lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            let guard = 0;
+            while (lum > 0.52 && guard < 10) {
+                r = Math.floor(r * 0.75); g = Math.floor(g * 0.75); b = Math.floor(b * 0.75);
+                lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                guard++;
+            }
+            return 'rgb(' + r + ',' + g + ',' + b + ')';
+        }
+
         function applyTheme(themeName) {
             const theme = themes[themeName] || themes['default'];
             document.documentElement.style.setProperty('--primary', theme.primary);
             document.documentElement.style.setProperty('--secondary', theme.secondary);
             document.documentElement.style.setProperty('--accent', theme.accent);
+            document.documentElement.style.setProperty('--ink', readableInk(theme.secondary));
+            document.documentElement.style.setProperty('--ink2', readableInk(theme.primary));
             document.body.style.background = theme.bg;
             localStorage.setItem('buddy_theme', themeName);
             currentTheme = themeName;
@@ -1633,6 +1896,12 @@
             input.value = '';
             chatContainer.scrollTop = chatContainer.scrollHeight;
             
+            // First-visit setup chat?
+            if (obStep) {
+                handleOnboarding(message);
+                return;
+            }
+
             // Playing a game that needs typed words?
             if (gameState.awaitingInput) {
                 handleGameInput(message);
@@ -1665,25 +1934,34 @@
                 : 'http://localhost:8081/chat';
             showThinking();
             lockInput();
-            fetch(apiUrl, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({message, age: currentAge, name: userName, buddy: buddyName, mode: currentMode, skin: currentBuddySkin, history: conversationHistory.slice(-11, -1)})
-            }).then(response => response.json())
-              .then(data => {
-                  hideThinking();
-                  const mood = detectMood(data.response);
-                  showAIResponse(data.response, mood);
-                  aiStatus.textContent = '🚀 AI Mode';
-              })
-              .catch(() => {
-                  // Fallback to pre-written responses when AI is unavailable
-                  hideThinking();
-                  const fallbackResponse = getAIResponse(message, currentAge);
-                  const mood = detectMood(fallbackResponse);
-                  showAIResponse(fallbackResponse, mood);
-                  aiStatus.textContent = '💬 Buddy Mode';
-              });
+            // long-term memory: Buddy remembers who you are across visits
+            const payload = JSON.stringify({
+                message, age: currentAge, name: userName, buddy: buddyName,
+                mode: currentMode, skin: currentBuddySkin, gender: buddyGender,
+                history: conversationHistory.slice(-11, -1),
+                profile: {
+                    interests: userInterests.slice(-8),
+                    favorites: Object.keys(userFavorites).slice(-5),
+                    streak: (typeof vfx !== 'undefined' && vfx.streak) || 1
+                }
+            });
+            const askBuddy = () => fetch(apiUrl, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: payload }).then(r => r.json());
+            const deliver = (data) => {
+                hideThinking();
+                const mood = detectMood(data.response);
+                showAIResponse(data.response, mood);
+                aiStatus.textContent = '🚀 AI Mode';
+            };
+            const offline = () => {
+                hideThinking();
+                const fallbackResponse = getAIResponse(message, currentAge);
+                showAIResponse(fallbackResponse, detectMood(fallbackResponse));
+                aiStatus.textContent = '💬 Buddy Mode';
+            };
+            askBuddy().then(deliver).catch(() => {
+                // one quiet retry - a wifi hiccup shouldn't break the magic
+                setTimeout(() => askBuddy().then(deliver).catch(offline), 700);
+            });
         }
         
         // Show AI response instantly with word interaction
@@ -1799,6 +2077,34 @@
         let thoughtTimer = null;
         let buddyTalking = false;
 
+        function talkingFace() { return bd.el || headerFace(); }
+        let mouthTimer = null;
+        function startMouth() {
+            stopMouth(false);
+            const f = talkingFace();
+            if (!f) return;
+            f.classList.add('buddy-mega');
+            mouthTimer = setInterval(() => {
+                const fc = talkingFace();
+                const m = fc && fc.querySelector('.mouth');
+                if (!m) return;
+                const open = Math.random();
+                m.style.height = (5 + open * 20) + 'px';
+                m.style.width = (24 + open * 14) + 'px';
+                m.style.background = open > 0.35 ? 'rgba(60,25,40,0.85)' : 'transparent';
+                m.style.borderRadius = open > 0.6 ? '50%' : '0 0 18px 18px';
+            }, 120);
+        }
+        function stopMouth(reset) {
+            clearInterval(mouthTimer);
+            mouthTimer = null;
+            document.querySelectorAll('.buddy-face').forEach(f => {
+                f.classList.remove('buddy-mega');
+                const m = f.querySelector('.mouth');
+                if (m) { m.style.height = ''; m.style.width = ''; m.style.background = ''; m.style.borderRadius = ''; }
+            });
+        }
+
         function setBuddyTalking(v) {
             if (buddyTalking === v) return;
             buddyTalking = v;
@@ -1806,8 +2112,10 @@
             if (v) {
                 setBuddyTalking._t = setTimeout(() => setBuddyTalking(false), 90000); // failsafe
                 pauseMicForBuddy();
+                startMouth();
             } else {
                 resumeMicAfterBuddy();
+                stopMouth(true);
             }
         }
 
@@ -1886,9 +2194,12 @@
             const status = document.getElementById('aiStatus');
             if (m === 'off') {
                 if (recognition && recRunning) { try { recognition.abort(); } catch (e) {} recRunning = false; }
+                clearTimeout(setBuddyTalking._t);
                 btn.textContent = '🎤'; btn.style.background = '#4CAF50';
                 btn.title = 'Tap: speak one thought. Tap twice: open mic.';
-                status.textContent = '🤖 Ready!';
+                status.textContent = '🎤 Mic OFF';
+                const inp = document.getElementById('messageInput');
+                if (inp.value.endsWith('…')) inp.value = ''; // clear half-captured preview
             } else if (m === 'push') {
                 btn.textContent = '🔴'; btn.style.background = '#f44336';
                 btn.title = 'Listening for one thought. Tap again for open mic.';
@@ -1909,20 +2220,17 @@
             else setMicMode('off');
         }
         
-        // Detect mood from text
+        // Detect mood from text - the full feelings palette
         function detectMood(text) {
-            const lowerText = text.toLowerCase();
-            if (lowerText.includes('love') || lowerText.includes('amazing') || lowerText.includes('wonderful')) {
-                return 'happy';
-            } else if (lowerText.includes('excited') || lowerText.includes('awesome') || lowerText.includes('fantastic')) {
-                return 'excited';
-            } else if (lowerText.includes('thinking') || lowerText.includes('deep') || lowerText.includes('meaningful')) {
-                return 'thoughtful';
-            } else if (lowerText.includes('play') || lowerText.includes('fun') || lowerText.includes('game')) {
-                return 'playful';
-            } else if (lowerText.includes('care') || lowerText.includes('support') || lowerText.includes('friend')) {
-                return 'caring';
-            }
+            const t = text.toLowerCase();
+            if (/(sad|sorry|miss you|crying|tears|aww|rough day|hard day|feel better|hug)/.test(t)) return 'sad';
+            if (/(wow|whoa|no way|really\?|surprise|can't believe|incredible)/.test(t)) return 'surprised';
+            if (/(hmm|confus|not sure|puzzl|tricky|i wonder|scratching my head)/.test(t)) return 'confused';
+            if (/(love|amazing|wonderful|proud of you)/.test(t)) return 'happy';
+            if (/(excited|awesome|fantastic|let's go|yay|woohoo)/.test(t)) return 'excited';
+            if (/(thinking|deep|meaningful|imagine)/.test(t)) return 'thoughtful';
+            if (/(play|fun|game|silly|joke)/.test(t)) return 'playful';
+            if (/(care|support|friend|here for you|it's okay)/.test(t)) return 'caring';
             return 'friendly';
         }
         
@@ -2032,9 +2340,8 @@
             if (hf) hf.style.visibility = 'hidden';
             const el = document.createElement('div');
             el.className = 'buddy-face buddy-free';
-            el.innerHTML = '<div class="mouth"></div><span class="skin-badge">' + (buddySkins[currentBuddySkin] || buddySkins['default']).emoji + '</span>';
-            const skin = buddySkins[currentBuddySkin] || buddySkins['default'];
-            el.style.background = 'radial-gradient(circle, ' + skin.colors.accent + ', ' + skin.colors.primary + ')';
+            el.innerHTML = '<div class="mouth"></div>';
+            decorateFace(el);
             document.body.appendChild(el);
             bd.el = el; bd.x = startX; bd.y = startY; bd.vx = 0; bd.vy = 0;
             positionBuddy();
@@ -2132,9 +2439,148 @@
             }
         }
 
+        // ===== The Poke Repertoire: 16 tricks =====
+        function pokeSkin() { return buddySkins[currentBuddySkin] || buddySkins['default']; }
+
+        function pokeDance(cx, cy) { danceBuddy(cx, cy); buddySay(cx, cy - 55, pokeSkin().emoji + ' Dance party!'); }
+        function pokeJump(cx, cy) { buddyAnim('buddy-jump', 700); popSound(500); setTimeout(() => popSound(700), 250); buddySay(cx, cy - 55, pokeSkin().emoji + ' Boing!'); }
+        function pokeSpin(cx, cy) { buddyAnim('buddy-spin', 800); popSound(650); buddySay(cx, cy - 55, pokeSkin().emoji + ' Wheee!'); }
+        function pokeHop(cx, cy) { squashBuddy(); bd.vy -= 3; bd.vx += (Math.random() - 0.5) * 5; buddySay(cx, cy - 55, pokeSkin().emoji + ' ' + buddySays[Math.floor(Math.random() * buddySays.length)]); }
+        function pokeGiggle(cx, cy) { buddyAnim('buddy-giggle', 600); buddySay(cx, cy - 55, 'Hehehe! That tickles!'); popSound(880); setTimeout(() => popSound(990), 130); }
+        function pokeInflate(cx, cy) { buddyAnim('buddy-inflate', 1600); buddySay(cx, cy - 55, 'Puffing UP!'); popSound(300); setTimeout(() => popSound(160), 900); }
+        function pokeGhost(cx, cy) { buddyAnim('buddy-ghost', 1800); buddySay(cx, cy - 55, 'Boo! 👻 Miss me?'); popSound(240); }
+        function pokeSparkle(cx, cy) {
+            buddySay(cx, cy - 55, '✨ SO sparkly!');
+            if (typeof vfxBurst === 'function') vfxBurst(bd.x + 40, bd.y + 40, ['✨', '💫', '⭐'], 14);
+            popSound(900); setTimeout(() => popSound(1100), 120);
+            if (bd.el) {
+                bd.el.style.filter = 'brightness(1.6) drop-shadow(0 0 16px gold)';
+                setTimeout(() => { if (bd.el) bd.el.style.filter = ''; }, 1500);
+            }
+        }
+        function pokeShapeShift(cx, cy) {
+            if (!bd.el) return;
+            const shapes = ['60% 40% 55% 45% / 45% 55% 40% 60%', '30%', '50% 20% 50% 20%', '70% 30% 60% 40% / 30% 70% 40% 60%', '20% 80% 20% 80%'];
+            const orig = bd.el.style.borderRadius;
+            bd.el.style.transition = 'border-radius 0.4s ease';
+            bd.el.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
+            buddySay(cx, cy - 55, '🌀 Shape shift!');
+            popSound(700); setTimeout(() => popSound(500), 300);
+            setTimeout(() => {
+                if (!bd.el) return;
+                bd.el.style.borderRadius = orig || '50%';
+                setTimeout(() => { if (bd.el) bd.el.style.transition = 'none'; }, 450);
+            }, 1500);
+        }
+        function pokeSplit(cx, cy) {
+            if (!bd.el || bd.splitting) return;
+            bd.splitting = true;
+            bd.el.style.visibility = 'hidden';
+            const skin = pokeSkin();
+            const minis = [];
+            for (let i = 0; i < 5; i++) {
+                const mB = document.createElement('div');
+                mB.className = 'mini-buddy';
+                mB.style.background = 'radial-gradient(circle, ' + skin.colors.accent + ', ' + skin.colors.primary + ')';
+                mB.style.left = (bd.x + 25) + 'px';
+                mB.style.top = (bd.y + 25) + 'px';
+                document.body.appendChild(mB);
+                minis.push(mB);
+                popSound(500 + i * 70);
+            }
+            buddySay(cx, cy - 55, '💥 We are MANY!');
+            requestAnimationFrame(() => {
+                minis.forEach(mB => {
+                    mB.style.left = Math.max(10, Math.min(window.innerWidth - 40, bd.x + (Math.random() * 280 - 140))) + 'px';
+                    mB.style.top = Math.max(10, Math.min(window.innerHeight - 40, bd.y + (Math.random() * 240 - 120))) + 'px';
+                });
+            });
+            setTimeout(() => {
+                minis.forEach(mB => { mB.style.left = (bd.x + 25) + 'px'; mB.style.top = (bd.y + 25) + 'px'; });
+                [400, 500, 600, 700, 800].forEach((f, i) => setTimeout(() => popSound(f), i * 90));
+                setTimeout(() => {
+                    minis.forEach(mB => mB.remove());
+                    if (bd.el) bd.el.style.visibility = 'visible';
+                    squashBuddy();
+                    buddySay(bd.x + 40, bd.y - 25, '🤝 Back together!');
+                    bd.splitting = false;
+                }, 680);
+            }, 1500);
+        }
+        function pokeOrbit(cx, cy) {
+            if (!bd.el || bd.orbiting) return;
+            bd.orbiting = true;
+            const w = window.innerWidth - 80, h = window.innerHeight - 80;
+            const home = [bd.x, bd.y];
+            const stops = [[10, 10], [w, 10], [w, h], [10, h], home];
+            bd.el.style.transition = 'left 0.45s linear, top 0.45s linear';
+            buddySay(cx, cy - 55, '🌍 Around the world!');
+            let k = 0;
+            const step = () => {
+                if (!bd.el || k >= stops.length) {
+                    if (bd.el) bd.el.style.transition = 'none';
+                    bd.orbiting = false;
+                    return;
+                }
+                bd.x = stops[k][0]; bd.y = stops[k][1];
+                positionBuddy();
+                popSound(400 + k * 90);
+                k++;
+                setTimeout(step, 470);
+            };
+            step();
+        }
+        function pokeDash(cx, cy) {
+            bd.vx = (Math.random() < 0.5 ? 1 : -1) * 34;
+            bd.vy = (Math.random() - 0.5) * 6;
+            buddySay(cx, cy - 55, '🌈 ZOOM ZOOM!');
+            let n = 0;
+            const tr = setInterval(() => {
+                if (!bd.el || n++ > 14) { clearInterval(tr); return; }
+                const dot = document.createElement('div');
+                dot.textContent = ['🌈', '✨', '💨'][n % 3];
+                dot.style.cssText = 'position:fixed;left:' + (bd.x + 30) + 'px;top:' + (bd.y + 30) + 'px;z-index:2999;pointer-events:none;transition:opacity .6s;font-size:1rem;';
+                document.body.appendChild(dot);
+                requestAnimationFrame(() => { dot.style.opacity = '0'; });
+                setTimeout(() => dot.remove(), 650);
+            }, 55);
+        }
+        function pokeSneeze(cx, cy) {
+            buddySay(cx, cy - 55, 'Ah... ah... AH-CHOO! 🤧');
+            buddyAnim('buddy-inflate', 1600);
+            setTimeout(() => {
+                popSound(180);
+                bd.vx -= 12;
+                if (typeof vfxBurst === 'function') vfxBurst(bd.x + 40, bd.y + 40, ['💦', '✨'], 8);
+            }, 800);
+        }
+        function pokeSing(cx, cy) {
+            buddySay(cx, cy - 55, '🎤 Laaa la la LAAA!');
+            [523, 587, 659, 784, 659, 880, 1046].forEach((f, i) => setTimeout(() => popSound(f), i * 200));
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => buddySay(bd.x + Math.random() * 80, bd.y - 20 - Math.random() * 30, ['🎵', '🎶', '♪'][i % 3]), i * 300);
+            }
+        }
+        function pokeJuggle(cx, cy) {
+            buddySay(cx, cy - 55, '🤹 Juggle time!');
+            const spans = ['🍎', '⭐', '🎾'].map((e, i) => {
+                const s = document.createElement('div');
+                s.className = 'jug-item';
+                s.textContent = e;
+                s.style.left = (bd.x + 32) + 'px';
+                s.style.top = (bd.y - 10) + 'px';
+                s.style.animationDelay = (i * 0.26) + 's';
+                document.body.appendChild(s);
+                return s;
+            });
+            [500, 640, 560, 700].forEach((f, i) => setTimeout(() => popSound(f), i * 260));
+            setTimeout(() => spans.forEach(s => s.remove()), 2300);
+        }
+        function pokeRecolor(cx, cy) { recolorBuddy(); }
+
         function pokeBuddy(cx, cy) {
             bd.pokes++;
-            const skin = buddySkins[currentBuddySkin] || buddySkins['default'];
+            const skin = pokeSkin();
             if (bd.pokes % 10 === 0) {
                 bd.el.classList.add('buddy-disco');
                 buddySay(cx, cy - 100, '🎉 DISCO ' + skin.name.toUpperCase() + '! 🎉');
@@ -2144,23 +2590,8 @@
                 buddyStuntZoom();
                 buddySay(cx, cy - 55, 'INCOMING!');
             } else {
-                const mv = ['dance', 'jump', 'spin', 'hop'][Math.floor(Math.random() * 4)];
-                if (mv === 'dance') {
-                    danceBuddy(cx, cy);
-                    buddySay(cx, cy - 55, skin.emoji + ' Dance party!');
-                } else if (mv === 'jump') {
-                    buddyAnim('buddy-jump', 700);
-                    popSound(500); setTimeout(() => popSound(700), 250);
-                    buddySay(cx, cy - 55, skin.emoji + ' ' + buddySays[Math.floor(Math.random() * buddySays.length)]);
-                } else if (mv === 'spin') {
-                    buddyAnim('buddy-spin', 800);
-                    popSound(650);
-                    buddySay(cx, cy - 55, skin.emoji + ' Wheee!');
-                } else {
-                    squashBuddy();
-                    bd.vy -= 3; bd.vx += (Math.random() - 0.5) * 5;
-                    buddySay(cx, cy - 55, skin.emoji + ' ' + buddySays[Math.floor(Math.random() * buddySays.length)]);
-                }
+                const tricks = [pokeDance, pokeJump, pokeSpin, pokeHop, pokeGiggle, pokeInflate, pokeGhost, pokeSparkle, pokeShapeShift, pokeSplit, pokeOrbit, pokeDash, pokeSneeze, pokeSing, pokeJuggle, pokeRecolor];
+                tricks[Math.floor(Math.random() * tricks.length)](cx, cy);
             }
         }
 
@@ -2217,7 +2648,8 @@
                 o.type = 'sine';
                 o.frequency.setValueAtTime(freq, audioCtx.currentTime);
                 o.frequency.exponentialRampToValueAtTime(freq * 2.2, audioCtx.currentTime + 0.08);
-                g.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                const master = Math.min(1, Math.max(0.05, (typeof appSettings.volume === 'number' ? appSettings.volume : 100) / 100));
+                g.gain.setValueAtTime(0.12 * master, audioCtx.currentTime);
                 g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
                 o.connect(g); g.connect(audioCtx.destination);
                 o.start(); o.stop(audioCtx.currentTime + 0.2);
@@ -2326,7 +2758,7 @@
             inp.disabled = true;
             inp.placeholder = buddyName + ' is talking... 🗣️';
             document.querySelector('.input-container button').disabled = true;
-            document.getElementById('micBtn').disabled = true;
+            // NOTE: the mic button is never disabled - turning the mic off must always work
             clearTimeout(lockInput._t);
             lockInput._t = setTimeout(unlockInput, 45000); // failsafe: never stay stuck
         }
@@ -2337,7 +2769,6 @@
             inp.disabled = false;
             inp.placeholder = 'Type your message here...';
             document.querySelector('.input-container button').disabled = false;
-            document.getElementById('micBtn').disabled = false;
             inp.focus();
         }
         function doneChime() {
@@ -2363,7 +2794,10 @@
                 'happy':      { rate: 1.01, pitch: 1.06, volume: 0.95 },
                 'caring':     { rate: 0.88, pitch: 0.99, volume: 0.88 },
                 'thoughtful': { rate: 0.84, pitch: 0.96, volume: 0.85 },
-                'playful':    { rate: 1.02, pitch: 1.05, volume: 0.93 }
+                'playful':    { rate: 1.02, pitch: 1.05, volume: 0.93 },
+                'sad':        { rate: 0.8,  pitch: 0.95, volume: 0.82 },
+                'surprised':  { rate: 1.07, pitch: 1.1,  volume: 0.97 },
+                'confused':   { rate: 0.87, pitch: 1.01, volume: 0.9 }
             };
             const m = moodMap[mood] || moodMap['friendly'];
             const userRate = (appSettings.rate || 100) / 100;
@@ -2378,11 +2812,14 @@
                 const clean = cleanForSpeech(raw);
                 if (!clean) { setTimeout(() => speakNext(i + 1), 150); return; }
                 const u = new SpeechSynthesisUtterance(clean);
-                // subtle human cadence: every sentence varies a touch
-                const humanize = 0.97 + Math.random() * 0.06;
-                u.rate = Math.min(2, Math.max(0.3, m.rate * tone.rate * userRate * humanize));
-                u.pitch = Math.min(2, Math.max(0.3, m.pitch * tone.pitch * userPitch * (0.99 + Math.random() * 0.02)));
-                u.volume = Math.min(1, Math.max(0, m.volume * userVol));
+                // voice character + subtle human cadence (same voice, new personality of sound)
+                const vs = VOICE_STYLES[appSettings.voiceStyle] || VOICE_STYLES.normal;
+                const wob = typeof vs.wob === 'number' ? vs.wob : 0.06;
+                const humanize = (1 - wob / 2) + Math.random() * wob;
+                const altShift = vs.alt ? (i % 2 === 0 ? 1.12 : 0.9) : 1;
+                u.rate = Math.min(2, Math.max(0.3, m.rate * tone.rate * userRate * vs.r * humanize));
+                u.pitch = Math.min(2, Math.max(0.3, m.pitch * tone.pitch * userPitch * vs.p * altShift * (0.99 + Math.random() * 0.02)));
+                u.volume = Math.min(1, Math.max(0, m.volume * userVol * (vs.v || 1)));
                 let chosenVoice = null;
                 if (appSettings.voiceName) {
                     chosenVoice = window.speechSynthesis.getVoices().find(v => v.name === appSettings.voiceName) || null;
@@ -2540,16 +2977,21 @@
             document.getElementById('ageInput').value = currentAge;
             document.getElementById('userNameInput').value = userName;
             document.getElementById('buddyNameInput').value = buddyName === 'Buddy' ? '' : buddyName;
+            document.getElementById('genderSelect').value = buddyGender;
             applyTheme(currentTheme);
             applyBuddySkin(currentBuddySkin);
             updateThemeCards();
             updateBuddySkinCards();
             applySettings();
             populateVoiceList();
+            buildVoiceStyleOptions();
+            startOnboarding();
+            wordOfTheDay();
             window.__buddyLoaded = true;
         });
     </script>
     <script src="games.js"></script>
     <script src="visuals.js"></script>
+    <script src="space.js"></script>
 </body>
 </html>
