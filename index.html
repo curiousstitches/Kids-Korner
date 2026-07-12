@@ -96,6 +96,94 @@
             border-width: 3px;
         }
         
+        /* Buddy's House - themed to whatever skin he's wearing, sits where he starts off.
+           Tap it to let him out; it looks "empty" while he's roaming free. */
+        .buddy-house {
+            width: 130px;
+            margin: 0 auto 8px;
+            cursor: pointer;
+            position: relative;
+            transition: filter 0.3s ease;
+        }
+        .buddy-house:hover .house-body { filter: brightness(1.05); }
+        .house-roof {
+            width: 0;
+            height: 0;
+            margin: 0 auto;
+            border-left: 68px solid transparent;
+            border-right: 68px solid transparent;
+            border-bottom: 36px solid var(--bd-accent2, #764ba2);
+            filter: drop-shadow(0 3px 3px rgba(0,0,0,0.2));
+            transition: border-bottom-color 0.4s ease;
+        }
+        .house-body {
+            width: 116px;
+            margin: 0 auto;
+            padding-top: 16px;
+            background: var(--bd-accent, #ffd166);
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            transition: background 0.4s ease, filter 0.3s ease;
+        }
+        .house-window {
+            position: absolute;
+            top: 18px;
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            background: var(--bd-accent2, #764ba2);
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.55);
+            opacity: 0.9;
+            transition: background 0.4s ease, opacity 0.4s ease;
+        }
+        .house-window-l { left: 12px; }
+        .house-window-r { right: 12px; }
+        .house-door {
+            width: 82px;
+            height: 82px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: visible;
+        }
+        .house-door .buddy-face { margin: 0 auto; }
+        /* Buddy's out playing - house looks quiet until he comes home */
+        .buddy-house.buddy-house-empty .house-window { background: #3a3a45; opacity: 0.55; }
+        .buddy-house.buddy-house-empty .house-body { filter: grayscale(0.35) brightness(0.92); }
+        .buddy-house.buddy-house-empty .house-roof { filter: grayscale(0.35) brightness(0.92) drop-shadow(0 3px 3px rgba(0,0,0,0.2)); }
+
+        /* Decorate button + earned house decorations */
+        .house-decorate-btn {
+            position: absolute; bottom: -6px; right: -10px; width: 26px; height: 26px; border-radius: 50%;
+            border: 2px solid white; background: var(--accent, #ffd166); font-size: 0.85rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .house-decorate-btn:hover { transform: scale(1.15) rotate(-8deg); }
+        .house-decor { position: absolute; font-size: 1.1rem; pointer-events: none; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.25)); }
+        .decor-mat { bottom: -8px; left: 50%; transform: translateX(-50%); font-size: 1rem; }
+        .decor-flowerbox { bottom: 14px; left: 6px; }
+        .decor-birdhouse { top: -34px; right: 6px; }
+        .decor-lights { top: -2px; left: 50%; transform: translateX(-50%); font-size: 0.9rem; opacity: 0.55; transition: opacity 8s linear; }
+        body.vfx-night .decor-lights { opacity: 1; filter: drop-shadow(0 0 6px gold); }
+        .decor-gnome { bottom: -6px; right: -6px; font-size: 1rem; }
+        .decor-weathervane { top: -46px; left: 50%; transform: translateX(-50%); font-size: 0.9rem; }
+        .decor-fountain { bottom: -10px; left: -18px; }
+        .decor-wreath { top: 34px; left: 50%; transform: translateX(-50%); font-size: 0.85rem; }
+
+        /* Buddy 3D: once a real lit/shaded 3D character is rendered into a .buddy-face,
+           hide the flat 2D fallback pieces underneath it (eyes, mouth, CSS accessories).
+           If Buddy 3D never mounts (no WebGL / library blocked), this class never gets added
+           and the original flat face keeps working exactly as before. */
+        .buddy-face.buddy-3d-active { background: transparent !important; }
+        .buddy-face.buddy-3d-active::before,
+        .buddy-face.buddy-3d-active::after,
+        .buddy-face.buddy-3d-active > .mouth,
+        .buddy-face.buddy-3d-active > .b-part:not(.b-top) { display: none !important; }
+
         @keyframes bob {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-5px); }
@@ -260,17 +348,23 @@
             padding: 20px;
             text-align: center;
             border-radius: 0 0 30px 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.35) inset, 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
             position: relative;
             z-index: 5; /* keeps the growing/talking Buddy above the chat */
         }
         .header h1 { font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
         
         .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .message { max-width: 80%; padding: 15px 20px; border-radius: 25px; animation: fadeIn 0.5s ease; line-height: 1.4; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .user-message { background: white; align-self: flex-end; border: 3px solid var(--primary); border-bottom-right-radius: 5px; }
-        .ai-message { background: #e8f3ff; align-self: flex-start; border: 3px solid var(--secondary); border-bottom-left-radius: 5px; position: relative; }
+        .message { max-width: 80%; padding: 15px 20px; border-radius: 25px; animation: fadeIn 0.45s cubic-bezier(.2,.85,.35,1.3); line-height: 1.4; }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(14px) scale(0.94); }
+            65% { opacity: 1; transform: translateY(-2px) scale(1.015); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .user-message { background: white; align-self: flex-end; border: 3px solid var(--primary); border-bottom-right-radius: 5px; position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.14), 0 1px 0 rgba(255,255,255,0.8) inset; }
+        .ai-message { background: #e8f3ff; align-self: flex-start; border: 3px solid var(--secondary); border-bottom-left-radius: 5px; position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.14), 0 1px 0 rgba(255,255,255,0.8) inset; }
+        .user-message::before, .ai-message::before { content: ''; position: absolute; inset: 0 0 55% 0; background: linear-gradient(to bottom, rgba(255,255,255,0.45), transparent); pointer-events: none; }
         .read-btn {
             position: absolute;
             right: 10px;
@@ -343,15 +437,19 @@
             transition: all 0.3s ease;
         }
         .settings-modal.active { opacity: 1; visibility: visible; }
-        
+
         .settings-content {
-            background: white;
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(20px) saturate(1.5);
+            -webkit-backdrop-filter: blur(20px) saturate(1.5);
+            border: 1px solid rgba(255,255,255,0.6);
             border-radius: 20px;
             padding: 30px;
             max-width: 90%;
             max-height: 80%;
             overflow-y: auto;
             position: relative;
+            box-shadow: 0 24px 70px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.7) inset;
             animation: scaleIn 0.5s ease-out;
         }
         @keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -419,27 +517,29 @@
         .message { color: var(--msg-color, var(--text)); font-size: var(--msg-size, 1rem); }
 
         /* ===== Sparkly Thinking Bubble ===== */
+        /* Photosensitive-safe thinking bubble: soft close-toned colors, slow gentle motion,
+           no rapid color cycling, no flashing (epilepsy-safe by design) */
         .thinking-bubble {
             display: flex; align-items: center; gap: 10px; position: relative; overflow: visible;
-            background: linear-gradient(270deg, #ffd166, #ff6b9d, #a855f7, #00d4ff, #2ec4b6, #ffd166);
-            background-size: 1200% 1200%; animation: rainbowShift 2.5s ease infinite;
-            border: 3px solid rgba(255,255,255,0.8) !important;
-            box-shadow: 0 0 20px rgba(255, 105, 180, 0.7), 0 0 40px rgba(168, 85, 247, 0.4);
-            color: white !important; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+            background: linear-gradient(135deg, #8b9cf5, #a89af7, #8b9cf5);
+            background-size: 300% 300%; animation: calmShift 9s ease-in-out infinite alternate;
+            border: 3px solid rgba(255,255,255,0.75) !important;
+            box-shadow: 0 4px 16px rgba(120, 130, 220, 0.4);
+            color: white !important; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.35);
         }
-        @keyframes rainbowShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes calmShift { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
         .thinking-dots span {
             display: inline-block; width: 10px; height: 10px; margin: 0 2px; background: white;
-            border-radius: 50%; animation: dotBounce 1s infinite; box-shadow: 0 0 8px white;
+            border-radius: 50%; animation: dotSoft 2.4s ease-in-out infinite;
         }
-        .thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
-        .thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
-        @keyframes dotBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-9px) scale(1.3); } }
-        .sparkle { position: absolute; top: 0; font-size: 1.1rem; animation: sparkleFly 1.6s ease-in-out infinite; pointer-events: none; }
+        .thinking-dots span:nth-child(2) { animation-delay: 0.4s; }
+        .thinking-dots span:nth-child(3) { animation-delay: 0.8s; }
+        @keyframes dotSoft { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+        .sparkle { position: absolute; top: 0; font-size: 1rem; animation: sparkleFly 4s ease-in-out infinite; pointer-events: none; }
         @keyframes sparkleFly {
-            0% { transform: translateY(2px) scale(0.4) rotate(0deg); opacity: 0; }
-            30% { opacity: 1; }
-            100% { transform: translateY(-38px) scale(1.4) rotate(200deg); opacity: 0; }
+            0% { transform: translateY(2px) scale(0.6); opacity: 0; }
+            35% { opacity: 0.8; }
+            100% { transform: translateY(-30px) scale(1); opacity: 0; }
         }
 
         /* ===== Free-Roaming Interactive Buddy ===== */
@@ -462,10 +562,10 @@
             55% { transform: scale(6.5) rotate(-8deg); }
             100% { transform: scale(1) rotate(0); }
         }
-        .buddy-disco { animation: discoSpin 0.5s linear infinite !important; }
+        .buddy-disco { animation: discoSpin 2.6s linear infinite !important; } /* slow + gentle: photosensitive-safe */
         @keyframes discoSpin {
-            from { filter: hue-rotate(0deg) saturate(2.5); transform: rotate(0deg) scale(1.1); }
-            to { filter: hue-rotate(360deg) saturate(2.5); transform: rotate(360deg) scale(1.1); }
+            from { filter: hue-rotate(0deg) saturate(1.6); transform: rotate(0deg) scale(1.08); }
+            to { filter: hue-rotate(360deg) saturate(1.6); transform: rotate(360deg) scale(1.08); }
         }
         .skin-badge { position: absolute; bottom: -7px; right: -9px; font-size: 1.35rem; pointer-events: none; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)); }
         .buddy-dance { animation: buddyDance 1.8s ease-in-out !important; }
@@ -489,7 +589,7 @@
         /* ===== Rock-solid talking Buddy =====
            At rest: ONE smooth bob on a GPU layer (no competing rules = no shaking).
            Talking: bob switches OFF, a plain !important transform grows him - nothing can hide him. */
-        .buddy-face { will-change: transform; backface-visibility: hidden; }
+        .buddy-face { will-change: transform; backface-visibility: hidden; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.28)); }
         .header .buddy-face { animation: buddyBob 6s ease-in-out infinite; }
         .header .buddy-face:hover { animation-play-state: paused; } /* holds perfectly still when you point at him */
         @keyframes buddyBob {
@@ -545,10 +645,12 @@
             box-shadow: 0 3px 8px rgba(0,0,0,0.25); cursor: pointer; transition: transform 0.15s;
         }
         .swatch:hover { transform: scale(1.18); }
-        .confetti { position: fixed; z-index: 4000; font-size: 1.4rem; pointer-events: none; animation: confettiFly 1.6s ease-out forwards; }
+        .confetti { position: fixed; z-index: 4000; font-size: 1.4rem; pointer-events: none; animation: confettiFly 1.6s cubic-bezier(.15,.7,.3,1) forwards; }
         @keyframes confettiFly {
-            0% { transform: translate(0, 0) rotate(0); opacity: 1; }
-            100% { transform: translate(var(--dx), var(--dy)) rotate(340deg); opacity: 0; }
+            0% { transform: translate(0, 0) scale(0.4) rotate(0); opacity: 0; }
+            15% { opacity: 1; }
+            45% { transform: translate(calc(var(--dx) * 0.55), calc(var(--dy) * 1.15)) scale(var(--peak-scale, 1.1)) rotate(calc(var(--rot, 480deg) * 0.6)); }
+            100% { transform: translate(var(--dx), var(--dy)) scale(0.75) rotate(var(--rot, 480deg)); opacity: 0; }
         }
 
         /* Add-to-home-screen banner */
@@ -620,6 +722,14 @@
         .b-bolts::before, .b-bolts::after { content: ''; position: absolute; top: 33px; width: 10px; height: 10px; border-radius: 50%; background: #9ca3af; }
         .b-bolts::before { left: -5px; }
         .b-bolts::after { right: -5px; }
+        .b-shell { bottom: -10px; left: 50%; transform: translateX(-50%); width: 58px; height: 34px; background: var(--bd-accent2, #6B4A2F); border-radius: 50% 50% 20% 20%; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15); }
+        .b-tentacles { bottom: -22px; left: 50%; transform: translateX(-50%); width: 60px; height: 24px; }
+        .b-tentacles::before, .b-tentacles::after { content: ''; position: absolute; top: 0; width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 22px solid var(--bd-accent2, #C9A0DC); }
+        .b-tentacles::before { left: 6px; transform: rotate(-10deg); }
+        .b-tentacles::after { right: 6px; transform: rotate(10deg); }
+        .b-cherry-top { top: -20px; left: 50%; transform: translateX(-50%); width: 14px; height: 14px; border-radius: 50%; background: var(--bd-accent, #E53935); box-shadow: 0 -8px 0 -3px #4a2f1f; }
+        .b-lava-top { top: -22px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 24px solid var(--bd-accent, #FFD54F); filter: drop-shadow(0 0 6px var(--bd-accent, #FFD54F)); }
+        .b-mushroom-cap { top: -22px; left: 50%; transform: translateX(-50%); width: 62px; height: 30px; background: var(--bd-accent2, #FFF8E1); border-radius: 50% 50% 0 0; box-shadow: inset 12px -10px 0 -8px rgba(255,255,255,0.6), inset -14px -10px 0 -9px rgba(255,255,255,0.6); }
 
         /* ===== New poke tricks ===== */
         .buddy-giggle { animation: buddyGiggle 0.6s linear !important; }
@@ -645,11 +755,22 @@
 </head>
 <body>
     <div class="header">
-        <div class="buddy-face">
-            <div class="mouth"></div>
+        <div class="buddy-house">
+            <div class="house-roof"></div>
+            <div class="house-body">
+                <div class="house-window house-window-l"></div>
+                <div class="house-window house-window-r"></div>
+                <div class="house-door">
+                    <div class="buddy-face">
+                        <div class="mouth"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="house-decorate-btn" onpointerdown="event.stopPropagation();" onclick="event.stopPropagation(); openHouseDecorator();" title="Decorate the house!">🎨</button>
         </div>
         <h1>👋 Hi there! I'm Buddy</h1>
         <p>Your AI friend who loves to chat and have fun!</p>
+        <button class="settings-btn" style="right: 65px;" onclick="newAdventure()" title="Start a brand-new adventure (clears our chat)">🧹</button>
         <button class="settings-btn" onclick="openSettings()">⚙️</button>
     </div>
     
@@ -747,6 +868,13 @@
                     <label>Voice
                         <select id="voiceSelect" onchange="updateSetting('voiceName', this.value)"><option value="">Auto (best match)</option></select>
                     </label>
+                    <label>Mic focus
+                        <select id="micFocusSelect" onchange="updateSetting('micFocus', this.value)">
+                            <option value="open">👂 Hear everything</option>
+                            <option value="focused">🎯 Main voice only (recommended)</option>
+                            <option value="strict">🔒 Strict — clear, close speech only</option>
+                        </select>
+                    </label>
                     <label>Speed<input type="range" id="rateSlider" min="50" max="150" oninput="updateSetting('rate', +this.value)"></label>
                     <label>Pitch<input type="range" id="pitchSlider" min="50" max="150" oninput="updateSetting('pitch', +this.value)"></label>
                     <label>Volume<input type="range" id="volumeSlider" min="0" max="100" oninput="updateSetting('volume', +this.value)"></label>
@@ -756,6 +884,7 @@
                     <label class="check-row"><input type="checkbox" id="funFactsCheck" onchange="updateSetting('funFacts', this.checked)"> Sprinkle in fun facts</label>
                     <label class="check-row"><input type="checkbox" id="lifelikeCheck" onchange="updateSetting('lifelike', this.checked)"> Lifelike voice (premium — needs voice key on server)</label>
                     <label class="check-row"><input type="checkbox" id="skyCheck" onchange="updateSetting('sky', this.checked)"> Sky scenery (moon, stars, city, snow)</label>
+                    <label class="check-row"><input type="checkbox" id="reduceMotionCheck" onchange="updateSetting('reduceMotion', this.checked)"> 🧘 Reduce Buddy's motion (holds extra still — good for sensitive eyes)</label>
                 </div>
             </div>
 
@@ -771,6 +900,13 @@
             
             <div class="buddy-skins" id="buddySkinsGrid">
                 <!-- Buddy skins will be generated by JavaScript -->
+            </div>
+
+            <h2 style="margin-top: 30px; margin-bottom: 15px; color: #333;">🎁 Extra Accessories</h2>
+            <p style="margin-bottom: 15px; color: #666;">Mix and match one extra piece onto ANY skin!</p>
+
+            <div class="buddy-skins" id="accessoryGrid">
+                <!-- Accessories will be generated by JavaScript -->
             </div>
         </div>
     </div>
@@ -788,6 +924,48 @@
             if (window.__buddyLoaded) {
                 showAIResponse('💛 Got it! That\'s me! Thanks for letting me be myself, ' + (userName || 'friend') + '!', 'happy');
             }
+        }
+
+        // ===== New Adventure: wipe the chat, keep Buddy exactly who he is =====
+        function newAdventure() {
+            if (!confirm('Start a brand-new adventure? Our chat gets wiped clean - but I stay ME (same name, same look, and I still remember you)!')) return;
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            speechRun++;
+            setBuddyTalking(false);
+            hideThinking();
+            unlockInput();
+            if (typeof resetGame === 'function') resetGame();
+            if (typeof closeSpace === 'function') closeSpace();
+            conversationHistory = [];
+            messageCount = 0;
+            saveUserData();
+            document.getElementById('chatContainer').innerHTML = '';
+            showAIResponse('🧹 Fresh page, ' + (userName || 'friend') + '! New adventure time - should we draw something, play a game, or just talk?', 'excited');
+            if (typeof burstConfetti === 'function') burstConfetti();
+        }
+
+        // ===== Change Buddy by ASKING (text or voice): "become a dragon!" =====
+        const SKIN_ALIASES = {
+            dog: 'dog', doggy: 'dog', puppy: 'dog', cat: 'cat', kitty: 'cat', kitten: 'cat',
+            dino: 'dino', dinosaur: 'dino', unicorn: 'unicorn', panda: 'panda', pirate: 'pirate',
+            robot: 'robot', dragon: 'dragon', mermaid: 'mermaid', superhero: 'superhero', hero: 'superhero',
+            cowboy: 'cowboy', princess: 'princess', viking: 'viking', chef: 'chef', musician: 'musician',
+            scientist: 'scientist', knight: 'knight', wizard: 'wizard', farmer: 'farmer', pilot: 'pilot',
+            astronaut: 'astronaut', classic: 'default', normal: 'default',
+            fox: 'fox', foxy: 'fox', owl: 'owl', turtle: 'turtle', tortoise: 'turtle',
+            bee: 'bee', bumblebee: 'bee', frog: 'frog', toad: 'frog', shark: 'shark',
+            ladybug: 'ladybug', ladybird: 'ladybug', squid: 'squid', octopus: 'squid',
+            cupcake: 'cupcake', muffin: 'cupcake', volcano: 'volcano', magma: 'volcano', lava: 'volcano',
+            frosty: 'frosty', snowman: 'frosty', snowflake: 'frosty', cactus: 'cactus',
+            ninja: 'ninja', alien: 'alien', ufo: 'alien', ghost: 'ghost', boo: 'ghost',
+            cosmo: 'cosmo', star: 'cosmo', comet: 'cosmo', genie: 'genie',
+            mushroom: 'mushroom', fungi: 'mushroom', lantern: 'lantern', firefly: 'lantern',
+            penguin: 'penguin', koala: 'koala', peacock: 'peacock'
+        };
+        function detectSkinRequest(msg) {
+            const m = msg.match(/\b(?:become|turn into|change into|transform into|be a|be an)\s+(?:a |an |the )?([a-z]+)/i);
+            if (!m) return null;
+            return SKIN_ALIASES[m[1].toLowerCase()] || null;
         }
 
         // ===== First-visit guided setup: Buddy interviews his new friend =====
@@ -850,7 +1028,7 @@
         }
 
         // ===== App Settings (saved on this device) =====
-        const defaultSettings = { font: 'comic', textSize: 'medium', textColor: '#333333', animation: 100, vibrancy: 50, depth: 50, voiceName: '', voiceStyle: 'normal', rate: 100, pitch: 100, volume: 100, autoRead: true, funFacts: true, lifelike: false, sky: true };
+        const defaultSettings = { font: 'comic', textSize: 'medium', textColor: '#333333', animation: 100, vibrancy: 50, depth: 50, voiceName: '', voiceStyle: 'normal', rate: 100, pitch: 100, volume: 100, autoRead: true, funFacts: true, lifelike: false, sky: true, micFocus: 'focused', reduceMotion: false };
         let appSettings = Object.assign({}, defaultSettings, JSON.parse(localStorage.getItem('buddy_settings') || '{}'));
 
         const fontMap = {
@@ -924,6 +1102,8 @@
                 if (el) el.style.filter = filterVal;
             });
             document.body.classList.toggle('sky-off', appSettings.sky === false);
+            // Keep the 3D engine's motion gate (buddy3d.js reduceMotion()) in sync with this setting.
+            try { localStorage.setItem('buddy_reduce_motion', appSettings.reduceMotion ? '1' : '0'); } catch (e) { /* ignore */ }
 
             let animStyle = document.getElementById('animCtl');
             if (!animStyle) { animStyle = document.createElement('style'); animStyle.id = 'animCtl'; document.head.appendChild(animStyle); }
@@ -953,6 +1133,8 @@
             const ff = document.getElementById('funFactsCheck'); if (ff) ff.checked = !!appSettings.funFacts;
             const lf = document.getElementById('lifelikeCheck'); if (lf) lf.checked = !!appSettings.lifelike;
             const sk = document.getElementById('skyCheck'); if (sk) sk.checked = appSettings.sky !== false;
+            const mf = document.getElementById('micFocusSelect'); if (mf) mf.value = appSettings.micFocus || 'focused';
+            const rm = document.getElementById('reduceMotionCheck'); if (rm) rm.checked = !!appSettings.reduceMotion;
         }
 
         function populateVoiceList() {
@@ -981,6 +1163,7 @@
         }
         let currentTheme = localStorage.getItem('buddy_theme') || 'default';
         let currentBuddySkin = localStorage.getItem('buddy_skin') || 'default';
+        let currentAccessory = localStorage.getItem('buddy_accessory') || 'none';
         let messageCount = 0;
         let userInterests = JSON.parse(localStorage.getItem('buddy_interests') || '[]');
         let userFavorites = JSON.parse(localStorage.getItem('buddy_favorites') || '{}');
@@ -1319,7 +1502,29 @@
                 name: 'Kitty Buddy',
                 colors: { primary: '#8d8d94', secondary: '#5f5f66', accent: '#d9d9de' },
                 emoji: '🐱'
-            }
+            },
+            'fox': { name: 'Fox Buddy', colors: { primary: '#D2691E', secondary: '#FFF5E6', accent: '#FFFFFF' }, emoji: '🦊' },
+            'owl': { name: 'Owl Buddy', colors: { primary: '#8B6F47', secondary: '#D2B48C', accent: '#FFD700' }, emoji: '🦉' },
+            'turtle': { name: 'Turtle Buddy', colors: { primary: '#4C8C4A', secondary: '#6B4A2F', accent: '#A8E6A1' }, emoji: '🐢' },
+            'bee': { name: 'Bee Buddy', colors: { primary: '#FFC107', secondary: '#2B2B2B', accent: '#FFF8E1' }, emoji: '🐝' },
+            'frog': { name: 'Frog Buddy', colors: { primary: '#4CAF50', secondary: '#8BC34A', accent: '#FFEB3B' }, emoji: '🐸' },
+            'shark': { name: 'Shark Buddy', colors: { primary: '#5C7A8A', secondary: '#E8ECEE', accent: '#FF5252' }, emoji: '🦈' },
+            'ladybug': { name: 'Ladybug Buddy', colors: { primary: '#E53935', secondary: '#212121', accent: '#FFCDD2' }, emoji: '🐞' },
+            'squid': { name: 'Squid Buddy', colors: { primary: '#8E5FB0', secondary: '#C9A0DC', accent: '#FFEB3B' }, emoji: '🦑' },
+            'cupcake': { name: 'Cupcake Buddy', colors: { primary: '#F8BBD0', secondary: '#FFF3E0', accent: '#E53935' }, emoji: '🧁' },
+            'volcano': { name: 'Magma Buddy', colors: { primary: '#B71C1C', secondary: '#FF6F00', accent: '#FFD54F' }, emoji: '🌋' },
+            'frosty': { name: 'Frosty Buddy', colors: { primary: '#81D4FA', secondary: '#E1F5FE', accent: '#FFFFFF' }, emoji: '❄️' },
+            'cactus': { name: 'Cactus Buddy', colors: { primary: '#558B2F', secondary: '#7CB342', accent: '#FFEB3B' }, emoji: '🌵' },
+            'ninja': { name: 'Ninja Buddy', colors: { primary: '#263238', secondary: '#B71C1C', accent: '#ECEFF1' }, emoji: '🥷' },
+            'alien': { name: 'Alien Buddy', colors: { primary: '#7CB342', secondary: '#C5E1A5', accent: '#E1BEE7' }, emoji: '👽' },
+            'ghost': { name: 'Ghost Buddy', colors: { primary: '#E8EAF6', secondary: '#C5CAE9', accent: '#7986CB' }, emoji: '👻' },
+            'cosmo': { name: 'Cosmo Buddy', colors: { primary: '#1A237E', secondary: '#7C4DFF', accent: '#FFD700' }, emoji: '⭐' },
+            'genie': { name: 'Genie Buddy', colors: { primary: '#7B1FA2', secondary: '#FFD700', accent: '#E1BEE7' }, emoji: '🧞' },
+            'mushroom': { name: 'Mushroom Buddy', colors: { primary: '#C62828', secondary: '#FFF8E1', accent: '#EF9A9A' }, emoji: '🍄' },
+            'lantern': { name: 'Lantern Buddy', colors: { primary: '#FF7043', secondary: '#4E342E', accent: '#FFD54F' }, emoji: '🏮' },
+            'penguin': { name: 'Penguin Buddy', colors: { primary: '#263238', secondary: '#FFFFFF', accent: '#FF8F00' }, emoji: '🐧' },
+            'koala': { name: 'Koala Buddy', colors: { primary: '#90A4AE', secondary: '#CFD8DC', accent: '#FF8A80' }, emoji: '🐨' },
+            'peacock': { name: 'Peacock Buddy', colors: { primary: '#00897B', secondary: '#1565C0', accent: '#FFD700' }, emoji: '🦚' }
         };
 
         // How each skin reshapes Buddy's body (ears, horns, spikes, hats...)
@@ -1345,8 +1550,118 @@
             'farmer': { top: '🌾', parts: ['b-cowhat'] },
             'pilot': { top: '✈️', parts: ['b-halo'] },
             'dog': { br: '50% 50% 48% 48% / 55% 55% 45% 45%', parts: ['b-ears-floppy', 'b-tongue', 'b-tail'] },
-            'cat': { br: '48%', parts: ['b-ears-cat', 'b-whiskers', 'b-tail'] }
+            'cat': { br: '48%', parts: ['b-ears-cat', 'b-whiskers', 'b-tail'] },
+            'fox': { parts: ['b-ears-cat', 'b-tail'] },
+            'owl': { parts: ['b-wings', 'b-horns'] },
+            'turtle': { parts: ['b-shell'] },
+            'bee': { parts: ['b-wings', 'b-ant'] },
+            'frog': { parts: ['b-tongue'] },
+            'shark': { parts: ['b-fin', 'b-tail'] },
+            'ladybug': { parts: ['b-wings', 'b-ant'] },
+            'squid': { parts: ['b-tentacles'] },
+            'cupcake': { parts: ['b-cherry-top'] },
+            'volcano': { parts: ['b-lava-top'] },
+            'frosty': { parts: ['b-spikes'] },
+            'cactus': { top: '🌸', parts: ['b-spikes'] },
+            'ninja': { parts: ['b-bandana'] },
+            'alien': { parts: ['b-ant'] },
+            'ghost': {},
+            'cosmo': { top: '✨', parts: ['b-halo'] },
+            'genie': { parts: ['b-chefhat'] },
+            'mushroom': { parts: ['b-mushroom-cap'] },
+            'lantern': { parts: ['b-halo'] },
+            'penguin': {},
+            'koala': { parts: ['b-ears-round'] },
+            'peacock': { parts: ['b-cape'] }
         };
+
+        // Mix-and-match accessories: an extra piece a kid can equip on ANY skin, independent of the
+        // skin's own built-in parts. Reuses the exact same part vocabulary as skinShapes/buddy3d.js.
+        const ACCESSORY_LIST = {
+            'none': { label: 'None', emoji: '🚫', part: null },
+            'horn': { label: 'Unicorn Horn', emoji: '🦄', part: 'b-horn' },
+            'horns': { label: 'Little Horns', emoji: '😈', part: 'b-horns' },
+            'halo': { label: 'Halo', emoji: '😇', part: 'b-halo' },
+            'wings': { label: 'Wings', emoji: '🦋', part: 'b-wings' },
+            'cape': { label: 'Cape', emoji: '🦸', part: 'b-cape' },
+            'bandana': { label: 'Bandana', emoji: '🎗️', part: 'b-bandana' },
+            'cowhat': { label: 'Cowboy Hat', emoji: '🤠', part: 'b-cowhat' },
+            'chefhat': { label: 'Chef Hat', emoji: '👨‍🍳', part: 'b-chefhat' },
+            'earsCat': { label: 'Cat Ears', emoji: '🐱', part: 'b-ears-cat' },
+            'earsFloppy': { label: 'Floppy Ears', emoji: '🐶', part: 'b-ears-floppy' },
+            'tail': { label: 'Fluffy Tail', emoji: '🦊', part: 'b-tail' },
+            'shell': { label: 'Shell', emoji: '🐢', part: 'b-shell' }
+        };
+
+        // Decorations Buddy's house can earn - unlocked permanently by Friendship Level or by an achievement,
+        // then freely toggled on/off around the house. See unlockDecor() / applyHouseDecor() below.
+        const HOUSE_DECOR = {
+            'mat': { emoji: '🧺', label: 'Welcome Mat', unlockType: 'level', unlockValue: 2 },
+            'flowerbox': { emoji: '🌷', label: 'Flower Box', unlockType: 'level', unlockValue: 3 },
+            'birdhouse': { emoji: '🐦', label: 'Bird House', unlockType: 'ach', unlockValue: 'firstDraw' },
+            'lights': { emoji: '💡', label: 'String Lights', unlockType: 'level', unlockValue: 4 },
+            'gnome': { emoji: '🍄', label: 'Garden Gnome', unlockType: 'ach', unlockValue: 'firstGame' },
+            'weathervane': { emoji: '🎏', label: 'Weathervane', unlockType: 'level', unlockValue: 5 },
+            'fountain': { emoji: '⛲', label: 'Fountain', unlockType: 'level', unlockValue: 6 },
+            'wreath': { emoji: '🎋', label: 'Door Wreath', unlockType: 'ach', unlockValue: 'streak3' }
+        };
+        let unlockedHouseDecor = JSON.parse(localStorage.getItem('buddy_house_decor_unlocked') || '[]');
+        let activeHouseDecor = JSON.parse(localStorage.getItem('buddy_house_decor_active') || '[]');
+
+        // Called from visuals.js (achievement unlocks + level-ups) - permanently unlocks a decoration
+        // and, the first time, auto-displays it on the house so the reward is immediately visible.
+        function unlockDecor(id) {
+            if (!HOUSE_DECOR[id] || unlockedHouseDecor.includes(id)) return;
+            unlockedHouseDecor.push(id);
+            activeHouseDecor.push(id);
+            localStorage.setItem('buddy_house_decor_unlocked', JSON.stringify(unlockedHouseDecor));
+            localStorage.setItem('buddy_house_decor_active', JSON.stringify(activeHouseDecor));
+            applyHouseDecor();
+            if (typeof vfxToast === 'function') vfxToast(HOUSE_DECOR[id].emoji, 'New house decoration!', HOUSE_DECOR[id].label + ' - tap the 🎨 on your house to arrange it!');
+        }
+
+        function toggleDecorActive(id) {
+            if (!unlockedHouseDecor.includes(id)) return;
+            const i = activeHouseDecor.indexOf(id);
+            if (i > -1) activeHouseDecor.splice(i, 1); else activeHouseDecor.push(id);
+            localStorage.setItem('buddy_house_decor_active', JSON.stringify(activeHouseDecor));
+            applyHouseDecor();
+            openHouseDecorator(); // refresh the picker so the toggle state updates live
+        }
+
+        function applyHouseDecor() {
+            const house = houseEl();
+            if (!house) return;
+            house.querySelectorAll('.house-decor').forEach(el => el.remove());
+            activeHouseDecor.forEach(id => {
+                const d = HOUSE_DECOR[id];
+                if (!d) return;
+                const el = document.createElement('span');
+                el.className = 'house-decor decor-' + id;
+                el.textContent = d.emoji;
+                house.appendChild(el);
+            });
+        }
+
+        function openHouseDecorator() {
+            let modal = document.getElementById('houseDecoratorModal');
+            if (modal) modal.remove();
+            modal = document.createElement('div');
+            modal.id = 'houseDecoratorModal';
+            modal.className = 'settings-modal active';
+            const items = Object.entries(HOUSE_DECOR).map(([id, d]) => {
+                const unlocked = unlockedHouseDecor.includes(id);
+                const on = activeHouseDecor.includes(id);
+                if (!unlocked) {
+                    const howText = d.unlockType === 'level' ? ('Reach Friendship Level ' + d.unlockValue) : 'Keep exploring to unlock this!';
+                    return '<div class="buddy-skin-card" style="opacity:0.45;cursor:default;"><div class="buddy-skin-preview" style="background:#ccc;"><span style="font-size:22px;">🔒</span></div><div class="buddy-skin-name">' + d.label + '</div><div style="font-size:0.75rem;color:#888;">' + howText + '</div></div>';
+                }
+                return '<div class="buddy-skin-card ' + (on ? 'active' : '') + '" onclick="toggleDecorActive(\'' + id + '\')"><div class="buddy-skin-preview" style="background: linear-gradient(135deg, var(--primary), var(--secondary));"><span style="font-size:22px;">' + d.emoji + '</span></div><div class="buddy-skin-name">' + d.label + (on ? ' ✅' : '') + '</div></div>';
+            }).join('');
+            modal.innerHTML = '<div class="settings-content" style="max-width:480px;"><h2>🎨 Decorate Buddy\'s House</h2><p style="margin-bottom:15px;color:#666;">Tap an unlocked decoration to show or hide it!</p><div class="buddy-skins">' + items + '</div><button class="settings-btn" style="position:static;margin-top:20px;width:auto;padding:10px 20px;border-radius:20px;background:var(--primary);color:white;" onclick="document.getElementById(\'houseDecoratorModal\').remove()">Done</button></div>';
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+            document.body.appendChild(modal);
+        }
 
         // Dress a buddy face: colors, body shape, parts, and emoji badge
         function decorateFace(face) {
@@ -1356,6 +1671,12 @@
             face.style.borderRadius = shape.br || '50%';
             face.style.setProperty('--bd-accent', skin.colors.accent);
             face.style.setProperty('--bd-accent2', skin.colors.secondary || skin.colors.primary);
+            // Theme Buddy's house to match too - it's a parent of the face, so vars won't cascade down to it
+            const house = face.closest('.buddy-house');
+            if (house) {
+                house.style.setProperty('--bd-accent', skin.colors.accent);
+                house.style.setProperty('--bd-accent2', skin.colors.secondary || skin.colors.primary);
+            }
             face.querySelectorAll('.b-part, .skin-badge').forEach(p => p.remove());
             (shape.parts || []).forEach(cls => {
                 const p = document.createElement('span');
@@ -1367,6 +1688,13 @@
                 t.className = 'b-part b-top';
                 t.textContent = shape.top;
                 face.appendChild(t);
+            }
+            // Mix-and-match accessory: layer the equipped extra piece on top, unless the skin already wears it
+            const acc = ACCESSORY_LIST[currentAccessory];
+            if (acc && acc.part && !(shape.parts || []).includes(acc.part)) {
+                const ap = document.createElement('span');
+                ap.className = 'b-part ' + acc.part;
+                face.appendChild(ap);
             }
             const badge = document.createElement('span');
             badge.className = 'skin-badge';
@@ -1405,7 +1733,33 @@
                 grid.appendChild(card);
             });
         }
-        
+
+        // Apply a mix-and-match accessory (works on top of any skin)
+        function applyAccessory(id) {
+            currentAccessory = ACCESSORY_LIST[id] ? id : 'none';
+            localStorage.setItem('buddy_accessory', currentAccessory);
+            document.querySelectorAll('.buddy-face').forEach(face => decorateFace(face));
+            updateAccessoryChips();
+        }
+
+        function updateAccessoryChips() {
+            const grid = document.getElementById('accessoryGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            Object.entries(ACCESSORY_LIST).forEach(([key, acc]) => {
+                const chip = document.createElement('div');
+                chip.className = `buddy-skin-card ${currentAccessory === key ? 'active' : ''}`;
+                chip.onclick = () => applyAccessory(key);
+                chip.innerHTML = `
+                    <div class="buddy-skin-preview" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+                        <span style="font-size: 22px;">${acc.emoji}</span>
+                    </div>
+                    <div class="buddy-skin-name">${acc.label}</div>
+                `;
+                grid.appendChild(chip);
+            });
+        }
+
         // Apply theme
         // Darkens any theme color until it's readable as text on light bubbles
         function readableInk(hex) {
@@ -1537,10 +1891,8 @@
             thinkingEl.className = 'message ai-message thinking-bubble';
             thinkingEl.innerHTML = '<span>' + escapeHtml(buddyName) + ' is thinking</span>' +
                 '<span class="thinking-dots"><span></span><span></span><span></span></span>' +
-                '<span class="sparkle" style="left: 8%; animation-delay: 0s;">✨</span>' +
-                '<span class="sparkle" style="left: 30%; animation-delay: 0.4s;">🌟</span>' +
-                '<span class="sparkle" style="left: 55%; animation-delay: 0.8s;">💫</span>' +
-                '<span class="sparkle" style="left: 80%; animation-delay: 1.2s;">⭐</span>';
+                '<span class="sparkle" style="left: 12%; animation-delay: 0s;">✨</span>' +
+                '<span class="sparkle" style="left: 78%; animation-delay: 2s;">✨</span>';
             chatContainer.appendChild(thinkingEl);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
@@ -1972,6 +2324,13 @@
                 return;
             }
 
+            // "Become a dragon!" - Buddy transforms ONLY when asked (text or voice)
+            const skinReq = detectSkinRequest(message);
+            if (skinReq && skinReq !== currentBuddySkin) {
+                applyBuddySkin(skinReq);
+                return;
+            }
+
             const aiStatus = document.getElementById('aiStatus');
             aiStatus.textContent = '🤖 Thinking...';
 
@@ -2004,9 +2363,16 @@
             };
             const offline = () => {
                 hideThinking();
+                // make canned-reply mode IMPOSSIBLE to miss - it means the smart brain isn't reachable
+                if (!window.__fallbackWarned) {
+                    window.__fallbackWarned = true;
+                    if (typeof vfxToast === 'function') {
+                        vfxToast('⚠️', 'Simple-reply mode!', 'Smart brain unreachable. Grown-ups: check internet + the AI key, then restart with START-BUDDY.bat', true);
+                    }
+                }
                 const fallbackResponse = getAIResponse(message, currentAge);
                 showAIResponse(fallbackResponse, detectMood(fallbackResponse));
-                aiStatus.textContent = '💬 Buddy Mode';
+                aiStatus.textContent = '⚠️ Simple replies (brain offline)';
             };
             askBuddy().then(deliver).catch(() => {
                 // one quiet retry - a wifi hiccup shouldn't break the magic
@@ -2139,7 +2505,8 @@
             const f = talkingFace();
             if (!f) return;
             f.classList.add('buddy-mega');
-            f.style.boxShadow = '0 0 26px 7px ' + (MOOD_GLOW[currentTalkMood] || MOOD_GLOW.friendly);
+            const glowColor = MOOD_GLOW[currentTalkMood] || MOOD_GLOW.friendly;
+            f.style.boxShadow = '0 0 26px 7px ' + glowColor + ', 0 0 55px 20px ' + glowColor + '33, 0 10px 25px rgba(0,0,0,0.3)';
             let tick = 0;
             mouthTimer = setInterval(() => {
                 const fc = talkingFace();
@@ -2191,22 +2558,34 @@
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SR();
             recognition.continuous = true;
-            recognition.interimResults = false;
+            recognition.interimResults = true; // hear speech AS it happens so we never cut a thought short
             recognition.lang = 'en-US';
             recognition.onresult = (event) => {
                 if (buddyTalking) return; // mic is dedicated to the USER - Buddy's voice is never accepted
+                let interim = '';
                 for (let i = event.resultIndex; i < event.results.length; i++) {
-                    if (event.results[i].isFinal) {
-                        const t = event.results[i][0].transcript.trim();
-                        if (t) micBuffer = (micBuffer ? micBuffer + ' ' : '') + t;
+                    const res = event.results[i];
+                    const alt = res[0];
+                    if (res.isFinal) {
+                        // voice focus: quiet background voices & crosstalk come through with low
+                        // confidence - only accept speech that's clearly the main speaker
+                        const conf = (alt.confidence === undefined || alt.confidence === 0) ? 1 : alt.confidence;
+                        const t = alt.transcript.trim();
+                        if (t && conf >= micMinConfidence()) {
+                            micBuffer = (micBuffer ? micBuffer + ' ' : '') + t;
+                        }
+                    } else {
+                        interim += alt.transcript;
                     }
                 }
-                if (micBuffer) {
-                    document.getElementById('messageInput').value = micBuffer + ' …';
-                    document.getElementById('aiStatus').textContent = '👂 Keep going... (a 2.5s pause sends it)';
-                    clearTimeout(thoughtTimer);
-                    thoughtTimer = setTimeout(finishThought, 2500);
+                const showing = (micBuffer + ' ' + interim).trim();
+                if (showing) {
+                    document.getElementById('messageInput').value = showing + ' …';
+                    document.getElementById('aiStatus').textContent = '👂 Listening... take your time, I wait for real quiet';
                 }
+                // ANY sound of speech (even mid-word) resets the clock: we only send after TRUE silence
+                clearTimeout(thoughtTimer);
+                if (micBuffer || interim) thoughtTimer = setTimeout(finishThought, thoughtWindowMs());
             };
             recognition.onend = () => {
                 recRunning = false;
@@ -2216,6 +2595,15 @@
                 recRunning = false;
                 if (e.error === 'not-allowed' || e.error === 'service-not-allowed') setMicMode('off');
             };
+        }
+
+        function thoughtWindowMs() {
+            const g = getAgeGroup(currentAge);
+            return (g === '3' || g === '6') ? 4000 : 3000; // little kids get extra thinking room
+        }
+        function micMinConfidence() {
+            const m = appSettings.micFocus || 'focused';
+            return m === 'open' ? 0 : m === 'strict' ? 0.65 : 0.45;
         }
 
         function tryStartRec() {
@@ -2401,11 +2789,14 @@
         let bd = { el: null, x: 100, y: 100, vx: 0, vy: 0, dragging: false, moved: false, px: 0, py: 0, lastT: 0, pokes: 0, raf: null, stuntTimer: null };
 
         function headerFace() { return document.querySelector('.header .buddy-face'); }
+        function houseEl() { return document.querySelector('.buddy-house'); }
 
         function freeBuddy(startX, startY) {
             if (bd.el) return bd.el;
             const hf = headerFace();
             if (hf) hf.style.visibility = 'hidden';
+            const house = houseEl();
+            if (house) { house.classList.add('buddy-house-empty'); house.title = "Buddy's out playing - tap to see where he ran off to!"; }
             const el = document.createElement('div');
             el.className = 'buddy-face buddy-free';
             el.innerHTML = '<div class="mouth"></div>';
@@ -2426,6 +2817,8 @@
             bd.el.remove(); bd.el = null;
             const hf = headerFace();
             if (hf) hf.style.visibility = 'visible';
+            const house = houseEl();
+            if (house) { house.classList.remove('buddy-house-empty'); house.title = 'Tap the house to let Buddy out!'; }
             buddySay(window.innerWidth / 2 - 60, 110, 'Home sweet home!');
             popSound(500);
         }
@@ -2663,14 +3056,14 @@
             }
         }
 
+        // Fun poke flourish only - does NOT change Buddy's skin/persona.
+        // Buddy only transforms via Settings or by being asked ("become a dragon") - see detectSkinRequest.
         function recolorBuddy() {
-            const keys = Object.keys(buddySkins);
-            const pick = keys[Math.floor(Math.random() * keys.length)];
-            applyBuddySkin(pick);
             if (bd.el) {
-                const skin = buddySkins[pick];
-                bd.el.style.background = 'radial-gradient(circle, ' + skin.colors.accent + ', ' + skin.colors.primary + ')';
-                buddySay(bd.x + 40, bd.y - 25, 'New look: ' + skin.name + '!');
+                bd.el.style.transition = 'filter 0.3s ease';
+                bd.el.style.filter = 'hue-rotate(' + Math.floor(Math.random() * 360) + 'deg) saturate(1.5) brightness(1.15)';
+                buddySay(bd.x + 40, bd.y - 25, pokeSkin().emoji + ' Ta-da!');
+                setTimeout(() => { if (bd.el) bd.el.style.filter = ''; }, 1100);
             }
             popSound(650);
         }
@@ -2754,318 +3147,4 @@
                 const o = ctx.createOscillator(), g = ctx.createGain();
                 o.type = type || 'sine';
                 o.frequency.setValueAtTime(f1, ctx.currentTime);
-                o.frequency.exponentialRampToValueAtTime(Math.max(f2, 1), ctx.currentTime + dur);
-                g.gain.setValueAtTime(vol || 0.15, ctx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-                o.connect(g); g.connect(ctx.destination);
-                o.start(); o.stop(ctx.currentTime + dur + 0.05);
-            } catch (e) { /* sound optional */ }
-        }
-        function sfxNoise(dur, fFrom, fTo, vol) {
-            try {
-                const ctx = sfxCtx();
-                const len = Math.floor(ctx.sampleRate * dur);
-                const buf = ctx.createBuffer(1, len, ctx.sampleRate);
-                const data = buf.getChannelData(0);
-                for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
-                const src = ctx.createBufferSource();
-                src.buffer = buf;
-                const filt = ctx.createBiquadFilter();
-                filt.type = 'lowpass';
-                filt.frequency.setValueAtTime(fFrom, ctx.currentTime);
-                filt.frequency.exponentialRampToValueAtTime(Math.max(fTo, 40), ctx.currentTime + dur);
-                const g = ctx.createGain();
-                g.gain.setValueAtTime(vol || 0.18, ctx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-                src.connect(filt); filt.connect(g); g.connect(ctx.destination);
-                src.start(); src.stop(ctx.currentTime + dur + 0.05);
-            } catch (e) { /* sound optional */ }
-        }
-        const SFX = {
-            boing: () => { sfxTone(380, 90, 0.1, 'sine', 0.2); setTimeout(() => sfxTone(90, 620, 0.3, 'sine', 0.18), 90); },
-            swoosh: () => sfxNoise(0.4, 2800, 250, 0.2),
-            zoom: () => sfxTone(180, 1250, 0.45, 'sawtooth', 0.07),
-            pop: () => popSound(720),
-            crash: () => { sfxNoise(0.5, 5500, 600, 0.25); sfxTone(160, 60, 0.4, 'square', 0.06); },
-            ding: () => { sfxTone(1320, 1300, 0.8, 'sine', 0.16); sfxTone(2640, 2600, 0.5, 'sine', 0.05); },
-            splash: () => sfxNoise(0.45, 1400, 220, 0.2),
-            beep: () => sfxTone(880, 880, 0.16, 'square', 0.09),
-            whee: () => sfxTone(380, 1050, 0.55, 'sine', 0.14),
-            snip: () => { sfxNoise(0.06, 4000, 2500, 0.2); setTimeout(() => sfxNoise(0.06, 4000, 2500, 0.2), 140); },
-            knock: () => { sfxTone(140, 90, 0.09, 'sine', 0.25); setTimeout(() => sfxTone(130, 85, 0.09, 'sine', 0.25), 180); },
-            tick: () => popSound(1050),
-            tada: () => [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => popSound(f), i * 110))
-        };
-        const SFX_MAP = [
-            [/\b(boing|sproing)\b/i, 'boing'],
-            [/\b(swoosh|whoosh|woosh|swish)\b/i, 'swoosh'],
-            [/\b(zoom+|zap|vroom+)\b/i, 'zoom'],
-            [/\b(pop+)\b/i, 'pop'],
-            [/\b(crash|bang|boom|smash|kaboom|thud)\b/i, 'crash'],
-            [/\b(ding|dong)\b/i, 'ding'],
-            [/\b(splash|splish|sploosh)\b/i, 'splash'],
-            [/\b(beep|boop)\b/i, 'beep'],
-            [/\b(whee+)\b/i, 'whee'],
-            [/\b(snip)\b/i, 'snip'],
-            [/\b(knock)\b/i, 'knock'],
-            [/\b(tick tock)\b/i, 'tick'],
-            [/\b(ta-?da+)\b/i, 'tada']
-        ];
-        function triggerSFX(sentence) {
-            let fired = 0;
-            for (let i = 0; i < SFX_MAP.length && fired < 2; i++) {
-                if (SFX_MAP[i][0].test(sentence)) { SFX[SFX_MAP[i][1]](); fired++; }
-            }
-        }
-
-        // ===== Input lock + done chime =====
-        let inputLocked = false;
-        function lockInput() {
-            inputLocked = true;
-            const inp = document.getElementById('messageInput');
-            inp.disabled = true;
-            inp.placeholder = buddyName + ' is talking... 🗣️';
-            document.querySelector('.input-container button').disabled = true;
-            // NOTE: the mic button is never disabled - turning the mic off must always work
-            clearTimeout(lockInput._t);
-            lockInput._t = setTimeout(unlockInput, 45000); // failsafe: never stay stuck
-        }
-        function unlockInput() {
-            inputLocked = false;
-            clearTimeout(lockInput._t);
-            const inp = document.getElementById('messageInput');
-            inp.disabled = false;
-            inp.placeholder = 'Type your message here...';
-            document.querySelector('.input-container button').disabled = false;
-            inp.focus();
-        }
-        function doneChime() {
-            sfxTone(880, 884, 0.12, 'sine', 0.12);
-            setTimeout(() => sfxTone(1318, 1322, 0.28, 'sine', 0.12), 130);
-        }
-        function responseDone() {
-            doneChime();
-            unlockInput();
-        }
-
-        let speechRun = 0; // newer speech cancels older queues
-        function browserSpeak(text, mood = 'friendly', onDone) {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            const run = ++speechRun;
-            setBuddyTalking(true); // mic goes deaf to Buddy instantly
-            const sentences = splitSentences(text);
-            const tone = toneFor();
-            const moodMap = {
-                'friendly':   { rate: 0.97, pitch: 1.02, volume: 0.92 },
-                'excited':    { rate: 1.06, pitch: 1.09, volume: 0.98 },
-                'happy':      { rate: 1.01, pitch: 1.06, volume: 0.95 },
-                'caring':     { rate: 0.88, pitch: 0.99, volume: 0.88 },
-                'thoughtful': { rate: 0.84, pitch: 0.96, volume: 0.85 },
-                'playful':    { rate: 1.02, pitch: 1.05, volume: 0.93 },
-                'sad':        { rate: 0.8,  pitch: 0.95, volume: 0.82 },
-                'surprised':  { rate: 1.07, pitch: 1.1,  volume: 0.97 },
-                'confused':   { rate: 0.87, pitch: 1.01, volume: 0.9 }
-            };
-            const m = moodMap[mood] || moodMap['friendly'];
-            const userRate = (appSettings.rate || 100) / 100;
-            const userPitch = (appSettings.pitch || 100) / 100;
-            const userVol = (typeof appSettings.volume === 'number' ? appSettings.volume : 100) / 100;
-
-            function speakNext(i) {
-                if (run !== speechRun) return;
-                if (i >= sentences.length) { setBuddyTalking(false); if (onDone) onDone(); return; }
-                const raw = sentences[i];
-                triggerSFX(raw);
-                const clean = cleanForSpeech(raw);
-                if (!clean) { setTimeout(() => speakNext(i + 1), 150); return; }
-                const u = new SpeechSynthesisUtterance(clean);
-                // voice character + subtle human cadence (same voice, new personality of sound)
-                const vs = VOICE_STYLES[appSettings.voiceStyle] || VOICE_STYLES.normal;
-                const wob = typeof vs.wob === 'number' ? vs.wob : 0.06;
-                const humanize = (1 - wob / 2) + Math.random() * wob;
-                const altShift = vs.alt ? (i % 2 === 0 ? 1.12 : 0.9) : 1;
-                u.rate = Math.min(2, Math.max(0.3, m.rate * tone.rate * userRate * vs.r * humanize));
-                u.pitch = Math.min(2, Math.max(0.3, m.pitch * tone.pitch * userPitch * vs.p * altShift * (0.99 + Math.random() * 0.02)));
-                u.volume = Math.min(1, Math.max(0, m.volume * userVol * (vs.v || 1)));
-                let chosenVoice = null;
-                if (appSettings.voiceName) {
-                    chosenVoice = window.speechSynthesis.getVoices().find(v => v.name === appSettings.voiceName) || null;
-                }
-                if (chosenVoice || selectedVoice) u.voice = chosenVoice || selectedVoice;
-                const next = () => setTimeout(() => speakNext(i + 1), pauseAfter(raw, tone.gap));
-                u.onend = next;
-                u.onerror = next;
-                window.speechSynthesis.speak(u);
-            }
-            speakNext(0);
-        }
-
-        // Arcade opener — tapping 🎲 again (or during any game) closes it right back to chat
-        function openArcade() {
-            if (document.getElementById('gsRoot') && typeof closeSpace === 'function') {
-                closeSpace();
-                popSound(380);
-                document.getElementById('aiStatus').textContent = '🤖 Ready!';
-                return;
-            }
-            if (typeof showGameMenu === 'function') {
-                showGameMenu();
-            } else {
-                showAIResponse("Hmm, my game chest didn't open! Close the black window, then start me again with START-BUDDY.bat (or press F5 to refresh) and the games will be ready!", 'caring');
-            }
-        }
-
-        document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-
-        // Tap anywhere outside the settings panel: everything's already saved, just close it
-        document.getElementById('settingsModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('settingsModal')) closeSettings();
-        });
-
-        // Mode selector (Friend / Teacher)
-        document.getElementById('modeSelect').addEventListener('change', () => {
-            currentMode = document.getElementById('modeSelect').value === 'teacher' ? 'teacher' : 'friend';
-            localStorage.setItem('buddy_mode', currentMode);
-            if (currentMode === 'teacher') {
-                showAIResponse("Teacher mode on! I'll explain things, share what I know, and we can learn together! What should we explore?", 'thoughtful');
-            } else {
-                showAIResponse("Friend mode! Now I'm just like you - let's hang out and have fun!", 'playful');
-            }
-        });
-        
-        // Age input handler (with adult-mode notice)
-        let lastAgeGroup = getAgeGroup(currentAge);
-        document.getElementById('ageInput').addEventListener('change', () => {
-            const ageValue = parseInt(document.getElementById('ageInput').value);
-            if (ageValue >= 1 && ageValue <= 100) {
-                currentAge = ageValue.toString();
-                saveUserData();
-                const newGroup = getAgeGroup(ageValue);
-                if (newGroup === 'adult' && lastAgeGroup !== 'adult') {
-                    showAIResponse("Heads up — Adult mode is now on! I'll talk with you like a grown-up: deeper topics, bigger ideas, real conversation, zero baby talk. I always keep things respectful and family-friendly though, at every age setting. So, what's on your mind?", 'thoughtful');
-                }
-                lastAgeGroup = newGroup;
-            } else {
-                document.getElementById('ageInput').value = 12;
-            }
-        });
-        
-        // Age input keypress handler
-        document.getElementById('ageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const ageValue = parseInt(document.getElementById('ageInput').value);
-                if (ageValue >= 1 && ageValue <= 100) {
-                    currentAge = ageValue.toString();
-                    saveUserData();
-                }
-            }
-        });
-        
-        // ===== Add to Home Screen (installable app) =====
-        let deferredInstall = null;
-        function isStandalone() {
-            return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-        }
-        function installSnoozed() {
-            const t = parseInt(localStorage.getItem('buddy_install_snooze') || '0', 10);
-            return Date.now() - t < 7 * 86400000; // ask again after a week
-        }
-        function showInstallBanner(iosMode) {
-            if (isStandalone() || installSnoozed() || document.getElementById('installBanner')) return;
-            const b = document.createElement('div');
-            b.className = 'install-banner';
-            b.id = 'installBanner';
-            b.innerHTML = '<span class="ib-icon">📲</span><span class="ib-text"><b>Put ' + escapeHtml(buddyName) + ' on your home screen!</b><br>' +
-                (iosMode ? 'Tap the Share button below, then "Add to Home Screen"' : 'One tap and Buddy becomes a real app on this device') + '</span>';
-            const actions = document.createElement('span');
-            actions.className = 'ib-actions';
-            if (!iosMode) {
-                const add = document.createElement('button');
-                add.className = 'ib-add';
-                add.textContent = '📲 Add!';
-                add.onclick = async () => {
-                    if (deferredInstall) {
-                        deferredInstall.prompt();
-                        try { await deferredInstall.userChoice; } catch (e) {}
-                        deferredInstall = null;
-                    }
-                    b.remove();
-                };
-                actions.appendChild(add);
-            }
-            const later = document.createElement('button');
-            later.className = 'ib-later';
-            later.textContent = iosMode ? 'Got it!' : 'Later';
-            later.onclick = () => {
-                localStorage.setItem('buddy_install_snooze', String(Date.now()));
-                b.remove();
-            };
-            actions.appendChild(later);
-            b.appendChild(actions);
-            document.body.appendChild(b);
-            popSound(600); setTimeout(() => popSound(800), 120);
-        }
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredInstall = e;
-            setTimeout(() => showInstallBanner(false), 12000);
-        });
-        window.addEventListener('appinstalled', () => {
-            deferredInstall = null;
-            const b = document.getElementById('installBanner');
-            if (b) b.remove();
-            showAIResponse('🎉 I live on your device now! Look for my smiley face on your home screen any time you want me!', 'excited');
-        });
-        if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js?v=4').catch(() => { /* offline shell is optional */ });
-            });
-        }
-        // iPhones/iPads have no install popup - show friendly how-to instead
-        (function () {
-            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-            const isSafari = /safari/i.test(navigator.userAgent) && !/crios|fxios|chrome/i.test(navigator.userAgent);
-            if (isIOS && isSafari && !isStandalone()) {
-                setTimeout(() => showInstallBanner(true), 15000);
-            }
-        })();
-
-        window.addEventListener('load', () => {
-            updateHeader();
-            document.getElementById('modeSelect').value = currentMode;
-            // Click Buddy's face to set him free!
-            const hf = headerFace();
-            if (hf) {
-                hf.title = 'Touch me to set me free!';
-                hf.addEventListener('pointerdown', () => {
-                    const r = hf.getBoundingClientRect();
-                    freeBuddy(r.left, r.top);
-                    buddySay(r.left + 40, r.top + 95, "I'm FREE! Poke me, drag me, toss me!");
-                    bd.vx = (Math.random() - 0.5) * 10; bd.vy = 5;
-                    popSound(300); setTimeout(() => popSound(450), 120);
-                });
-            }
-            document.getElementById('ageInput').value = currentAge;
-            document.getElementById('userNameInput').value = userName;
-            document.getElementById('buddyNameInput').value = buddyName === 'Buddy' ? '' : buddyName;
-            document.getElementById('genderSelect').value = buddyGender;
-            applyTheme(currentTheme);
-            applyBuddySkin(currentBuddySkin);
-            updateThemeCards();
-            updateBuddySkinCards();
-            applySettings();
-            populateVoiceList();
-            buildVoiceStyleOptions();
-            startOnboarding();
-            wordOfTheDay();
-            window.__buddyLoaded = true;
-        });
-    </script>
-    <script src="games.js?v=4"></script>
-    <script src="visuals.js?v=4"></script>
-    <script src="space.js?v=4"></script>
-</body>
-</html>
+         

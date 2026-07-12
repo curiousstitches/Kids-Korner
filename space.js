@@ -6,22 +6,37 @@
 (function () {
     const s = document.createElement('style');
     s.textContent = `
-#gsRoot { position:fixed; inset:0; z-index:8000; display:flex; flex-direction:column; background:linear-gradient(160deg,#2b1e66,#6a3ba0,#1f4f8f); animation:gsIn .3s ease; font-family:inherit; }
+#gsRoot { position:fixed; inset:0; z-index:8000; display:flex; flex-direction:column; background:radial-gradient(120% 90% at 20% -10%, #6a3ba0 0%, transparent 55%), radial-gradient(120% 90% at 90% 110%, #1f4f8f 0%, transparent 55%), linear-gradient(160deg,#1b1140,#3a2075); animation:gsIn .3s ease; font-family:inherit; box-shadow:inset 0 0 140px rgba(0,0,0,.55); }
+.gs-watermark { position:absolute; right:-5vmin; bottom:-7vmin; font-size:44vmin; opacity:.08; pointer-events:none; user-select:none; }
 @keyframes gsIn { from { opacity:0; transform:scale(1.04);} to { opacity:1; transform:scale(1);} }
 .gs-head { display:flex; align-items:center; gap:12px; padding:12px 18px; color:white; }
-.gs-head h2 { font-size:1.25rem; text-shadow:1px 2px 3px rgba(0,0,0,.4); margin-right:auto; }
-.gs-head .gs-score { font-weight:bold; font-size:1.05rem; background:rgba(255,255,255,.16); padding:6px 16px; border-radius:999px; }
+.gs-head h2 { font-size:1.5rem; margin-right:auto; background:linear-gradient(90deg,#ffd166,#ff8fb3,#7cc7ff); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 2px 4px rgba(0,0,0,.6)); }
+.gs-head .gs-score { font-weight:bold; font-size:1.05rem; color:white; background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.1)); padding:7px 18px; border-radius:999px; border:1px solid rgba(255,255,255,.35); box-shadow:0 4px 12px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.4); }
 .gs-x { background:#ff5252; color:white; border:none; width:44px; height:44px; border-radius:50%; font-size:1.25rem; cursor:pointer; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,.3); }
 .gs-x:hover { transform:scale(1.1); }
 .gs-stage { flex:1; overflow:auto; display:flex; align-items:center; justify-content:center; padding:10px; position:relative; }
-.gs-card { background:rgba(255,255,255,.97); border-radius:22px; padding:18px; box-shadow:0 16px 50px rgba(0,0,0,.45); max-width:96%; max-height:100%; overflow:auto; text-align:center; color:#333; }
+.gs-card { background:rgba(255,255,255,.93); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.65); border-radius:26px; padding:20px; box-shadow:0 24px 70px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.9); max-width:96%; max-height:100%; overflow:auto; text-align:center; color:#333; animation:gsIn .35s ease; }
 .gs-hint { color:rgba(255,255,255,.9); text-align:center; padding:8px 14px 14px; font-size:.85rem; }
-.gs-btn { background:linear-gradient(135deg,#ff6b9d,#a855f7); color:white; border:none; padding:12px 22px; border-radius:16px; font-family:inherit; font-size:1rem; font-weight:bold; cursor:pointer; margin:4px; box-shadow:0 4px 10px rgba(0,0,0,.25); }
-.gs-btn:hover { transform:scale(1.06); }
+.gs-btn { background:linear-gradient(180deg,#ff7ab0,#a855f7); color:white; border:none; padding:13px 24px; border-radius:18px; font-family:inherit; font-size:1rem; font-weight:bold; cursor:pointer; margin:4px; box-shadow:0 5px 0 rgba(90,30,120,.55), 0 12px 22px rgba(168,85,247,.4); transition:transform .1s, box-shadow .1s; text-shadow:0 1px 2px rgba(0,0,0,.25); }
+.gs-btn:hover { transform:translateY(-2px); }
+.gs-btn:active { transform:translateY(4px) scale(.97); box-shadow:0 1px 0 rgba(90,30,120,.55), 0 4px 8px rgba(168,85,247,.3); }
 .gs-btn.gs-sec { background:#e9e4f8; color:#4a3f75; }
 .gs-input { padding:12px 14px; border:3px solid #a855f7; border-radius:14px; font-family:inherit; font-size:1rem; width:min(340px,70vw); outline:none; }
 .gs-grid { display:grid; gap:6px; justify-content:center; margin:10px auto; }
-.gs-cell { border:none; border-radius:10px; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; }
+.gs-cell { border:none; border-radius:12px; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 0 rgba(0,0,0,.14), 0 7px 14px rgba(0,0,0,.14); transition:transform .1s; }
+.gs-cell:active { transform:scale(.9); }
+.gs-grid > * { animation:cellIn .5s cubic-bezier(.2,.9,.3,1.4) backwards; }
+.gs-grid > *:nth-child(2n) { animation-delay:.05s; }
+.gs-grid > *:nth-child(3n) { animation-delay:.11s; }
+.gs-grid > *:nth-child(5n) { animation-delay:.17s; }
+@keyframes cellIn { from { opacity:0; transform:scale(.3) rotate(-8deg); } }
+.gs-trophy { font-size:4.2rem; display:block; animation:trophyIn .8s cubic-bezier(.2,.9,.3,1.35); }
+@keyframes trophyIn { 0% { transform:translateY(-90px) scale(.2) rotate(-20deg); opacity:0; } 60% { transform:translateY(10px) scale(1.18); } 100% { transform:translateY(0) scale(1); } }
+.gs-stars { font-size:2.4rem; letter-spacing:8px; margin:6px 0; }
+.gs-stars span { display:inline-block; animation:starPop .5s cubic-bezier(.2,.9,.3,1.5) backwards; }
+.gs-stars span:nth-child(2) { animation-delay:.25s; }
+.gs-stars span:nth-child(3) { animation-delay:.5s; }
+@keyframes starPop { from { transform:scale(0) rotate(-60deg); opacity:0; } }
 .gs-swatch { width:44px; height:44px; border-radius:12px; border:3px solid white; box-shadow:0 3px 8px rgba(0,0,0,.3); cursor:pointer; position:relative; font-weight:bold; color:white; text-shadow:1px 1px 2px rgba(0,0,0,.6); font-size:1rem; }
 .gs-swatch.gs-on { outline:4px solid #333; transform:scale(1.12); }
 .gs-pal { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin:10px 0; }
@@ -32,7 +47,10 @@
 .gs-dpad button { height:52px; font-size:1.3rem; border:none; border-radius:12px; background:#e9e4f8; cursor:pointer; }
 .gs-menu-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; width:min(920px,94vw); margin:8px auto; }
 .gs-mcard { background:rgba(255,255,255,.97); border:none; border-radius:18px; padding:14px 8px; cursor:pointer; font-family:inherit; transition:transform .15s; box-shadow:0 6px 16px rgba(0,0,0,.3); }
-.gs-mcard:hover { transform:scale(1.07) rotate(-1deg); }
+.gs-mcard { position:relative; overflow:hidden; }
+.gs-mcard::after { content:''; position:absolute; top:0; left:-80%; width:50%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent); transform:skewX(-20deg); transition:left .45s; }
+.gs-mcard:hover::after { left:130%; }
+.gs-mcard:hover { transform:scale(1.07) rotate(-1deg); box-shadow:0 14px 30px rgba(0,0,0,.45); }
 .gs-mcard .me { font-size:2.3rem; display:block; }
 .gs-mcard .mn { font-weight:bold; font-size:.9rem; color:#333; display:block; margin-top:4px; }
 .gs-mcard .md { font-size:.7rem; color:#777; display:block; margin-top:2px; }
@@ -71,9 +89,11 @@ function openSpace(title, hint) {
     GS.alive = true;
     const root = document.createElement('div');
     root.id = 'gsRoot';
-    root.innerHTML = '<div class="gs-head"><h2>' + title + '</h2><span class="gs-score" id="gsScore"></span>' +
+    const emojiMatch = title.match(/^\S+/);
+    const gameEmoji = emojiMatch ? emojiMatch[0] : '🎮';
+    root.innerHTML = '<div class="gs-head"><span class="gs-emoji" style="font-size:2rem;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));">' + gameEmoji + '</span><h2>' + title.replace(/^\S+\s*/, '') + '</h2><span class="gs-score" id="gsScore"></span>' +
         '<button class="gs-btn gs-sec" onclick="showGameMenu()">🎮 Games</button><button class="gs-btn" onclick="closeSpace()">💬 Back to Chat</button><button class="gs-x" onclick="closeSpace()" title="Back to chat">✕</button></div>' +
-        '<div class="gs-stage" id="gsStage"></div>' +
+        '<div class="gs-stage" id="gsStage"><span class="gs-watermark">' + gameEmoji + '</span></div>' +
         (hint ? '<div class="gs-hint">' + hint + '</div>' : '');
     document.body.appendChild(root);
     return {
@@ -90,8 +110,8 @@ function gsWin(msg, replayFn) {
     if (!st) return;
     const d = document.createElement('div');
     d.className = 'gs-card';
-    d.style.cssText = 'position:absolute; z-index:5; animation:gsIn .3s ease;';
-    d.innerHTML = '<h2 style="font-size:1.6rem;">' + msg + '</h2>';
+    d.style.cssText = 'position:absolute; z-index:5;';
+    d.innerHTML = '<span class="gs-trophy">🏆</span><div class="gs-stars"><span>⭐</span><span>⭐</span><span>⭐</span></div><h2 style="font-size:1.5rem;">' + msg + '</h2>';
     const again = document.createElement('button');
     again.className = 'gs-btn';
     again.textContent = '🔁 Play again';
@@ -110,24 +130,51 @@ const GS_PAL = ['#ffffff', '#ef4444', '#f97316', '#facc15', '#22c55e', '#3b82f6'
 
 // AI image with guaranteed pixel access (falls back to a procedural surprise critter)
 function gsAIPixels(prompt, styleSuffix, cb) {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    let done = false;
-    const fallback = () => { if (!done) { done = true; cb(null); } };
-    img.onload = () => {
-        try {
-            const c = document.createElement('canvas');
-            c.width = 64; c.height = 64;
-            const x = c.getContext('2d');
-            x.drawImage(img, 0, 0, 64, 64);
-            x.getImageData(0, 0, 1, 1);
-            if (!done) { done = true; cb(img); }
-        } catch (e) { fallback(); }
-    };
-    img.onerror = fallback;
-    gsT(fallback, 14000);
-    img.src = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt + styleSuffix) +
-        '?width=512&height=512&nologo=true&safe=true&seed=' + gsRand(1000000);
+    // Cascade: our own server first (pixels always readable), then the art service
+    // directly (twice). Each attempt gets a patient 40s - real art takes time.
+    const plans = [];
+    if (location.protocol.startsWith('http')) {
+        plans.push((seed) => '/img?p=' + encodeURIComponent(prompt) + '&x=' + encodeURIComponent(styleSuffix) + '&seed=' + seed);
+    }
+    const direct = (seed) => 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt + styleSuffix) +
+        '?width=512&height=512&nologo=true&safe=true&seed=' + seed;
+    plans.push(direct, direct);
+    let idx = 0, done = false;
+    function attempt() {
+        if (done) return;
+        if (idx >= plans.length) { done = true; cb(null); return; }
+        const build = plans[idx++];
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        let moved = false;
+        const next = () => {
+            if (done || moved) return;
+            moved = true;
+            clearTimeout(timer);
+            attempt();
+        };
+        const timer = gsT(next, 40000);
+        img.onload = () => {
+            clearTimeout(timer);
+            try {
+                const c = document.createElement('canvas');
+                c.width = 64; c.height = 64;
+                const x = c.getContext('2d');
+                x.drawImage(img, 0, 0, 64, 64);
+                x.getImageData(0, 0, 1, 1);
+                if (!done) { done = true; cb(img); }
+            } catch (e) { next(); }
+        };
+        img.onerror = next;
+        img.src = build(gsRand(1000000));
+    }
+    attempt();
+}
+function gsFallbackNote(card) {
+    const n = document.createElement('p');
+    n.style.cssText = 'color:#a855f7;font-size:.82rem;margin-top:6px;';
+    n.textContent = '🎨 The art machine was too sleepy for your idea - here is a surprise picture instead! Try yours again in a minute!';
+    card.appendChild(n);
 }
 function gsCritter(N) {
     const g = [];
@@ -159,7 +206,16 @@ function gsPromptCard(stage, title, placeholder, onGo) {
     const go = document.createElement('button');
     go.className = 'gs-btn';
     go.textContent = '✨ GO!';
-    const fire = () => { const v = inp.value.trim() || placeholder; card.innerHTML = '<h3>🎨 Making your picture...</h3><div style="font-size:2.4rem;animation:spin 2s linear infinite;display:inline-block;">🎨</div>'; onGo(v, card); };
+    const fire = () => {
+        const v = inp.value.trim() || placeholder;
+        card.innerHTML = '<h3>🎨 Painting <b>' + v.replace(/</g, '&lt;') + '</b>...</h3>' +
+            '<div style="font-size:2.6rem;animation:spin 2.5s linear infinite;display:inline-block;">🎨</div>' +
+            '<p id="gsArtStatus" style="color:#a855f7;font-size:.85rem;margin-top:8px;">waking up the art machine...</p>';
+        const lines = ['mixing the paints... 🖌️', 'sharpening the pencils... ✏️', 'big masterpieces take a moment... ✨', 'adding the sparkle... 🌟', 'the art machine is thinking REALLY hard... 🤔', 'almost done, promise... 🎨'];
+        let li = 0;
+        gsI(() => { const el = document.getElementById('gsArtStatus'); if (el) el.textContent = lines[li++ % lines.length]; }, 6000);
+        onGo(v, card);
+    };
     go.onclick = fire;
     inp.onkeypress = (e) => { if (e.key === 'Enter') fire(); };
     card.appendChild(inp); card.appendChild(go);
@@ -187,6 +243,7 @@ function spPaintNum() {
                 grid = gsCritter(N);
             }
             paintNumBoard(ui, card, grid, N);
+            if (!img) gsFallbackNote(card);
         });
     });
 }
@@ -249,6 +306,7 @@ function spColoring() {
         gsAIPixels(want, ', coloring book page, clean black line art, white background, thick outlines', (img) => {
             if (!GS.alive) return;
             card.innerHTML = '<h3 style="margin-bottom:6px;">Tap to fill with color!</h3>';
+            if (!img) gsFallbackNote(card);
             const size = Math.min(window.innerWidth * 0.86, window.innerHeight * 0.55, 460);
             const cv = document.createElement('canvas');
             cv.className = 'gs-cv';

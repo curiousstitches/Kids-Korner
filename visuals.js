@@ -15,8 +15,12 @@
 @keyframes vfxSparkFade { from { opacity:1; transform:scale(1); } to { opacity:0; transform:scale(0.2) translateY(-16px); } }
 .vfx-ripple { position:fixed; border:3px solid var(--primary, #667eea); border-radius:50%; width:14px; height:14px; pointer-events:none; z-index:6000; animation:vfxRipple .55s ease-out forwards; }
 @keyframes vfxRipple { from { opacity:0.75; transform:translate(-50%,-50%) scale(1); } to { opacity:0; transform:translate(-50%,-50%) scale(6.5); } }
-.vfx-shard { position:fixed; pointer-events:none; z-index:6200; font-size:1.15rem; animation:vfxShard .95s ease-out forwards; }
-@keyframes vfxShard { to { transform:translate(var(--dx), var(--dy)) rotate(200deg); opacity:0; } }
+.vfx-shard { position:fixed; pointer-events:none; z-index:6200; font-size:1.15rem; animation:vfxShard .95s cubic-bezier(.15,.7,.25,1) forwards; filter:drop-shadow(0 0 5px rgba(255,255,255,0.75)); }
+@keyframes vfxShard {
+    0% { transform:translate(0,0) scale(0.3) rotate(0); opacity:0; }
+    12% { opacity:1; transform:translate(0,0) scale(1.15) rotate(20deg); }
+    100% { transform:translate(var(--dx), var(--dy)) scale(0.85) rotate(200deg); opacity:0; }
+}
 .vfx-rocket { position:fixed; pointer-events:none; z-index:6200; font-size:1.6rem; transition:top .7s ease-out; }
 .vfx-heart { position:fixed; bottom:-40px; pointer-events:none; z-index:6000; font-size:1.7rem; animation:vfxHeart 2.6s ease-in forwards; }
 @keyframes vfxHeart { 0% { transform:translateY(0) scale(.6); opacity:0; } 15% { opacity:1; } 100% { transform:translateY(-105vh) scale(1.4) rotate(14deg); opacity:0; } }
@@ -99,6 +103,20 @@ function unlock(id) {
     vfxSave();
     const a = ACH[id];
     if (a) { vfxToast(a.e, a.t, a.s); vfxFireworkAt(window.innerWidth * (0.3 + Math.random() * 0.4), window.innerHeight * 0.4); }
+    // Some achievements also unlock a house decoration (Buddy's House feature)
+    if (typeof HOUSE_DECOR !== 'undefined' && typeof unlockDecor === 'function') {
+        Object.entries(HOUSE_DECOR).forEach(([decorId, d]) => {
+            if (d.unlockType === 'ach' && d.unlockValue === id) unlockDecor(decorId);
+        });
+    }
+}
+
+// Friendship-Level-gated house decorations - checked every time the level changes
+function checkLevelDecor(level) {
+    if (typeof HOUSE_DECOR === 'undefined' || typeof unlockDecor !== 'function') return;
+    Object.entries(HOUSE_DECOR).forEach(([decorId, d]) => {
+        if (d.unlockType === 'level' && level >= d.unlockValue) unlockDecor(decorId);
+    });
 }
 
 // ---------- XP / Friendship Level ----------
@@ -130,12 +148,44 @@ function addXP(n) {
         vfxToast('🎇', 'LEVEL UP! Friendship Lv ' + after, 'You and Buddy are closer than ever!');
         vfxFireworkShow(3);
         if (after >= 5) unlock('level5');
+        checkLevelDecor(after);
     }
 }
+function vfxRewardCard(unlocked, emoji, title, sub) {
+    if (unlocked) {
+        return '<div class="buddy-skin-card active" style="cursor:default;"><div class="buddy-skin-preview" style="background:linear-gradient(135deg,var(--primary),var(--secondary));"><span style="font-size:22px;">' + emoji + '</span></div><div class="buddy-skin-name">' + title + '</div>' + (sub ? '<div style="font-size:0.7rem;color:#888;">' + sub + '</div>' : '') + '</div>';
+    }
+    return '<div class="buddy-skin-card" style="opacity:0.4;cursor:default;"><div class="buddy-skin-preview" style="background:#ccc;"><span style="font-size:22px;">🔒</span></div><div class="buddy-skin-name">???</div></div>';
+}
+
 function vfxShowProgress() {
+    let modal = document.getElementById('rewardsAlbumModal');
+    if (modal) modal.remove();
     const lv = vfxLevel();
-    const earned = Object.keys(vfx.ach).filter(k => vfx.ach[k]).map(k => (ACH[k] || {}).e || '🏅').join(' ');
-    vfxToast('⭐', 'Friendship Level ' + lv, (earned ? 'Badges: ' + earned : 'Chat, draw, and play to earn badges!'));
+    const cur = 12 * Math.pow(lv - 1, 2), next = 12 * Math.pow(lv, 2);
+    const pct = Math.min(100, Math.round(((vfx.xp - cur) / Math.max(next - cur, 1)) * 100));
+
+    const badgeCards = Object.entries(ACH).map(([id, a]) => vfxRewardCard(!!vfx.ach[id], a.e, a.t, vfx.ach[id] ? a.s : '')).join('');
+
+    let decorCards = '';
+    if (typeof HOUSE_DECOR !== 'undefined' && typeof unlockedHouseDecor !== 'undefined') {
+        decorCards = Object.entries(HOUSE_DECOR).map(([id, d]) => vfxRewardCard(unlockedHouseDecor.includes(id), d.emoji, d.label)).join('');
+    }
+
+    modal = document.createElement('div');
+    modal.id = 'rewardsAlbumModal';
+    modal.className = 'settings-modal active';
+    modal.innerHTML =
+        '<div class="settings-content" style="max-width:560px;">' +
+        '<h2>⭐ Friendship Level ' + lv + '</h2>' +
+        '<div style="background:#eee;border-radius:8px;height:10px;overflow:hidden;margin-bottom:20px;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#ffd166,#ff6b9d,#a855f7,#00d4ff);"></div></div>' +
+        '<h2 style="margin-bottom:10px;color:#333;">🏅 Badges</h2>' +
+        '<div class="buddy-skins">' + badgeCards + '</div>' +
+        (decorCards ? '<h2 style="margin-top:25px;margin-bottom:10px;color:#333;">🏡 House Decorations</h2><div class="buddy-skins">' + decorCards + '</div>' : '') +
+        '<button class="settings-btn" style="position:static;margin-top:20px;width:auto;padding:10px 20px;border-radius:20px;background:var(--primary);color:white;" onclick="document.getElementById(\'rewardsAlbumModal\').remove()">Done</button>' +
+        '</div>';
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
 }
 
 // ---------- Fireworks ----------
@@ -146,11 +196,13 @@ function vfxBurst(x, y, emojis, count) {
         sh.textContent = emojis[i % emojis.length];
         sh.style.left = x + 'px';
         sh.style.top = y + 'px';
-        const ang = Math.random() * Math.PI * 2, dist = 60 + Math.random() * 120;
+        sh.style.fontSize = (0.9 + Math.random() * 0.8).toFixed(2) + 'rem';
+        const ang = Math.random() * Math.PI * 2, dist = 60 + Math.random() * 140;
         sh.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
         sh.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
+        sh.style.animationDelay = (Math.random() * 0.08) + 's';
         document.body.appendChild(sh);
-        setTimeout(() => sh.remove(), 1000);
+        setTimeout(() => sh.remove(), 1050);
     }
 }
 function vfxFireworkAt(x, y) {
@@ -457,82 +509,4 @@ const COMPLIMENTS = [
             if (vfx.msgs === 10) unlock('chat10');
             if (vfx.msgs === 50) { unlock('chat50'); vfxMeteorShower(); }
             if (vfx.msgs % 6 === 0) {
-                const c = COMPLIMENTS[vRnd(COMPLIMENTS.length)];
-                setTimeout(() => vfxToast(c[0], c[1], '', true), 2500);
-            }
-            if (/\bi\s+love\b|\blove\s+you\b/i.test(before)) vfxHearts();
-            if (/\bbirthday\b/i.test(before)) vfxBirthday();
-        };
-    }
-    // Drawing: camera flash + art achievements
-    if (typeof window.showImageResponse === 'function') {
-        const _img = window.showImageResponse;
-        window.showImageResponse = function (prompt, tutorial) {
-            const f = document.createElement('div');
-            f.className = 'vfx-flash';
-            document.body.appendChild(f);
-            setTimeout(() => f.remove(), 400);
-            _img(prompt, tutorial);
-            vfx.draws++;
-            addXP(5);
-            vfxSave();
-            if (vfx.draws === 1) unlock('firstDraw');
-            if (vfx.draws === 5) unlock('draw5');
-        };
-    }
-    // Arcade: achievement + stop the "new!" wiggle
-    if (typeof window.showGameMenu === 'function') {
-        const _menu = window.showGameMenu;
-        window.showGameMenu = function () {
-            _menu();
-            vfx.games++;
-            addXP(3);
-            vfxSave();
-            unlock('firstGame');
-            const gb = document.getElementById('gamesBtn');
-            if (gb) gb.classList.remove('vfx-wiggle');
-        };
-    }
-    // Word lessons
-    if (typeof window.readWord === 'function') {
-        const _rw = window.readWord;
-        window.readWord = function (w) {
-            _rw(w);
-            vfx.words++;
-            addXP(1);
-            vfxSave();
-            unlock('wordWizard');
-        };
-    }
-    // Names saved
-    if (typeof window.saveNames === 'function') {
-        const _sn = window.saveNames;
-        window.saveNames = function () { _sn(); unlock('named'); };
-    }
-    // Theme switch: color wave sweep
-    if (typeof window.applyTheme === 'function') {
-        const _th = window.applyTheme;
-        window.applyTheme = function (name) {
-            _th(name);
-            const w = document.createElement('div');
-            w.className = 'vfx-wave';
-            w.style.background = 'radial-gradient(circle, var(--primary), transparent 70%)';
-            document.body.appendChild(w);
-            setTimeout(() => w.remove(), 950);
-        };
-    }
-    // Confetti moments get rainbows + corner cannons sometimes
-    if (typeof window.burstConfetti === 'function') {
-        const _bc = window.burstConfetti;
-        window.burstConfetti = function () {
-            _bc();
-            vfxCannons();
-            if (Math.random() < 0.35) vfxRainbowArc();
-        };
-    }
-    // "New!" wiggle on the games button until first arcade visit
-    const gb = document.getElementById('gamesBtn');
-    if (gb && !vfx.ach.firstGame) gb.classList.add('vfx-wiggle');
-
-    vfxLevelUI();
-})();
+                const c = COM

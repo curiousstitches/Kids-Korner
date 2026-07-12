@@ -14,6 +14,8 @@ A friendly AI chat app for kids 3+ (and adults). Buddy talks at your child's lev
 | `visuals.js` | 27+ ambient effects, XP levels, achievements, popups. |
 | `manifest.json` / `sw.js` / `icon-*.png` | Makes Buddy installable as a real app with offline support. |
 | `START-BUDDY.bat` | Double-click to run everything. |
+| `RESTART-BUDDY.bat` | Stop + fresh start in one click — use after any change. |
+| `STOP-BUDDY.bat` | Cleanly shuts down every Buddy window, server, and tunnel. |
 | `app.py` | The AI brain server (Flask). Connects to OpenRouter for real AI, ElevenLabs for lifelike voice, Twilio for SMS. Run with `python app.py` → http://localhost:8081 |
 | `tools/` | Grown-up scripts: `deploy.bat` (push online) and `deploy-quick.bat`. |
 | `data/` | Buddy's editable content: offline replies, vocabulary words, and stories. |

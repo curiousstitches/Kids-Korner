@@ -82,14 +82,19 @@ function endBtns(startFn) {
 
 function burstConfetti() {
     const emo = ['🎉', '✨', '🌟', '🎊', '⭐', '💛'];
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 18; i++) {
         const sp = document.createElement('div');
         sp.className = 'confetti';
         sp.textContent = emo[i % emo.length];
         sp.style.left = (20 + Math.random() * 60) + '%';
         sp.style.top = (30 + Math.random() * 30) + '%';
-        sp.style.setProperty('--dx', (Math.random() * 240 - 120) + 'px');
-        sp.style.setProperty('--dy', (-80 - Math.random() * 160) + 'px');
+        sp.style.setProperty('--dx', (Math.random() * 260 - 130) + 'px');
+        sp.style.setProperty('--dy', (-90 - Math.random() * 180) + 'px');
+        sp.style.setProperty('--rot', (Math.random() < 0.5 ? -1 : 1) * (420 + Math.random() * 420) + 'deg');
+        const scale = (0.8 + Math.random() * 0.7).toFixed(2);
+        sp.style.fontSize = (1.1 + Math.random() * 0.6).toFixed(2) + 'rem';
+        sp.style.setProperty('--peak-scale', scale);
+        sp.style.filter = 'drop-shadow(0 0 6px rgba(255,255,255,0.7))';
         sp.style.animationDelay = (Math.random() * 0.2) + 's';
         document.body.appendChild(sp);
         setTimeout(function () { sp.remove(); }, 1900);

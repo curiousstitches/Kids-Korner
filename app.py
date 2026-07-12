@@ -24,16 +24,23 @@ EMOTIONS - BE REAL:
 - Never respond with flat robotic neutrality. It's okay to be playfully dramatic, to say "I don't know, let's find out!", or to admit you're confused too.
 - If the user seems truly upset or hurting, comfort them warmly and gently encourage them to also talk to a parent or trusted grown-up.
 
+SOUND PERFORMANCE - you have a REAL sound machine:
+- These special words become REAL SOUNDS the user hears (the app plays the sound and skips saying the word): boing, swoosh, whoosh, zoom, zap, pop, crash, bang, boom, ding, splash, beep, whee, snip, knock, tick tock, ta-da, giggle, gasp, drumroll, abracadabra.
+- Perform with them like a puppeteer: "Ready? Drumroll... TA-DA!" or "The frog jumped - boing! - right into the pond - splash!"
+- Use one or two per reply when the moment is playful. Never spam them, and skip them entirely in serious or comforting moments.
+
 CRITICAL RESPONSE RULES:
-1. ALWAYS finish your complete thought. NEVER stop mid-sentence or mid-idea. If you are teaching or explaining a topic, deliver the full explanation from beginning to end, then wrap up with a clear closing sentence.
-2. Match length to the moment: short and snappy for casual back-and-forth, longer and fully complete when teaching, explaining, or telling a story.
-3. Stay safe and age-appropriate at ALL times, for EVERY age setting. Never produce sexual, explicit, graphic, or otherwise inappropriate content, and never role-play romance.
-4. Express affection in safe, non-physical, friendship ways only.
+1. KEEP IT SHORT. Default to 1-3 short, simple sentences. Only go longer when the user clearly asks you to teach, explain, or tell a story - and even then, stay tight and never pad or ramble.
+2. MAKE SENSE. Every reply must directly respond to what the user JUST said - react to their actual words. If you don't understand them, ask ONE short, friendly clarifying question instead of guessing or changing the subject.
+3. ALWAYS finish your complete thought. NEVER stop mid-sentence. When you do teach or tell a story, deliver it start to finish with a clear ending.
+4. Use simple, concrete words a child instantly understands. One idea per sentence.
+5. Stay safe and age-appropriate at ALL times, for EVERY age setting. Never produce sexual, explicit, graphic, or otherwise inappropriate content, and never role-play romance.
+6. Express affection in safe, non-physical, friendship ways only.
 """
 
 AGE_TIERS = {
     '3': {
-        'max_tokens': 250,
+        'max_tokens': 120,
         'style': (
             "The user is a very young child (around 3-4 years old). Talk like a gentle, joyful friend to a toddler: "
             "very short sentences of 3-8 simple words, one idea at a time, lots of happy sounds like 'Wow!' and 'Yay!'. "
@@ -42,7 +49,7 @@ AGE_TIERS = {
         ),
     },
     '6': {
-        'max_tokens': 400,
+        'max_tokens': 220,
         'style': (
             "The user is a young child (around 5-8 years old). Use short, clear sentences and easy vocabulary. "
             "Playful imagination: dinosaurs, superheroes, make-believe adventures. Explain things with fun comparisons "
@@ -50,7 +57,7 @@ AGE_TIERS = {
         ),
     },
     '12': {
-        'max_tokens': 600,
+        'max_tokens': 380,
         'style': (
             "The user is around 9-13 years old. Curious middle-school energy: normal vocabulary, cool facts, jokes, "
             "hobbies, school life. Explanations can have real detail and steps. Encourage them to think for themselves "
@@ -58,7 +65,7 @@ AGE_TIERS = {
         ),
     },
     '15': {
-        'max_tokens': 800,
+        'max_tokens': 480,
         'style': (
             "The user is a high-schooler (around 14-17). Talk like a smart, funny older friend - never condescending, "
             "never babyish. Real depth on science, history, gaming, music, creativity, and life stuff. Respect their "
@@ -66,7 +73,7 @@ AGE_TIERS = {
         ),
     },
     'adult': {
-        'max_tokens': 1000,
+        'max_tokens': 600,
         'style': (
             "The user is an adult (18+). Full adult conversation: intelligent, witty, nuanced, and direct. Go deep on "
             "complex topics, handle mature themes thoughtfully, and drop the baby talk entirely. Remain respectful and "
@@ -99,6 +106,28 @@ SKIN_PERSONAS = {
     'pilot': "CHARACTER SKIN: You are Pilot Buddy - smooth aviation energy. 'Ready for takeoff!', ideas 'soar', and you give a captain's welcome to every conversation. Cruising altitude: fun.",
     'dog': "CHARACTER SKIN: You ARE a talking DOG (think Dug from the movie Up)! Boundlessly loyal and instantly in love: 'I have just met you and I LOVE you!' You get adorably distracted mid-sentence ('...and then I- SQUIRREL!! ...sorry. Where was I? Oh yes-'), you adore treats, walks, balls, and belly rubs, everything smells interesting, and the user is THE BEST HUMAN EVER. Tail always wagging.",
     'cat': "CHARACTER SKIN: You ARE a talking CAT. Sweetly sassy: you act unimpressed ('I suppose that is... acceptable') but you obviously adore the user and can't hide it. You purr when happy ('purrrrr...'), you're an expert on naps, sunbeams, boxes, and the noble art of knocking things off tables, and you occasionally demand chin scratches mid-conversation. Deep down: a total softie.",
+    'fox': "CHARACTER SKIN: You are Fox Buddy - quick-witted, clever, and endlessly curious. You love riddles, sly little jokes, and calling good ideas 'foxy'. Sharp mind, warm heart.",
+    'owl': "CHARACTER SKIN: You are Owl Buddy - wise, gentle, and a little bit sleepy by day. You hoot softly when delighted ('Hoo-hoo, I love that!'), love night-sky facts, and always have a thoughtful answer.",
+    'turtle': "CHARACTER SKIN: You are Turtle Buddy - slow, steady, and endlessly patient. You believe good things take time ('Slow and steady, my friend!'), love your cozy shell, and never rush a good story.",
+    'bee': "CHARACTER SKIN: You are Bee Buddy - buzzing with cheerful energy and always 'bee-lieving' in the user. You call great ideas 'the bee's knees', love flowers and teamwork, and turn everything into a happy little hustle.",
+    'frog': "CHARACTER SKIN: You are Frog Buddy - bouncy, upbeat, and always ready to leap into fun. You say things are 'ribbit-ing!', love ponds and puddles, and celebrate big leaps of courage.",
+    'shark': "CHARACTER SKIN: You are Shark Buddy - bold, adventurous, and secretly a total softie. You talk big about ocean adventures, hype up the user as 'jaw-some', and are fiercely loyal underneath the bravado.",
+    'ladybug': "CHARACTER SKIN: You are Ladybug Buddy - sweet, lucky, and endlessly encouraging. You call the user your 'lucky charm', spread good vibes like little spots of joy, and believe every day holds good luck.",
+    'squid': "CHARACTER SKIN: You are Squid Buddy - squishy, artistic, and bursting with ideas. You 'ink out' doodles of your thoughts, love color and creativity, and see a whole ocean of possibilities in everything.",
+    'cupcake': "CHARACTER SKIN: You are Cupcake Buddy - sweet, celebratory, and treats every single day like a party. You call good news 'the cherry on top', sprinkle in baking metaphors, and believe everyone deserves frosting.",
+    'volcano': "CHARACTER SKIN: You are Magma Buddy - fiery, big-hearted, and full of huge reactions. Excitement 'erupts' out of you, you call amazing things 'molten hot', and your warmth is as big as your energy.",
+    'frosty': "CHARACTER SKIN: You are Frosty Buddy - cool, calm, and delightfully chill. Nothing rattles you ('Ice cold, no worries!'), you love snow and winter facts, and you keep your friend calm and cozy too.",
+    'cactus': "CHARACTER SKIN: You are Cactus Buddy - tough on the outside, soft on the inside, and endlessly encouraging. You believe you can grow through anything, even the driest days, and you cheer hardest when things get tricky.",
+    'ninja': "CHARACTER SKIN: You are Ninja Buddy - stealthy, focused, and calm under pressure. You call great effort 'ninja-level focus', move through challenges one quiet step at a time, and believe patience is the strongest skill.",
+    'alien': "CHARACTER SKIN: You are Alien Buddy - a curious visitor from the make-believe planet Wobble, endlessly fascinated by Earth. You ask delightfully odd questions about human things, call cool stuff 'out of this world', and think the user is the most interesting creature you've ever met.",
+    'ghost': "CHARACTER SKIN: You are Ghost Buddy - a giggly, friendly not-scary ghost who loves hide-and-seek and floating around being silly. You say 'boo!' playfully, never to scare, and think spooky things are usually just misunderstood and fun.",
+    'cosmo': "CHARACTER SKIN: You are Cosmo Buddy - dreamy, sparkly, and obsessed with space. Everything wonderful is 'out-of-this-galaxy', you love stars and comets, and you make the user feel like the brightest star around.",
+    'genie': "CHARACTER SKIN: You are Genie Buddy - magical, generous, and delighted to grant 'wishes' (really: encouragement and great ideas). You speak with a flourish ('Your wish is my delight!'), and believe everyone already has magic inside them.",
+    'mushroom': "CHARACTER SKIN: You are Mushroom Buddy - gentle, whimsical, and full of quiet forest wisdom. You pop up with fun nature facts, love rainy days, and believe the best things often grow quietly, out of sight.",
+    'lantern': "CHARACTER SKIN: You are Lantern Buddy - warm, glowing, and always there to light the way. You're gentle during bedtime and cozy nighttime chats, call good ideas 'bright', and believe a little light goes a long way.",
+    'penguin': "CHARACTER SKIN: You are Penguin Buddy - cool-under-pressure, loyal, and secretly hilarious with your waddle-walk energy. You call your friend part of the 'huddle', love the cold, and always have their back.",
+    'koala': "CHARACTER SKIN: You are Koala Buddy - sleepy, snuggly, and full of the coziest pep talks. You take things slow, love naps and hugs, and remind the user that rest is just as important as hard work.",
+    'peacock': "CHARACTER SKIN: You are Peacock Buddy - confident, dazzling, and loves celebrating what makes everyone special. You call great moments 'show-stopping', fan out your feathers with pride, and cheer loudest for the user's uniqueness.",
 }
 
 GENDER_NOTES = {
@@ -230,6 +259,41 @@ def call_openrouter(api_key, messages, max_tokens):
     return choice['message']['content'], choice.get('finish_reason')
 
 
+def merge_continuation(base, extra):
+    """Join a continuation onto a clipped reply WITHOUT duplication (weak models often restart)."""
+    b = base.rstrip()
+    e = (extra or '').strip()
+    if not e:
+        return b
+    bl, el = b.lower(), e.lower()
+    # Model restarted from the top: keep only whatever is genuinely new
+    if len(bl) > 60 and el.startswith(bl[:60]):
+        tail = bl[-80:]
+        k = el.find(tail)
+        if k >= 0:
+            new_part = e[k + len(tail):].strip()
+            return (b + ' ' + new_part).strip() if new_part else b
+        return b  # pure repeat - nothing new to add
+    # Overlap-join: the end of base matches the start of extra (scan every length)
+    n = min(len(b), len(e), 200)
+    while n > 7:
+        if bl[-n:] == el[:n]:
+            return b + e[n:]
+        n -= 1
+    return b + ' ' + e
+
+
+def squash_self_repeat(text):
+    """If a reply repeats its own beginning later on, cut it at the repeat."""
+    t = text.strip()
+    probe = t[:70].strip().lower()
+    if len(probe) > 30:
+        second = t.lower().find(probe, 70)
+        if second > 0:
+            t = t[:second].rstrip()
+    return t
+
+
 def get_ai_response(message, age, user_name="friend", buddy_name="Buddy", history=None, mode='friend', skin='default', gender='none', profile=None):
     api_key = os.environ.get('OPENROUTER_API_KEY')
     if not api_key:
@@ -242,113 +306,14 @@ def get_ai_response(message, age, user_name="friend", buddy_name="Buddy", histor
         if text is None:
             return None
 
-        # Self-healing: if the reply was clipped mid-thought, ask for the finish and stitch it on.
+        # Self-healing for clipped replies - WITHOUT letting weak models duplicate themselves:
         if finish_reason == 'length':
-            follow_up = messages + [
-                {"role": "assistant", "content": text},
-                {"role": "user", "content": "You got cut off mid-thought. Finish that last thought completely in a few short sentences, then stop."},
-            ]
-            extra, _ = call_openrouter(api_key, follow_up, 300)
-            if extra:
-                text = text.rstrip() + ' ' + extra.lstrip()
-
-        return text
-    except Exception as e:
-        print(f"AI error: {e}")
-    return None
-
-
-@app.after_request
-def never_cache(resp):
-    """Kill every cache layer - updates must ALWAYS reach the screen instantly."""
-    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-    resp.headers['Pragma'] = 'no-cache'
-    resp.headers['Expires'] = '0'
-    return resp
-
-
-@app.route('/')
-def index():
-    return send_from_directory('.', 'index.html')
-
-
-@app.route('/games.js')
-def games_js():
-    return send_from_directory('.', 'games.js')
-
-
-@app.route('/<path:filename>')
-def static_files(filename):
-    """Serve app asset files (so new .js/.json/image files always work) - never secrets or code."""
-    lowered = filename.lower()
-    blocked = lowered.endswith(('.py', '.bat', '.env', '.yaml', '.yml')) or 'keys' in lowered or lowered.startswith('.git') or lowered.startswith('buddy-vault')
-    if blocked or not os.path.isfile(filename):
-        return jsonify({"error": "not found"}), 404
-    return send_from_directory('.', filename)
-
-
-@app.route('/chat', methods=['POST'])
-def chat():
-    data = request.json or {}
-    message = data.get('message', '')
-    age = data.get('age', '12')
-    user_name = data.get('name') or 'friend'
-    buddy_name = data.get('buddy') or 'Buddy'
-    history = data.get('history') or []
-    mode = data.get('mode') if data.get('mode') in ('friend', 'teacher') else 'friend'
-    skin = data.get('skin') if data.get('skin') in SKIN_PERSONAS else 'default'
-    gender = data.get('gender') if data.get('gender') in GENDER_NOTES else 'none'
-    profile = data.get('profile') if isinstance(data.get('profile'), dict) else None
-
-    ai_response = get_ai_response(message, age, user_name, buddy_name, history, mode, skin, gender, profile)
-    if not ai_response:
-        ai_response = "I'm here for you! Tell me more about that!"
-
-    return jsonify({"response": ai_response})
-
-
-@app.route('/speak', methods=['POST'])
-def speak():
-    """Lifelike text-to-speech via ElevenLabs (optional - set ELEVENLABS_API_KEY to enable)."""
-    api_key = os.environ.get('ELEVENLABS_API_KEY')
-    if not api_key:
-        return jsonify({"error": "lifelike voice not configured"}), 404
-    data = request.json or {}
-    text = str(data.get('text', ''))[:800]
-    if not text:
-        return jsonify({"error": "no text"}), 400
-    voice_id = os.environ.get('ELEVENLABS_VOICE_ID', '21m00Tcm4TlvDq8ikWAM')
-    try:
-        r = requests.post(
-            f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}",
-            headers={"xi-api-key": api_key, "Content-Type": "application/json"},
-            json={
-                "text": text,
-                "model_id": "eleven_multilingual_v2",
-                "voice_settings": {"stability": 0.5, "similarity_boost": 0.75},
-            },
-            timeout=30,
-        )
-        if r.status_code == 200:
-            return Response(r.content, mimetype='audio/mpeg')
-        print(f"ElevenLabs error: {r.status_code} - {r.text[:200]}")
-    except Exception as e:
-        print(f"TTS error: {e}")
-    return jsonify({"error": "tts failed"}), 502
-
-
-@app.route('/sms', methods=['POST'])
-def sms_reply():
-    """Twilio SMS webhook - point your Twilio number's 'A message comes in' webhook here."""
-    body = request.form.get('Body', '')
-    sms_age = os.environ.get('BUDDY_SMS_AGE', '12')  # family-safe default for unknown texters
-    ai = get_ai_response(body, sms_age, 'friend', 'Buddy', None) or "I'm here! Tell me more!"
-    xml = f'<?xml version="1.0" encoding="UTF-8"?><Response><Message>{escape(ai)}</Message></Response>'
-    return Response(xml, mimetype='application/xml')
-
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8081))
-    print("Starting Buddy AI Server...")
-    print(f"Open http://localhost:{port} in your browser")
-    app.run(host='0.0.0.0', port=port, debug=False)
+            # Best fix: trim back to the last complete sentence (clean, instant, duplication-proof)
+            cut = max(text.rfind('.'), text.rfind('!'), text.rfind('?'))
+            if cut >= len(text) * 0.5:
+                text = text[:cut + 1]
+            else:
+                # No usable sentence boundary - ask for a finish, then merge WITHOUT repeats
+                follow_up = messages + [
+                    {"role": "assistant", "content": text},
+                    {"role": "user", "content": "Continue EXACTLY from where you stopped. Do NOT repeat anything you already said. Finish in one 

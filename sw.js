@@ -1,6 +1,6 @@
 // Buddy's offline shell - caches the app so it opens instantly, even offline
-const CACHE = 'buddy-v4';
-const ASSETS = ['./', './index.html', './games.js', './visuals.js', './space.js', './manifest.json', './icon-192.png', './icon-512.png'];
+const CACHE = 'buddy-v6';
+const ASSETS = ['./', './index.html', './games.js?v=6', './visuals.js?v=6', './space.js?v=6', './buddy3d.js?v=6', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {
     e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
