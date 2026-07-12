@@ -38,6 +38,26 @@
 .vfx-xpbar { position:fixed; top:0; left:0; height:4px; width:0%; z-index:7500; background:linear-gradient(90deg,#ffd166,#ff6b9d,#a855f7,#00d4ff); transition:width .6s ease; border-radius:0 4px 4px 0; }
 .vfx-level { position:fixed; bottom:12px; left:12px; z-index:2900; background:linear-gradient(135deg,var(--primary,#667eea),var(--secondary,#764ba2)); color:white; padding:8px 14px; border-radius:999px; font-weight:bold; font-size:.85rem; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.3); font-family:inherit; border:2px solid rgba(255,255,255,.5); transition:transform .15s; }
 .vfx-level:hover { transform:scale(1.08); }
+.vfx-quest { position:fixed; bottom:58px; left:12px; z-index:2900; background:linear-gradient(135deg,#ff9a3c,#ff6b9d); color:white; padding:7px 13px; border-radius:999px; font-weight:bold; font-size:.78rem; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.3); font-family:inherit; border:2px solid rgba(255,255,255,.5); transition:transform .15s, opacity .3s; max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.vfx-quest:hover { transform:scale(1.06); }
+.vfx-quest.vq-done { background:linear-gradient(135deg,#2ecc71,#11998e); }
+.vfx-journal { position:fixed; bottom:12px; right:12px; z-index:2900; background:linear-gradient(135deg,#a855f7,#6366f1); color:white; width:44px; height:44px; border-radius:50%; font-size:1.3rem; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.3); border:2px solid rgba(255,255,255,.5); transition:transform .15s; display:flex; align-items:center; justify-content:center; }
+.vfx-journal:hover { transform:scale(1.1) rotate(-6deg); }
+.journal-list { max-height:55vh; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
+.journal-entry { display:flex; gap:12px; align-items:flex-start; background:rgba(0,0,0,0.04); border-radius:14px; padding:10px 12px; }
+.journal-emoji { font-size:1.6rem; flex-shrink:0; }
+.journal-text { font-weight:600; font-size:.92rem; }
+.journal-date { font-size:.72rem; color:#888; margin-top:2px; }
+.pin-pad { display:grid; grid-template-columns:repeat(3,64px); gap:10px; justify-content:center; margin:18px 0; }
+.pin-pad button { width:64px; height:64px; border-radius:50%; border:none; background:rgba(0,0,0,0.06); font-size:1.3rem; font-weight:bold; cursor:pointer; font-family:inherit; }
+.pin-pad button:active { transform:scale(0.92); }
+.pin-dots { display:flex; justify-content:center; gap:12px; margin:14px 0 4px; }
+.pin-dot { width:16px; height:16px; border-radius:50%; border:2px solid #999; transition:background .15s; }
+.pin-dot.filled { background:var(--primary,#667eea); border-color:var(--primary,#667eea); }
+.dash-stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+.dash-stat { background:rgba(0,0,0,0.04); border-radius:14px; padding:12px; text-align:center; }
+.dash-stat .n { font-size:1.4rem; font-weight:bold; display:block; }
+.dash-stat .l { font-size:0.72rem; color:#888; }
 .vfx-orb { position:fixed; left:0; top:0; z-index:2800; font-size:1.7rem; pointer-events:none; will-change:transform,opacity; transition:transform 55s linear, opacity 80s linear; filter:drop-shadow(0 0 10px rgba(255,255,200,.8)); }
 body.sky-off .vfx-orb, body.sky-off .vfx-twinkle, body.sky-off #vfxCity, body.sky-off .vfx-drop2, body.sky-off .vfx-rise, body.sky-off .vfx-shoot { display:none !important; }
 #vfxCity { position:fixed; left:0; right:0; bottom:0; height:22vh; pointer-events:none; z-index:-1; opacity:.55; }
@@ -102,7 +122,7 @@ function unlock(id) {
     vfx.ach[id] = true;
     vfxSave();
     const a = ACH[id];
-    if (a) { vfxToast(a.e, a.t, a.s); vfxFireworkAt(window.innerWidth * (0.3 + Math.random() * 0.4), window.innerHeight * 0.4); }
+    if (a) { vfxToast(a.e, a.t, a.s); vfxFireworkAt(window.innerWidth * (0.3 + Math.random() * 0.4), window.innerHeight * 0.4); if (typeof journalAdd === 'function') journalAdd(a.e, a.t + ' ' + a.s); }
     // Some achievements also unlock a house decoration (Buddy's House feature)
     if (typeof HOUSE_DECOR !== 'undefined' && typeof unlockDecor === 'function') {
         Object.entries(HOUSE_DECOR).forEach(([decorId, d]) => {
@@ -147,10 +167,261 @@ function addXP(n) {
     if (after > before) {
         vfxToast('🎇', 'LEVEL UP! Friendship Lv ' + after, 'You and Buddy are closer than ever!');
         vfxFireworkShow(3);
+        if (typeof journalAdd === 'function') journalAdd('🎇', 'Reached Friendship Level ' + after + '!');
         if (after >= 5) unlock('level5');
         checkLevelDecor(after);
     }
 }
+// ---------- Daily Quests ----------
+// One small, achievable goal a day, picked deterministically (same quest all day, new one tomorrow),
+// tracked off the exact same counters (msgs/draws/games/words) the achievement system already uses.
+const QUEST_POOL = [
+    { id: 'chat3', type: 'msgs', target: 3, text: 'Chat with Buddy 3 times', emoji: '💬', reward: 8 },
+    { id: 'chat5', type: 'msgs', target: 5, text: 'Send Buddy 5 messages', emoji: '💬', reward: 10 },
+    { id: 'draw1', type: 'draws', target: 1, text: 'Ask Buddy to draw something', emoji: '🎨', reward: 10 },
+    { id: 'game1', type: 'games', target: 1, text: 'Play a game in the arcade', emoji: '🎮', reward: 8 },
+    { id: 'word2', type: 'words', target: 2, text: 'Learn 2 new words with Buddy', emoji: '📖', reward: 6 },
+    { id: 'chat4draw', type: 'msgs', target: 4, text: 'Chat with Buddy 4 times', emoji: '💬', reward: 9 }
+];
+function questHash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+    return h;
+}
+let quest = Object.assign({ date: '', questId: '', progress: 0, done: false }, JSON.parse(localStorage.getItem('buddy_quest') || '{}'));
+function questSave() { localStorage.setItem('buddy_quest', JSON.stringify(quest)); }
+function ensureQuestForToday() {
+    const today = new Date().toISOString().slice(0, 10);
+    if (quest.date === today) return;
+    const pick = QUEST_POOL[questHash(today) % QUEST_POOL.length];
+    quest = { date: today, questId: pick.id, progress: 0, done: false };
+    questSave();
+}
+function currentQuest() { return QUEST_POOL.find(q => q.id === quest.questId) || QUEST_POOL[0]; }
+function vfxQuestUI() {
+    ensureQuestForToday();
+    const q = currentQuest();
+    let chip = document.getElementById('vfxQuestChip');
+    if (!chip) {
+        chip = document.createElement('button');
+        chip.id = 'vfxQuestChip';
+        chip.className = 'vfx-quest';
+        chip.onclick = showQuestDetails;
+        document.body.appendChild(chip);
+    }
+    chip.classList.toggle('vq-done', quest.done);
+    chip.textContent = (quest.done ? '✅ ' : q.emoji + ' ') + q.text + (quest.done ? '' : ' (' + Math.min(quest.progress, q.target) + '/' + q.target + ')');
+}
+function showQuestDetails() {
+    const q = currentQuest();
+    if (quest.done) vfxToast('✅', "Today's Quest - Done!", q.text + ' - come back tomorrow for a new one!', true);
+    else vfxToast(q.emoji, "Today's Quest", q.text + ' (' + Math.min(quest.progress, q.target) + '/' + q.target + ')');
+}
+function bumpQuest(type, amount) {
+    ensureQuestForToday();
+    if (quest.done) return;
+    const q = currentQuest();
+    if (q.type !== type) return;
+    quest.progress += amount;
+    if (quest.progress >= q.target) {
+        quest.done = true;
+        questSave();
+        addXP(q.reward);
+        vfxToast('🌟', 'Quest Complete!', q.text + ' - +' + q.reward + ' XP!', true);
+        vfxFireworkAt(window.innerWidth * (0.3 + Math.random() * 0.4), window.innerHeight * 0.4);
+        if (typeof journalAdd === 'function') journalAdd('🌟', "Today's Quest done: " + q.text + '!');
+    } else {
+        questSave();
+    }
+    vfxQuestUI();
+}
+
+// ---------- Buddy's Journal ----------
+// A private, auto-saving keepsake of fun moments - milestones, drawings, and achievements -
+// captured automatically as they happen, newest first. Capped so localStorage never bloats.
+const JOURNAL_MAX = 60;
+let journal = JSON.parse(localStorage.getItem('buddy_journal') || '[]');
+function journalSave() { localStorage.setItem('buddy_journal', JSON.stringify(journal)); }
+function journalAdd(emoji, text) {
+    const safeText = typeof escapeHtml === 'function' ? escapeHtml(text) : String(text).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    journal.unshift({ date: new Date().toISOString().slice(0, 10), t: Date.now(), emoji: emoji, text: safeText });
+    if (journal.length > JOURNAL_MAX) journal.length = JOURNAL_MAX;
+    journalSave();
+    const chip = document.getElementById('vfxJournalChip');
+    if (chip) { chip.classList.add('vq-done'); setTimeout(() => chip.classList.remove('vq-done'), 1200); }
+}
+function vfxJournalUI() {
+    if (document.getElementById('vfxJournalChip')) return;
+    const chip = document.createElement('button');
+    chip.id = 'vfxJournalChip';
+    chip.className = 'vfx-journal';
+    chip.title = "Buddy's Journal";
+    chip.textContent = '📔';
+    chip.onclick = openJournal;
+    document.body.appendChild(chip);
+}
+function openJournal() {
+    let modal = document.getElementById('journalModal');
+    if (modal) modal.remove();
+    modal = document.createElement('div');
+    modal.id = 'journalModal';
+    modal.className = 'settings-modal active';
+    const entriesHtml = journal.length
+        ? journal.map(e => '<div class="journal-entry"><span class="journal-emoji">' + e.emoji + '</span><div><div class="journal-text">' + e.text + '</div><div class="journal-date">' + e.date + '</div></div></div>').join('')
+        : '<p style="color:#888;text-align:center;padding:20px;">No memories yet — keep playing with Buddy and they\'ll show up here!</p>';
+    modal.innerHTML = '<div class="settings-content" style="max-width:480px;"><h2>📔 Buddy\'s Journal</h2><p style="margin-bottom:15px;color:#666;">A little scrapbook of your adventures together!</p><div class="journal-list">' + entriesHtml + '</div><button class="settings-btn" style="position:static;margin-top:20px;width:auto;padding:10px 20px;border-radius:20px;background:var(--primary);color:white;" onclick="document.getElementById(\'journalModal\').remove()">Close</button></div>';
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+}
+
+// ---------- Usage tracking (feeds the Parent Dashboard) ----------
+let usageDaily = JSON.parse(localStorage.getItem('buddy_usage_daily') || '{}');
+let usageTotal = parseInt(localStorage.getItem('buddy_usage_total') || '0', 10);
+let __usageLastTick = Date.now();
+function usageTick() {
+    const now = Date.now();
+    // Cap a single tick so a backgrounded/sleeping tab can't silently rack up fake hours.
+    const elapsed = Math.max(0, Math.min(60, Math.round((now - __usageLastTick) / 1000)));
+    __usageLastTick = now;
+    if (elapsed <= 0) return;
+    const today = new Date().toISOString().slice(0, 10);
+    usageDaily[today] = (usageDaily[today] || 0) + elapsed;
+    usageTotal += elapsed;
+    const keys = Object.keys(usageDaily).sort();
+    while (keys.length > 14) { delete usageDaily[keys.shift()]; }
+    localStorage.setItem('buddy_usage_daily', JSON.stringify(usageDaily));
+    localStorage.setItem('buddy_usage_total', String(usageTotal));
+}
+setInterval(usageTick, 15000);
+document.addEventListener('visibilitychange', () => { if (document.hidden) usageTick(); else __usageLastTick = Date.now(); });
+window.addEventListener('beforeunload', usageTick);
+function usageToday() { return (usageDaily[new Date().toISOString().slice(0, 10)] || 0) + Math.round((Date.now() - __usageLastTick) / 1000); }
+function fmtDuration(sec) {
+    sec = Math.max(0, Math.round(sec));
+    if (sec < 60) return sec + 's';
+    const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60);
+    return h > 0 ? (h + 'h ' + m + 'm') : (m + 'm');
+}
+
+// ---------- Parent Dashboard (PIN-gated) ----------
+// Client-side only, so this is a deterrent gate (like the parental gates other kids' apps use),
+// not real account security - the PIN is stored as a hash, never in plain text.
+function pinHash(pin) {
+    let h = 0;
+    for (let i = 0; i < pin.length; i++) h = (h * 31 + pin.charCodeAt(i)) >>> 0;
+    return String(h);
+}
+let __pinBuffer = '';
+function openParentGate() {
+    const hasPin = !!localStorage.getItem('buddy_parent_pin');
+    renderPinModal(hasPin ? 'enter' : 'create', hasPin ? 'Enter the Parent PIN' : 'Create a 4-digit Parent PIN');
+}
+function renderPinModal(mode, title, firstPin) {
+    __pinBuffer = '';
+    let modal = document.getElementById('pinModal');
+    if (modal) modal.remove();
+    modal = document.createElement('div');
+    modal.id = 'pinModal';
+    modal.className = 'settings-modal active';
+    modal.dataset.mode = mode;
+    if (firstPin) modal.dataset.firstPin = firstPin;
+    const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, '⌫', 0, '✔'];
+    const pad = keys.map(k => '<button onclick="pinKey(\'' + k + '\')">' + k + '</button>').join('');
+    modal.innerHTML = '<div class="settings-content" style="max-width:340px;text-align:center;"><h2>🔒 ' + title + '</h2>' +
+        '<div class="pin-dots" id="pinDots"></div>' +
+        '<div class="pin-pad">' + pad + '</div>' +
+        '<button class="settings-btn" style="position:static;width:auto;padding:8px 18px;border-radius:16px;background:none;color:#999;box-shadow:none;" onclick="document.getElementById(\'pinModal\').remove()">Cancel</button>' +
+        '</div>';
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+    renderPinDots();
+}
+function renderPinDots() {
+    const el = document.getElementById('pinDots');
+    if (!el) return;
+    el.innerHTML = Array.from({ length: 4 }).map((_, i) => '<span class="pin-dot' + (i < __pinBuffer.length ? ' filled' : '') + '"></span>').join('');
+}
+function pinKey(k) {
+    if (k === '⌫') { __pinBuffer = __pinBuffer.slice(0, -1); renderPinDots(); return; }
+    if (k === '✔') { submitPin(); return; }
+    if (__pinBuffer.length >= 4) return;
+    __pinBuffer += String(k);
+    renderPinDots();
+    if (__pinBuffer.length === 4) setTimeout(submitPin, 150);
+}
+function submitPin() {
+    const modal = document.getElementById('pinModal');
+    if (!modal || __pinBuffer.length !== 4) return;
+    const mode = modal.dataset.mode;
+    const entered = __pinBuffer;
+    if (mode === 'create') {
+        modal.remove();
+        renderPinModal('confirm', 'Type it again to confirm', entered);
+    } else if (mode === 'confirm') {
+        modal.remove();
+        if (entered === modal.dataset.firstPin) {
+            localStorage.setItem('buddy_parent_pin', pinHash(entered));
+            openParentDashboard();
+        } else {
+            vfxToast('❌', "Those didn't match", 'Try setting your PIN again.');
+            renderPinModal('create', 'Create a 4-digit Parent PIN');
+        }
+    } else if (mode === 'enter') {
+        if (pinHash(entered) === localStorage.getItem('buddy_parent_pin')) {
+            modal.remove();
+            openParentDashboard();
+        } else {
+            vfxToast('❌', 'Wrong PIN', 'Try again.');
+            renderPinModal('enter', 'Enter the Parent PIN');
+        }
+    } else if (mode === 'change-new') {
+        modal.remove();
+        renderPinModal('change-confirm', 'Type your new PIN again', entered);
+    } else if (mode === 'change-confirm') {
+        modal.remove();
+        if (entered === modal.dataset.firstPin) {
+            localStorage.setItem('buddy_parent_pin', pinHash(entered));
+            vfxToast('✅', 'PIN updated!', '');
+        } else {
+            vfxToast('❌', "Those didn't match", 'PIN left unchanged.');
+        }
+        openParentDashboard();
+    }
+}
+function changeParentPin() { renderPinModal('change-new', 'Type a new PIN'); }
+
+function openParentDashboard() {
+    let modal = document.getElementById('parentDashModal');
+    if (modal) modal.remove();
+    modal = document.createElement('div');
+    modal.id = 'parentDashModal';
+    modal.className = 'settings-modal active';
+    const recent = journal.slice(0, 8).map(e => '<div class="journal-entry"><span class="journal-emoji">' + e.emoji + '</span><div><div class="journal-text">' + e.text + '</div><div class="journal-date">' + e.date + '</div></div></div>').join('')
+        || '<p style="color:#888;text-align:center;">No activity yet.</p>';
+    const achCount = Object.keys(vfx.ach || {}).length;
+    modal.innerHTML = '<div class="settings-content" style="max-width:480px;"><h2>👪 Parent Dashboard</h2>' +
+        '<div class="dash-stats">' +
+        '<div class="dash-stat"><span class="n">' + fmtDuration(usageToday()) + '</span><span class="l">Time today</span></div>' +
+        '<div class="dash-stat"><span class="n">' + fmtDuration(usageTotal) + '</span><span class="l">Time all-time</span></div>' +
+        '<div class="dash-stat"><span class="n">' + (vfx.msgs || 0) + '</span><span class="l">Messages sent</span></div>' +
+        '<div class="dash-stat"><span class="n">' + (vfx.draws || 0) + '</span><span class="l">Drawings made</span></div>' +
+        '<div class="dash-stat"><span class="n">' + (vfx.games || 0) + '</span><span class="l">Games played</span></div>' +
+        '<div class="dash-stat"><span class="n">' + achCount + '/' + Object.keys(ACH).length + '</span><span class="l">Achievements</span></div>' +
+        '<div class="dash-stat"><span class="n">Lv ' + vfxLevel() + '</span><span class="l">Friendship level</span></div>' +
+        '<div class="dash-stat"><span class="n">' + (typeof currentAge !== 'undefined' ? currentAge : '?') + '</span><span class="l">Age setting</span></div>' +
+        '</div>' +
+        '<h2 style="font-size:1.05rem;margin-top:10px;">Recent activity</h2>' +
+        '<p style="font-size:0.75rem;color:#888;margin-bottom:10px;">A friendly activity feed - not a word-for-word chat transcript.</p>' +
+        '<div class="journal-list" style="max-height:220px;">' + recent + '</div>' +
+        '<div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center;">' +
+        '<button class="settings-btn" style="position:static;width:auto;padding:10px 16px;border-radius:16px;background:var(--primary);color:white;" onclick="document.getElementById(\'parentDashModal\').remove();if(typeof openSettings===\'function\')openSettings();">⚙️ Open Settings</button>' +
+        '<button class="settings-btn" style="position:static;width:auto;padding:10px 16px;border-radius:16px;background:#999;color:white;" onclick="changeParentPin()">🔑 Change PIN</button>' +
+        '<button class="settings-btn" style="position:static;width:auto;padding:10px 16px;border-radius:16px;background:none;color:#999;box-shadow:none;" onclick="document.getElementById(\'parentDashModal\').remove()">Close</button>' +
+        '</div></div>';
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+}
+
 function vfxRewardCard(unlocked, emoji, title, sub) {
     if (unlocked) {
         return '<div class="buddy-skin-card active" style="cursor:default;"><div class="buddy-skin-preview" style="background:linear-gradient(135deg,var(--primary),var(--secondary));"><span style="font-size:22px;">' + emoji + '</span></div><div class="buddy-skin-name">' + title + '</div>' + (sub ? '<div style="font-size:0.7rem;color:#888;">' + sub + '</div>' : '') + '</div>';
@@ -499,6 +770,7 @@ const COMPLIMENTS = [
             vfx.msgs++;
             addXP(2);
             vfxSave();
+            bumpQuest('msgs', 1);
             const btn = document.querySelector('.input-container button');
             if (btn) {
                 const r = btn.getBoundingClientRect();
@@ -509,4 +781,95 @@ const COMPLIMENTS = [
             if (vfx.msgs === 10) unlock('chat10');
             if (vfx.msgs === 50) { unlock('chat50'); vfxMeteorShower(); }
             if (vfx.msgs % 6 === 0) {
-                const c = COM
+                const c = COMPLIMENTS[vRnd(COMPLIMENTS.length)];
+                setTimeout(() => vfxToast(c[0], c[1], '', true), 2500);
+            }
+            if (/\bi\s+love\b|\blove\s+you\b/i.test(before)) vfxHearts();
+            if (/\bbirthday\b/i.test(before)) vfxBirthday();
+        };
+    }
+    // Drawing: camera flash + art achievements
+    if (typeof window.showImageResponse === 'function') {
+        const _img = window.showImageResponse;
+        window.showImageResponse = function (prompt, tutorial) {
+            const f = document.createElement('div');
+            f.className = 'vfx-flash';
+            document.body.appendChild(f);
+            setTimeout(() => f.remove(), 400);
+            _img(prompt, tutorial);
+            vfx.draws++;
+            addXP(5);
+            vfxSave();
+            bumpQuest('draws', 1);
+            if (typeof journalAdd === 'function' && prompt) journalAdd('🎨', 'Buddy drew: "' + prompt + '"');
+            if (vfx.draws === 1) unlock('firstDraw');
+            if (vfx.draws === 5) unlock('draw5');
+        };
+    }
+    // Arcade: achievement + stop the "new!" wiggle
+    if (typeof window.showGameMenu === 'function') {
+        const _menu = window.showGameMenu;
+        window.showGameMenu = function () {
+            _menu();
+            vfx.games++;
+            addXP(3);
+            vfxSave();
+            bumpQuest('games', 1);
+            unlock('firstGame');
+            const gb = document.getElementById('gamesBtn');
+            if (gb) gb.classList.remove('vfx-wiggle');
+        };
+    }
+    // Word lessons
+    if (typeof window.readWord === 'function') {
+        const _rw = window.readWord;
+        window.readWord = function (w) {
+            _rw(w);
+            vfx.words++;
+            addXP(1);
+            vfxSave();
+            bumpQuest('words', 1);
+            unlock('wordWizard');
+        };
+    }
+    // Names saved
+    if (typeof window.saveNames === 'function') {
+        const _sn = window.saveNames;
+        window.saveNames = function () { _sn(); unlock('named'); };
+    }
+    // Theme switch: color wave sweep
+    if (typeof window.applyTheme === 'function') {
+        const _th = window.applyTheme;
+        window.applyTheme = function (name) {
+            _th(name);
+            const w = document.createElement('div');
+            w.className = 'vfx-wave';
+            w.style.background = 'radial-gradient(circle, var(--primary), transparent 70%)';
+            document.body.appendChild(w);
+            setTimeout(() => w.remove(), 950);
+        };
+    }
+    // Confetti moments get rainbows + corner cannons sometimes
+    if (typeof window.burstConfetti === 'function') {
+        const _bc = window.burstConfetti;
+        window.burstConfetti = function () {
+            _bc();
+            vfxCannons();
+            if (Math.random() < 0.35) vfxRainbowArc();
+        };
+    }
+    // "New!" wiggle on the games button - a brief nudge, not a forever-shake.
+    // Runs for ~7s after load (about 3 wiggles) then stops on its own, even if the player never taps it.
+    const gb = document.getElementById('gamesBtn');
+    if (gb && !vfx.ach.firstGame) {
+        gb.classList.add('vfx-wiggle');
+        setTimeout(() => gb.classList.remove('vfx-wiggle'), 7000);
+    }
+
+    vfxLevelUI();
+    // Retroactively unlock any level-gated house decorations for returning friends who
+    // were already past the threshold before Buddy's House feature existed.
+    if (typeof checkLevelDecor === 'function') checkLevelDecor(vfxLevel());
+    vfxQuestUI();
+    vfxJournalUI();
+})();

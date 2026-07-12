@@ -173,6 +173,60 @@
         .decor-weathervane { top: -46px; left: 50%; transform: translateX(-50%); font-size: 0.9rem; }
         .decor-fountain { bottom: -10px; left: -18px; }
         .decor-wreath { top: 34px; left: 50%; transform: translateX(-50%); font-size: 0.85rem; }
+        .decor-confetti-drop { top: -18px; right: 10%; font-size: 1rem; }
+        .decor-heart-lights { top: 10px; left: 8px; font-size: 0.95rem; }
+        .decor-flower-crown { top: -30px; left: 30%; font-size: 0.95rem; }
+        .decor-sunhat { top: -50px; left: 50%; transform: translateX(-50%); font-size: 1rem; }
+        .decor-pumpkin { bottom: -6px; left: -8px; font-size: 1.05rem; }
+        .decor-cornucopia { bottom: 10px; right: 8px; font-size: 1rem; }
+        .decor-snowman { bottom: -14px; left: 70%; font-size: 1.1rem; }
+
+        /* Bedtime Mode: a soft night-light glow + gentle dimming, plus a contextual story button. */
+        body.bedtime-active { --bedtime-on: 1; }
+        .bedtime-glow { position: fixed; inset: 0; pointer-events: none; z-index: 3; opacity: 0; transition: opacity 1.8s ease;
+            background: radial-gradient(ellipse at 50% 110%, rgba(90,70,140,0.22), rgba(8,10,28,0.42) 75%); }
+        body.bedtime-active .bedtime-glow { opacity: 1; }
+        body.bedtime-active .header, body.bedtime-active .chat-container, body.bedtime-active .input-container {
+            filter: brightness(0.9) saturate(0.82); transition: filter 1.8s ease; }
+        .bedtime-story-btn { position: fixed; bottom: 106px; right: 12px; z-index: 2900; background: linear-gradient(135deg,#3f3d78,#6b5b95);
+            color: white; padding: 8px 14px; border-radius: 999px; font-weight: bold; font-size: .78rem; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,.35); font-family: inherit; border: 2px solid rgba(255,255,255,.4);
+            transition: transform .15s, opacity .3s; display: none; }
+        .bedtime-story-btn.showing { display: inline-block; }
+        .bedtime-story-btn:hover { transform: scale(1.06); }
+
+        /* Accessibility Pack */
+        body.dyslexic-spacing, body.dyslexic-spacing .message, body.dyslexic-spacing input, body.dyslexic-spacing textarea {
+            letter-spacing: 0.035em; word-spacing: 0.12em; line-height: 1.7 !important;
+        }
+        body.high-contrast { background: #000 !important; }
+        body.high-contrast .header, body.high-contrast .chat-container, body.high-contrast .input-container,
+        body.high-contrast .settings-content, body.high-contrast .buddy-skin-card {
+            background: #000 !important; color: #fff !important; border: 2px solid #ffe14d !important; filter: none !important;
+        }
+        body.high-contrast .user-message { background: #1a1aff !important; color: #fff !important; border: 2px solid #fff !important; }
+        body.high-contrast .ai-message { background: #111 !important; color: #ffe14d !important; border: 2px solid #ffe14d !important; }
+        body.high-contrast button, body.high-contrast .settings-btn, body.high-contrast select, body.high-contrast input {
+            background: #000 !important; color: #ffe14d !important; border: 2px solid #ffe14d !important;
+        }
+        body.high-contrast .bedtime-glow, body.high-contrast .season-ambient, body.high-contrast #vfxCity { display: none !important; }
+        body.big-targets button, body.big-targets .settings-btn, body.big-targets .vfx-level, body.big-targets .vfx-quest,
+        body.big-targets .vfx-journal, body.big-targets .bedtime-story-btn, body.big-targets select, body.big-targets input[type="text"] {
+            min-height: 52px !important; min-width: 52px !important; font-size: 1.15em !important; padding: 12px 18px !important;
+        }
+        body.big-targets .buddy-skin-card { min-height: 90px !important; padding: 14px !important; }
+        body.big-targets .house-decorate-btn { width: 40px !important; height: 40px !important; }
+        #captionBar { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); max-width: 92vw;
+            background: rgba(10,10,20,0.88); color: #fff; padding: 12px 20px; border-radius: 16px; font-size: 1.15rem;
+            font-weight: 600; text-align: center; z-index: 5500; opacity: 0; pointer-events: none; transition: opacity .25s ease;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+        #captionBar.showing { opacity: 1; }
+        body.high-contrast #captionBar { background: #000; border: 2px solid #ffe14d; color: #ffe14d; }
+
+        /* Seasonal ambient: a few slow-drifting emoji for whatever holiday/season is active today. */
+        .season-ambient { position: fixed; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; }
+        .season-ambient span { position: absolute; top: -10%; opacity: 0.5; animation: season-fall linear infinite; will-change: transform; }
+        @keyframes season-fall { to { transform: translateY(115vh) translateX(var(--drift, 0px)) rotate(360deg); } }
 
         /* Buddy 3D: once a real lit/shaded 3D character is rendered into a .buddy-face,
            hide the flat 2D fallback pieces underneath it (eyes, mouth, CSS accessories).
@@ -770,6 +824,7 @@
         </div>
         <h1>👋 Hi there! I'm Buddy</h1>
         <p>Your AI friend who loves to chat and have fun!</p>
+        <button class="settings-btn" style="right: 115px; font-size: 1rem;" onclick="openProfilePicker()" title="Switch who's playing">👤</button>
         <button class="settings-btn" style="right: 65px;" onclick="newAdventure()" title="Start a brand-new adventure (clears our chat)">🧹</button>
         <button class="settings-btn" onclick="openSettings()">⚙️</button>
     </div>
@@ -840,6 +895,7 @@
                             <option value="modern">Modern (Trebuchet)</option>
                             <option value="rounded">Rounded (Verdana)</option>
                             <option value="typewriter">Typewriter</option>
+                            <option value="dyslexic">♿ Dyslexia-friendly</option>
                         </select>
                     </label>
                     <label>Text size
@@ -858,6 +914,13 @@
                     <label>Animation &amp; 3D motion<input type="range" id="animSlider" min="0" max="100" oninput="updateSetting('animation', +this.value)"></label>
                     <label>Color vibrancy<input type="range" id="vibrancySlider" min="0" max="100" oninput="updateSetting('vibrancy', +this.value)"></label>
                     <label>Shadow depth (3D pop)<input type="range" id="depthSlider" min="0" max="100" oninput="updateSetting('depth', +this.value)"></label>
+                    <label>🌙 Bedtime Mode
+                        <select id="bedtimeSelect" onchange="updateSetting('bedtimeMode', this.value)">
+                            <option value="auto">Auto (7pm - 7am)</option>
+                            <option value="on">Always on</option>
+                            <option value="off">Off</option>
+                        </select>
+                    </label>
                 </div>
 
                 <h2>🔊 Voice</h2>
@@ -886,6 +949,13 @@
                     <label class="check-row"><input type="checkbox" id="skyCheck" onchange="updateSetting('sky', this.checked)"> Sky scenery (moon, stars, city, snow)</label>
                     <label class="check-row"><input type="checkbox" id="reduceMotionCheck" onchange="updateSetting('reduceMotion', this.checked)"> 🧘 Reduce Buddy's motion (holds extra still — good for sensitive eyes)</label>
                 </div>
+
+                <h2>♿ Accessibility</h2>
+                <div class="settings-row">
+                    <label class="check-row"><input type="checkbox" id="highContrastCheck" onchange="updateSetting('highContrast', this.checked)"> 🌓 High contrast mode</label>
+                    <label class="check-row"><input type="checkbox" id="bigTargetsCheck" onchange="updateSetting('bigTargets', this.checked)"> 🔘 Bigger buttons &amp; tap targets</label>
+                    <label class="check-row"><input type="checkbox" id="captionsCheck" onchange="updateSetting('captions', this.checked)"> 💬 Captions while Buddy talks</label>
+                </div>
             </div>
 
             <h2>✨ Buddy's Themes ✨</h2>
@@ -908,8 +978,14 @@
             <div class="buddy-skins" id="accessoryGrid">
                 <!-- Accessories will be generated by JavaScript -->
             </div>
+
+            <p style="margin-top:30px;text-align:center;"><a href="javascript:void(0)" onclick="openParentGate()" style="font-size:0.78rem;color:#999;text-decoration:underline;cursor:pointer;">👪 For Parents</a></p>
         </div>
     </div>
+
+    <div class="bedtime-glow"></div>
+    <button class="bedtime-story-btn" id="bedtimeStoryBtn" onclick="sendBedtimeStory()">🌙 Ask for a bedtime story</button>
+    <div id="captionBar"></div>
 
     <script>
         // Buddy's personality and memory
@@ -1028,7 +1104,7 @@
         }
 
         // ===== App Settings (saved on this device) =====
-        const defaultSettings = { font: 'comic', textSize: 'medium', textColor: '#333333', animation: 100, vibrancy: 50, depth: 50, voiceName: '', voiceStyle: 'normal', rate: 100, pitch: 100, volume: 100, autoRead: true, funFacts: true, lifelike: false, sky: true, micFocus: 'focused', reduceMotion: false };
+        const defaultSettings = { font: 'comic', textSize: 'medium', textColor: '#333333', animation: 100, vibrancy: 50, depth: 50, voiceName: '', voiceStyle: 'normal', rate: 100, pitch: 100, volume: 100, autoRead: true, funFacts: true, lifelike: false, sky: true, micFocus: 'focused', reduceMotion: false, bedtimeMode: 'auto', highContrast: false, bigTargets: false, captions: false };
         let appSettings = Object.assign({}, defaultSettings, JSON.parse(localStorage.getItem('buddy_settings') || '{}'));
 
         const fontMap = {
@@ -1037,7 +1113,8 @@
             classic: "Georgia, 'Times New Roman', serif",
             modern: "'Trebuchet MS', Verdana, sans-serif",
             rounded: "Verdana, Geneva, sans-serif",
-            typewriter: "'Courier New', monospace"
+            typewriter: "'Courier New', monospace",
+            dyslexic: "Verdana, Tahoma, 'Comic Sans MS', sans-serif"
         };
         const sizeMap = { small: '0.9rem', medium: '1rem', large: '1.15rem', xlarge: '1.35rem' };
 
@@ -1104,6 +1181,10 @@
             document.body.classList.toggle('sky-off', appSettings.sky === false);
             // Keep the 3D engine's motion gate (buddy3d.js reduceMotion()) in sync with this setting.
             try { localStorage.setItem('buddy_reduce_motion', appSettings.reduceMotion ? '1' : '0'); } catch (e) { /* ignore */ }
+            applyBedtimeTheme();
+            document.body.classList.toggle('dyslexic-spacing', appSettings.font === 'dyslexic');
+            document.body.classList.toggle('high-contrast', !!appSettings.highContrast);
+            document.body.classList.toggle('big-targets', !!appSettings.bigTargets);
 
             let animStyle = document.getElementById('animCtl');
             if (!animStyle) { animStyle = document.createElement('style'); animStyle.id = 'animCtl'; document.head.appendChild(animStyle); }
@@ -1135,6 +1216,10 @@
             const sk = document.getElementById('skyCheck'); if (sk) sk.checked = appSettings.sky !== false;
             const mf = document.getElementById('micFocusSelect'); if (mf) mf.value = appSettings.micFocus || 'focused';
             const rm = document.getElementById('reduceMotionCheck'); if (rm) rm.checked = !!appSettings.reduceMotion;
+            const bt = document.getElementById('bedtimeSelect'); if (bt) bt.value = appSettings.bedtimeMode || 'auto';
+            const hc = document.getElementById('highContrastCheck'); if (hc) hc.checked = !!appSettings.highContrast;
+            const bg = document.getElementById('bigTargetsCheck'); if (bg) bg.checked = !!appSettings.bigTargets;
+            const cc = document.getElementById('captionsCheck'); if (cc) cc.checked = !!appSettings.captions;
         }
 
         function populateVoiceList() {
@@ -1603,7 +1688,14 @@
             'gnome': { emoji: '🍄', label: 'Garden Gnome', unlockType: 'ach', unlockValue: 'firstGame' },
             'weathervane': { emoji: '🎏', label: 'Weathervane', unlockType: 'level', unlockValue: 5 },
             'fountain': { emoji: '⛲', label: 'Fountain', unlockType: 'level', unlockValue: 6 },
-            'wreath': { emoji: '🎋', label: 'Door Wreath', unlockType: 'ach', unlockValue: 'streak3' }
+            'wreath': { emoji: '🎋', label: 'Door Wreath', unlockType: 'ach', unlockValue: 'streak3' },
+            'confetti-drop': { emoji: '🎉', label: 'New Year Confetti', unlockType: 'event', unlockValue: 'New Year' },
+            'heart-lights': { emoji: '💖', label: 'Heart Lights', unlockType: 'event', unlockValue: "Valentine's Day" },
+            'flower-crown': { emoji: '🌷', label: 'Flower Crown', unlockType: 'event', unlockValue: 'Spring' },
+            'sunhat': { emoji: '☀️', label: "Sun Hat", unlockType: 'event', unlockValue: 'Summer' },
+            'pumpkin': { emoji: '🎃', label: 'Jack-o-Lantern', unlockType: 'event', unlockValue: 'Halloween' },
+            'cornucopia': { emoji: '🦃', label: 'Harvest Basket', unlockType: 'event', unlockValue: 'Thanksgiving' },
+            'snowman': { emoji: '⛄', label: 'Snowman', unlockType: 'event', unlockValue: 'Winter' }
         };
         let unlockedHouseDecor = JSON.parse(localStorage.getItem('buddy_house_decor_unlocked') || '[]');
         let activeHouseDecor = JSON.parse(localStorage.getItem('buddy_house_decor_active') || '[]');
@@ -1618,6 +1710,7 @@
             localStorage.setItem('buddy_house_decor_active', JSON.stringify(activeHouseDecor));
             applyHouseDecor();
             if (typeof vfxToast === 'function') vfxToast(HOUSE_DECOR[id].emoji, 'New house decoration!', HOUSE_DECOR[id].label + ' - tap the 🎨 on your house to arrange it!');
+            if (typeof journalAdd === 'function') journalAdd(HOUSE_DECOR[id].emoji, 'New house decoration: ' + HOUSE_DECOR[id].label + '!');
         }
 
         function toggleDecorActive(id) {
@@ -1643,6 +1736,177 @@
             });
         }
 
+        // ===== Seasonal & Holiday Events =====
+        // Purely calendar-driven: no new data to enter, Buddy just knows what day it is. Each entry
+        // permanently unlocks its house decor the very first time that window is seen (reuses the
+        // exact same reward pipeline as level-ups/achievements), then greets returning visitors every
+        // year after with a quick toast instead of re-unlocking anything.
+        const SEASONAL_EVENTS = [
+            { id: 'newyear',      month: 0,  d1: 1,  d2: 2,  emoji: '🎉', label: 'New Year',       decorId: 'confetti-drop', amb: '🎉' },
+            { id: 'valentines',   month: 1,  d1: 10, d2: 14, emoji: '💖', label: "Valentine's Day", decorId: 'heart-lights',  amb: '💖' },
+            { id: 'spring',       month: 2,  d1: 20, d2: 31, emoji: '🌷', label: 'Spring',          decorId: 'flower-crown', amb: '🌸' },
+            { id: 'summer',       month: 5,  d1: 20, d2: 30, emoji: '☀️', label: 'Summer',          decorId: 'sunhat',       amb: '☀️' },
+            { id: 'halloween',    month: 9,  d1: 20, d2: 31, emoji: '🎃', label: 'Halloween',       decorId: 'pumpkin',      amb: '🦇' },
+            { id: 'thanksgiving', month: 10, d1: 20, d2: 28, emoji: '🦃', label: 'Thanksgiving',    decorId: 'cornucopia',   amb: null },
+            { id: 'winter',       month: 11, d1: 1,  d2: 19, emoji: '❄️', label: 'Winter',          decorId: 'snowman',      amb: '❄️' },
+            { id: 'christmas',    month: 11, d1: 20, d2: 26, emoji: '🎄', label: 'Christmas',       decorId: 'snowman',      amb: '❄️' }
+        ];
+
+        function activeSeasonalEvent(d) {
+            d = d || new Date();
+            const m = d.getMonth(), day = d.getDate();
+            return SEASONAL_EVENTS.find(e => e.month === m && day >= e.d1 && day <= e.d2) || null;
+        }
+
+        let seasonAmbientEl = null;
+        function mountSeasonalAmbient(emoji) {
+            if (seasonAmbientEl) { seasonAmbientEl.remove(); seasonAmbientEl = null; }
+            if (!emoji || (typeof appSettings !== 'undefined' && appSettings.animation < 10)) return;
+            const wrap = document.createElement('div');
+            wrap.className = 'season-ambient';
+            for (let i = 0; i < 10; i++) {
+                const s = document.createElement('span');
+                s.textContent = emoji;
+                s.style.left = Math.random() * 100 + '%';
+                s.style.fontSize = (1 + Math.random() * 0.9) + 'rem';
+                s.style.animationDuration = (9 + Math.random() * 7) + 's';
+                s.style.animationDelay = (Math.random() * -14) + 's';
+                s.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
+                wrap.appendChild(s);
+            }
+            document.body.appendChild(wrap);
+            seasonAmbientEl = wrap;
+        }
+
+        function applySeasonalEvent() {
+            const event = activeSeasonalEvent();
+            mountSeasonalAmbient(event ? event.amb : null);
+            if (!event) return;
+            const today = new Date().toISOString().slice(0, 10);
+            const seenKey = 'buddy_seen_event_' + event.id + '_' + today;
+            if (localStorage.getItem(seenKey) === '1') return;
+            localStorage.setItem(seenKey, '1');
+            setTimeout(() => {
+                if (!unlockedHouseDecor.includes(event.decorId)) {
+                    unlockDecor(event.decorId); // first time ever - full reward toast + permanent unlock
+                } else if (typeof vfxToast === 'function') {
+                    vfxToast(event.emoji, 'Happy ' + event.label + '!', "Buddy's house is looking festive today!", true);
+                }
+            }, 8000);
+        }
+
+        // ===== Sibling Profiles =====
+        // The rest of the app (across index.html, games.js, visuals.js, space.js, buddy3d.js) was
+        // built around one flat set of localStorage keys (buddy_name, buddy_vfx, buddy_journal, etc.)
+        // - dozens of call sites read/write those exact keys. Rather than rewiring every call site to
+        // be profile-aware, each profile gets its own SNAPSHOT of those keys (stored under
+        // "profile_<id>__<key>"); switching profiles copies a snapshot back into the live plain keys
+        // and reloads the page, so every other file keeps working completely unchanged.
+        const PROFILE_KEYS = [
+            'buddy_name', 'buddy_buddyname', 'buddy_age', 'buddy_gender', 'buddy_mode',
+            'buddy_skin', 'buddy_accessory', 'buddy_settings', 'buddy_vfx', 'buddy_quest',
+            'buddy_journal', 'buddy_house_decor_unlocked', 'buddy_house_decor_active',
+            'buddy_usage_daily', 'buddy_usage_total', 'buddy_reduce_motion', 'buddy_wotd',
+            'buddy_theme', 'buddy_onboarded', 'buddy_interests', 'buddy_favorites', 'buddy_history'
+        ];
+        function seasonalSeenKeys() {
+            try { return Object.keys(localStorage).filter(k => k.indexOf('buddy_seen_event_') === 0); }
+            catch (e) { return []; }
+        }
+        function profileList() { return JSON.parse(localStorage.getItem('buddy_profiles') || '[]'); }
+        function activeProfileId() { return localStorage.getItem('buddy_active_profile') || null; }
+        function snapshotCurrentInto(id) {
+            PROFILE_KEYS.concat(seasonalSeenKeys()).forEach(k => {
+                const v = localStorage.getItem(k);
+                if (v === null) localStorage.removeItem('profile_' + id + '__' + k);
+                else localStorage.setItem('profile_' + id + '__' + k, v);
+            });
+        }
+        function restoreFromProfile(id) {
+            seasonalSeenKeys().forEach(k => localStorage.removeItem(k));
+            PROFILE_KEYS.forEach(k => localStorage.removeItem(k));
+            const prefix = 'profile_' + id + '__';
+            Object.keys(localStorage).filter(k => k.indexOf(prefix) === 0).forEach(pk => {
+                localStorage.setItem(pk.slice(prefix.length), localStorage.getItem(pk));
+            });
+        }
+        function createProfile(label) {
+            const profiles = profileList();
+            const id = 'p' + Date.now().toString(36) + Math.floor(Math.random() * 1000);
+            profiles.push({ id: id, label: label, createdAt: new Date().toISOString().slice(0, 10) });
+            localStorage.setItem('buddy_profiles', JSON.stringify(profiles));
+            return id;
+        }
+        // First time this feature runs (including for everyone already using the app), silently
+        // adopt whatever is currently live as their one profile - zero disruption, nothing resets.
+        function ensureDefaultProfile() {
+            if (activeProfileId()) return;
+            if (profileList().length === 0) {
+                const id = createProfile(userName ? userName + "'s Buddy" : 'Player 1');
+                snapshotCurrentInto(id);
+                localStorage.setItem('buddy_active_profile', id);
+            }
+        }
+        function switchToProfile(id) {
+            const current = activeProfileId();
+            if (current === id) { const m = document.getElementById('profileModal'); if (m) m.remove(); return; }
+            if (!confirm('Switch to this profile? The app will reload.')) return;
+            if (current) snapshotCurrentInto(current);
+            restoreFromProfile(id);
+            localStorage.setItem('buddy_active_profile', id);
+            location.reload();
+        }
+        function addNewProfile() {
+            const label = prompt("New player's name?", '');
+            if (label === null) return;
+            const current = activeProfileId();
+            if (current) snapshotCurrentInto(current);
+            const id = createProfile(label.trim() || 'New Player');
+            // brand-new profile starts fully blank - clear the live keys so app defaults apply
+            PROFILE_KEYS.forEach(k => localStorage.removeItem(k));
+            seasonalSeenKeys().forEach(k => localStorage.removeItem(k));
+            localStorage.setItem('buddy_active_profile', id);
+            location.reload();
+        }
+        function deleteProfile(id, evt) {
+            if (evt) evt.stopPropagation();
+            const profiles = profileList();
+            if (profiles.length <= 1) { alert("You need at least one profile - create a new one before deleting this one."); return; }
+            const p = profiles.find(x => x.id === id);
+            if (!confirm('Delete "' + (p ? p.label : 'this profile') + '"? This erases their progress for good.')) return;
+            PROFILE_KEYS.concat(seasonalSeenKeys()).forEach(k => localStorage.removeItem('profile_' + id + '__' + k));
+            const remaining = profiles.filter(x => x.id !== id);
+            localStorage.setItem('buddy_profiles', JSON.stringify(remaining));
+            if (activeProfileId() === id) {
+                switchToProfile(remaining[0].id);
+            } else {
+                openProfilePicker();
+            }
+        }
+        function openProfilePicker() {
+            let modal = document.getElementById('profileModal');
+            if (modal) modal.remove();
+            modal = document.createElement('div');
+            modal.id = 'profileModal';
+            modal.className = 'settings-modal active';
+            const activeId = activeProfileId();
+            const cards = profileList().map(p =>
+                '<div class="buddy-skin-card ' + (p.id === activeId ? 'active' : '') + '" onclick="switchToProfile(\'' + p.id + '\')" style="position:relative;">' +
+                '<div class="buddy-skin-preview" style="background: linear-gradient(135deg, var(--primary), var(--secondary));"><span style="font-size:22px;">' + (p.id === activeId ? '⭐' : '👤') + '</span></div>' +
+                '<div class="buddy-skin-name">' + p.label + '</div>' +
+                '<button onclick="deleteProfile(\'' + p.id + '\', event)" title="Delete" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.15);border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:0.8rem;">✕</button>' +
+                '</div>'
+            ).join('');
+            modal.innerHTML = '<div class="settings-content" style="max-width:480px;"><h2>👤 Who\'s Playing?</h2>' +
+                '<p style="margin-bottom:15px;color:#666;">Everyone gets their own name, look, and progress!</p>' +
+                '<div class="buddy-skins">' + cards + '</div>' +
+                '<button class="settings-btn" style="position:static;margin-top:20px;width:auto;padding:10px 20px;border-radius:20px;background:var(--primary);color:white;" onclick="addNewProfile()">+ Add Player</button> ' +
+                '<button class="settings-btn" style="position:static;margin-top:20px;width:auto;padding:10px 20px;border-radius:20px;background:none;color:#999;box-shadow:none;" onclick="document.getElementById(\'profileModal\').remove()">Close</button>' +
+                '</div>';
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+            document.body.appendChild(modal);
+        }
+
         function openHouseDecorator() {
             let modal = document.getElementById('houseDecoratorModal');
             if (modal) modal.remove();
@@ -1653,7 +1917,9 @@
                 const unlocked = unlockedHouseDecor.includes(id);
                 const on = activeHouseDecor.includes(id);
                 if (!unlocked) {
-                    const howText = d.unlockType === 'level' ? ('Reach Friendship Level ' + d.unlockValue) : 'Keep exploring to unlock this!';
+                    const howText = d.unlockType === 'level' ? ('Reach Friendship Level ' + d.unlockValue)
+                        : d.unlockType === 'event' ? ('Comes around every year for ' + d.unlockValue + ' - check back then!')
+                        : 'Keep exploring to unlock this!';
                     return '<div class="buddy-skin-card" style="opacity:0.45;cursor:default;"><div class="buddy-skin-preview" style="background:#ccc;"><span style="font-size:22px;">🔒</span></div><div class="buddy-skin-name">' + d.label + '</div><div style="font-size:0.75rem;color:#888;">' + howText + '</div></div>';
                 }
                 return '<div class="buddy-skin-card ' + (on ? 'active' : '') + '" onclick="toggleDecorActive(\'' + id + '\')"><div class="buddy-skin-preview" style="background: linear-gradient(135deg, var(--primary), var(--secondary));"><span style="font-size:22px;">' + d.emoji + '</span></div><div class="buddy-skin-name">' + d.label + (on ? ' ✅' : '') + '</div></div>';
@@ -2431,7 +2697,6 @@
             aiDiv.appendChild(readBtn);
             chatContainer.appendChild(aiDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
-            
             // Auto-read, then chime + unlock typing when Buddy finishes
             setTimeout(() => {
                 if (appSettings.autoRead && 'speechSynthesis' in window) {
@@ -2707,9 +2972,10 @@
                   .then(blob => {
                       const audio = new Audio(URL.createObjectURL(blob));
                       audio.volume = Math.min(1, Math.max(0, (typeof appSettings.volume === 'number' ? appSettings.volume : 100) / 100));
-                      audio.onended = () => { setBuddyTalking(false); if (onDone) onDone(); };
-                      audio.onerror = () => { setBuddyTalking(false); if (onDone) onDone(); };
+                      audio.onended = () => { setBuddyTalking(false); hideCaption(); if (onDone) onDone(); };
+                      audio.onerror = () => { setBuddyTalking(false); hideCaption(); if (onDone) onDone(); };
                       setBuddyTalking(true);
+                      showCaption(text);
                       audio.play();
                   })
                   .catch(() => browserSpeak(text, mood, onDone));
@@ -3122,8 +3388,54 @@
             const g = getAgeGroup(currentAge);
             const age = { '3': { p: 1.16, r: 0.95 }, '6': { p: 1.1, r: 1.02 }, '12': { p: 1.04, r: 1.12 }, '15': { p: 1.0, r: 1.18 }, 'adult': { p: 0.96, r: 1.12 } }[g] || { p: 1.05, r: 1.1 };
             const m = currentMode === 'teacher' ? { p: 0.95, r: 0.95, gap: 1.25 } : { p: 1.05, r: 1.05, gap: 1.0 };
-            return { pitch: age.p * m.p, rate: age.r * m.r, gap: m.gap };
+            // Bedtime Mode: slower, softer, with longer pauses between sentences - a wind-down voice.
+            const bt = (typeof isBedtimeActive === 'function' && isBedtimeActive()) ? { p: 0.94, r: 0.8, gap: 1.4 } : { p: 1, r: 1, gap: 1 };
+            return { pitch: age.p * m.p * bt.p, rate: age.r * m.r * bt.r, gap: m.gap * bt.gap };
         }
+
+        // ===== Accessibility: captions for anything Buddy speaks =====
+        function showCaption(text) {
+            if (!appSettings.captions) return;
+            const bar = document.getElementById('captionBar');
+            if (!bar) return;
+            bar.textContent = text;
+            bar.classList.add('showing');
+        }
+        function hideCaption() {
+            const bar = document.getElementById('captionBar');
+            if (bar) bar.classList.remove('showing');
+        }
+
+        // ===== Bedtime Mode =====
+        function isBedtimeActive() {
+            const mode = (typeof appSettings !== 'undefined' && appSettings.bedtimeMode) || 'auto';
+            if (mode === 'off') return false;
+            if (mode === 'on') return true;
+            const h = new Date().getHours();
+            return h >= 19 || h < 7; // auto window: 7pm - 7am
+        }
+        function applyBedtimeTheme() {
+            const active = isBedtimeActive();
+            document.body.classList.toggle('bedtime-active', active);
+            const btn = document.getElementById('bedtimeStoryBtn');
+            if (btn) btn.classList.toggle('showing', active);
+        }
+        function sendBedtimeStory() {
+            const inp = document.getElementById('messageInput');
+            if (!inp || typeof sendMessage !== 'function') return;
+            const g = getAgeGroup(currentAge);
+            const asks = {
+                '3': 'Can you tell me a very short, cozy, sleepy story with a happy ending?',
+                '6': 'Can you tell me a calm, cozy bedtime story to help me fall asleep?',
+                '12': 'Can you tell me a gentle, relaxing bedtime story?',
+                '15': 'Can you tell a short, calming wind-down story for bedtime?',
+                'adult': 'Can you share a short, soothing wind-down story?'
+            };
+            inp.value = asks[g] || asks['6'];
+            sendMessage();
+        }
+        // Re-check every 5 minutes so "Auto" crosses the 7pm/7am line live without a page reload.
+        setInterval(applyBedtimeTheme, 300000);
 
         function splitSentences(text) {
             const parts = String(text).match(/[^.!?]+[.!?]+["')]*|[^.!?]+$/g);
@@ -3147,4 +3459,355 @@
                 const o = ctx.createOscillator(), g = ctx.createGain();
                 o.type = type || 'sine';
                 o.frequency.setValueAtTime(f1, ctx.currentTime);
-         
+                o.frequency.exponentialRampToValueAtTime(Math.max(f2, 1), ctx.currentTime + dur);
+                g.gain.setValueAtTime(vol || 0.15, ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+                o.connect(g); g.connect(ctx.destination);
+                o.start(); o.stop(ctx.currentTime + dur + 0.05);
+            } catch (e) { /* sound optional */ }
+        }
+        function sfxNoise(dur, fFrom, fTo, vol) {
+            try {
+                const ctx = sfxCtx();
+                const len = Math.floor(ctx.sampleRate * dur);
+                const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+                const data = buf.getChannelData(0);
+                for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+                const src = ctx.createBufferSource();
+                src.buffer = buf;
+                const filt = ctx.createBiquadFilter();
+                filt.type = 'lowpass';
+                filt.frequency.setValueAtTime(fFrom, ctx.currentTime);
+                filt.frequency.exponentialRampToValueAtTime(Math.max(fTo, 40), ctx.currentTime + dur);
+                const g = ctx.createGain();
+                g.gain.setValueAtTime(vol || 0.18, ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+                src.connect(filt); filt.connect(g); g.connect(ctx.destination);
+                src.start(); src.stop(ctx.currentTime + dur + 0.05);
+            } catch (e) { /* sound optional */ }
+        }
+        const SFX = {
+            boing: () => { sfxTone(380, 90, 0.1, 'sine', 0.2); setTimeout(() => sfxTone(90, 620, 0.3, 'sine', 0.18), 90); },
+            swoosh: () => sfxNoise(0.4, 2800, 250, 0.2),
+            zoom: () => sfxTone(180, 1250, 0.45, 'sawtooth', 0.07),
+            pop: () => popSound(720),
+            crash: () => { sfxNoise(0.5, 5500, 600, 0.25); sfxTone(160, 60, 0.4, 'square', 0.06); },
+            ding: () => { sfxTone(1320, 1300, 0.8, 'sine', 0.16); sfxTone(2640, 2600, 0.5, 'sine', 0.05); },
+            splash: () => sfxNoise(0.45, 1400, 220, 0.2),
+            beep: () => sfxTone(880, 880, 0.16, 'square', 0.09),
+            whee: () => sfxTone(380, 1050, 0.55, 'sine', 0.14),
+            snip: () => { sfxNoise(0.06, 4000, 2500, 0.2); setTimeout(() => sfxNoise(0.06, 4000, 2500, 0.2), 140); },
+            knock: () => { sfxTone(140, 90, 0.09, 'sine', 0.25); setTimeout(() => sfxTone(130, 85, 0.09, 'sine', 0.25), 180); },
+            tick: () => popSound(1050),
+            tada: () => [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => popSound(f), i * 110)),
+            giggle: () => [700, 850, 1000, 880].forEach((f, i) => setTimeout(() => popSound(f), i * 90)),
+            gasp: () => sfxNoise(0.25, 300, 2400, 0.12),
+            drumroll: () => { for (let i = 0; i < 10; i++) setTimeout(() => popSound(170 + (i % 2) * 30), i * 60); },
+            magic: () => [1200, 1500, 1800, 2100].forEach((f, i) => setTimeout(() => sfxTone(f, f - 30, 0.3, 'sine', 0.1), i * 120))
+        };
+        const SFX_MAP = [
+            [/\b(boing|sproing)\b/i, 'boing'],
+            [/\b(swoosh|whoosh|woosh|swish)\b/i, 'swoosh'],
+            [/\b(zoom+|zap|vroom+)\b/i, 'zoom'],
+            [/\b(pop+)\b/i, 'pop'],
+            [/\b(crash|bang|boom|smash|kaboom|thud)\b/i, 'crash'],
+            [/\b(ding|dong)\b/i, 'ding'],
+            [/\b(splash|splish|sploosh)\b/i, 'splash'],
+            [/\b(beep|boop)\b/i, 'beep'],
+            [/\b(whee+)\b/i, 'whee'],
+            [/\b(snip)\b/i, 'snip'],
+            [/\b(knock)\b/i, 'knock'],
+            [/\b(tick tock)\b/i, 'tick'],
+            [/\b(ta-?da+)\b/i, 'tada'],
+            [/\b(giggles?|hehehe+|tee-?hee)\b/i, 'giggle'],
+            [/\b(gasps?)\b/i, 'gasp'],
+            [/\b(drum\s?roll)\b/i, 'drumroll'],
+            [/\b(abracadabra|alakazam)\b/i, 'magic']
+        ];
+        function triggerSFX(sentence) {
+            let fired = 0;
+            for (let i = 0; i < SFX_MAP.length && fired < 2; i++) {
+                if (SFX_MAP[i][0].test(sentence)) { SFX[SFX_MAP[i][1]](); fired++; }
+            }
+        }
+
+        // Sound words become REAL sounds - Buddy performs them instead of reading them aloud
+        function stripSFXWords(text) {
+            let out = text;
+            for (let i = 0; i < SFX_MAP.length; i++) {
+                out = out.replace(new RegExp(SFX_MAP[i][0].source, 'gi'), ' ');
+            }
+            return out.replace(/\s{2,}/g, ' ').replace(/\s+([.!?,;:])/g, '$1').trim();
+        }
+
+        // ===== Input lock + done chime =====
+        let inputLocked = false;
+        function lockInput() {
+            inputLocked = true;
+            const inp = document.getElementById('messageInput');
+            inp.disabled = true;
+            inp.placeholder = buddyName + ' is talking... 🗣️';
+            document.querySelector('.input-container button').disabled = true;
+            // NOTE: the mic button is never disabled - turning the mic off must always work
+            clearTimeout(lockInput._t);
+            lockInput._t = setTimeout(unlockInput, 45000); // failsafe: never stay stuck
+        }
+        function unlockInput() {
+            inputLocked = false;
+            clearTimeout(lockInput._t);
+            const inp = document.getElementById('messageInput');
+            inp.disabled = false;
+            inp.placeholder = 'Type your message here...';
+            document.querySelector('.input-container button').disabled = false;
+            inp.focus();
+        }
+        function doneChime() {
+            sfxTone(880, 884, 0.12, 'sine', 0.12);
+            setTimeout(() => sfxTone(1318, 1322, 0.28, 'sine', 0.12), 130);
+        }
+        function responseDone() {
+            doneChime();
+            unlockInput();
+        }
+
+        let speechRun = 0; // newer speech cancels older queues
+        function browserSpeak(text, mood = 'friendly', onDone) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const run = ++speechRun;
+            setBuddyTalking(true); // mic goes deaf to Buddy instantly
+            const sentences = splitSentences(text);
+            const tone = toneFor();
+            const moodMap = {
+                'friendly':   { rate: 0.97, pitch: 1.02, volume: 0.92 },
+                'excited':    { rate: 1.06, pitch: 1.09, volume: 0.98 },
+                'happy':      { rate: 1.01, pitch: 1.06, volume: 0.95 },
+                'caring':     { rate: 0.88, pitch: 0.99, volume: 0.88 },
+                'thoughtful': { rate: 0.84, pitch: 0.96, volume: 0.85 },
+                'playful':    { rate: 1.02, pitch: 1.05, volume: 0.93 },
+                'sad':        { rate: 0.8,  pitch: 0.95, volume: 0.82 },
+                'surprised':  { rate: 1.07, pitch: 1.1,  volume: 0.97 },
+                'confused':   { rate: 0.87, pitch: 1.01, volume: 0.9 }
+            };
+            const m = moodMap[mood] || moodMap['friendly'];
+            const userRate = (appSettings.rate || 100) / 100;
+            const userPitch = (appSettings.pitch || 100) / 100;
+            const userVol = (typeof appSettings.volume === 'number' ? appSettings.volume : 100) / 100;
+
+            function speakNext(i) {
+                if (run !== speechRun) return;
+                if (i >= sentences.length) { setBuddyTalking(false); hideCaption(); if (onDone) onDone(); return; }
+                const raw = sentences[i];
+                triggerSFX(raw);
+                const clean = stripSFXWords(cleanForSpeech(raw));
+                if (!clean || /^[\s.!?,;:'"-]*$/.test(clean)) {
+                    // the sentence WAS the sound effect - let it play, then move on
+                    setTimeout(() => speakNext(i + 1), 450);
+                    return;
+                }
+                showCaption(clean);
+                const u = new SpeechSynthesisUtterance(clean);
+                // voice character + subtle human cadence (same voice, new personality of sound)
+                const vs = VOICE_STYLES[appSettings.voiceStyle] || VOICE_STYLES.normal;
+                const wob = typeof vs.wob === 'number' ? vs.wob : 0.06;
+                const humanize = (1 - wob / 2) + Math.random() * wob;
+                const altShift = vs.alt ? (i % 2 === 0 ? 1.12 : 0.9) : 1;
+                u.rate = Math.min(2, Math.max(0.3, m.rate * tone.rate * userRate * vs.r * humanize));
+                u.pitch = Math.min(2, Math.max(0.3, m.pitch * tone.pitch * userPitch * vs.p * altShift * (0.99 + Math.random() * 0.02)));
+                u.volume = Math.min(1, Math.max(0, m.volume * userVol * (vs.v || 1)));
+                let chosenVoice = null;
+                if (appSettings.voiceName) {
+                    chosenVoice = window.speechSynthesis.getVoices().find(v => v.name === appSettings.voiceName) || null;
+                }
+                if (chosenVoice || selectedVoice) u.voice = chosenVoice || selectedVoice;
+                const next = () => setTimeout(() => speakNext(i + 1), pauseAfter(raw, tone.gap));
+                u.onend = next;
+                u.onerror = next;
+                window.speechSynthesis.speak(u);
+            }
+            speakNext(0);
+        }
+
+        // Arcade opener — tapping 🎲 again (or during any game) closes it right back to chat
+        function openArcade() {
+            if (document.getElementById('gsRoot') && typeof closeSpace === 'function') {
+                closeSpace();
+                popSound(380);
+                document.getElementById('aiStatus').textContent = '🤖 Ready!';
+                return;
+            }
+            if (typeof showGameMenu === 'function') {
+                showGameMenu();
+            } else {
+                showAIResponse("Hmm, my game chest didn't open! Close the black window, then start me again with START-BUDDY.bat (or press F5 to refresh) and the games will be ready!", 'caring');
+            }
+        }
+
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Tap anywhere outside the settings panel: everything's already saved, just close it
+        document.getElementById('settingsModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('settingsModal')) closeSettings();
+        });
+
+        // Mode selector (Friend / Teacher)
+        document.getElementById('modeSelect').addEventListener('change', () => {
+            currentMode = document.getElementById('modeSelect').value === 'teacher' ? 'teacher' : 'friend';
+            localStorage.setItem('buddy_mode', currentMode);
+            if (currentMode === 'teacher') {
+                showAIResponse("Teacher mode on! I'll explain things, share what I know, and we can learn together! What should we explore?", 'thoughtful');
+            } else {
+                showAIResponse("Friend mode! Now I'm just like you - let's hang out and have fun!", 'playful');
+            }
+        });
+        
+        // Age input handler (with adult-mode notice)
+        let lastAgeGroup = getAgeGroup(currentAge);
+        document.getElementById('ageInput').addEventListener('change', () => {
+            const ageValue = parseInt(document.getElementById('ageInput').value);
+            if (ageValue >= 1 && ageValue <= 100) {
+                currentAge = ageValue.toString();
+                saveUserData();
+                const newGroup = getAgeGroup(ageValue);
+                if (newGroup === 'adult' && lastAgeGroup !== 'adult') {
+                    showAIResponse("Heads up — Adult mode is now on! I'll talk with you like a grown-up: deeper topics, bigger ideas, real conversation, zero baby talk. I always keep things respectful and family-friendly though, at every age setting. So, what's on your mind?", 'thoughtful');
+                }
+                lastAgeGroup = newGroup;
+            } else {
+                document.getElementById('ageInput').value = 12;
+            }
+        });
+        
+        // Age input keypress handler
+        document.getElementById('ageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const ageValue = parseInt(document.getElementById('ageInput').value);
+                if (ageValue >= 1 && ageValue <= 100) {
+                    currentAge = ageValue.toString();
+                    saveUserData();
+                }
+            }
+        });
+        
+        // ===== Add to Home Screen (installable app) =====
+        let deferredInstall = null;
+        function isStandalone() {
+            return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        }
+        function installSnoozed() {
+            const t = parseInt(localStorage.getItem('buddy_install_snooze') || '0', 10);
+            return Date.now() - t < 7 * 86400000; // ask again after a week
+        }
+        function showInstallBanner(iosMode) {
+            if (isStandalone() || installSnoozed() || document.getElementById('installBanner')) return;
+            const b = document.createElement('div');
+            b.className = 'install-banner';
+            b.id = 'installBanner';
+            b.innerHTML = '<span class="ib-icon">📲</span><span class="ib-text"><b>Put ' + escapeHtml(buddyName) + ' on your home screen!</b><br>' +
+                (iosMode ? 'Tap the Share button below, then "Add to Home Screen"' : 'One tap and Buddy becomes a real app on this device') + '</span>';
+            const actions = document.createElement('span');
+            actions.className = 'ib-actions';
+            if (!iosMode) {
+                const add = document.createElement('button');
+                add.className = 'ib-add';
+                add.textContent = '📲 Add!';
+                add.onclick = async () => {
+                    if (deferredInstall) {
+                        deferredInstall.prompt();
+                        try { await deferredInstall.userChoice; } catch (e) {}
+                        deferredInstall = null;
+                    }
+                    b.remove();
+                };
+                actions.appendChild(add);
+            }
+            const later = document.createElement('button');
+            later.className = 'ib-later';
+            later.textContent = iosMode ? 'Got it!' : 'Later';
+            later.onclick = () => {
+                localStorage.setItem('buddy_install_snooze', String(Date.now()));
+                b.remove();
+            };
+            actions.appendChild(later);
+            b.appendChild(actions);
+            document.body.appendChild(b);
+            popSound(600); setTimeout(() => popSound(800), 120);
+        }
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstall = e;
+            setTimeout(() => showInstallBanner(false), 12000);
+        });
+        window.addEventListener('appinstalled', () => {
+            deferredInstall = null;
+            const b = document.getElementById('installBanner');
+            if (b) b.remove();
+            showAIResponse('🎉 I live on your device now! Look for my smiley face on your home screen any time you want me!', 'excited');
+        });
+        if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js?v=7').catch(() => { /* offline shell is optional */ });
+            });
+        }
+        // iPhones/iPads have no install popup - show friendly how-to instead
+        (function () {
+            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            const isSafari = /safari/i.test(navigator.userAgent) && !/crios|fxios|chrome/i.test(navigator.userAgent);
+            if (isIOS && isSafari && !isStandalone()) {
+                setTimeout(() => showInstallBanner(true), 15000);
+            }
+        })();
+
+        window.addEventListener('load', () => {
+            updateHeader();
+            document.getElementById('modeSelect').value = currentMode;
+            // Tap the house to let Buddy out!
+            const house = houseEl();
+            if (house) {
+                house.title = 'Tap the house to let Buddy out!';
+                house.addEventListener('pointerdown', () => {
+                    if (bd.el) {
+                        // He's already out - just say hi from home instead of freeing a second copy
+                        const r = house.getBoundingClientRect();
+                        buddySay(r.left + 20, r.top + 95, "I'm already out playing - come find me!");
+                        popSound(350);
+                        return;
+                    }
+                    const r = house.getBoundingClientRect();
+                    freeBuddy(r.left + 25, r.top + 30);
+                    buddySay(r.left + 40, r.top + 95, "I'm FREE! Poke me, drag me, toss me!");
+                    bd.vx = (Math.random() - 0.5) * 10; bd.vy = 5;
+                    popSound(300); setTimeout(() => popSound(450), 120);
+                });
+            }
+            document.getElementById('ageInput').value = currentAge;
+            document.getElementById('userNameInput').value = userName;
+            document.getElementById('buddyNameInput').value = buddyName === 'Buddy' ? '' : buddyName;
+            document.getElementById('genderSelect').value = buddyGender;
+            applyTheme(currentTheme);
+            applyBuddySkin(currentBuddySkin);
+            updateThemeCards();
+            updateBuddySkinCards();
+            updateAccessoryChips();
+            applyHouseDecor();
+            applySettings();
+            populateVoiceList();
+            buildVoiceStyleOptions();
+            startOnboarding();
+            wordOfTheDay();
+            applySeasonalEvent();
+            ensureDefaultProfile();
+            window.__buddyLoaded = true;
+        });
+    </script>
+    <script src="games.js?v=7"></script>
+    <script src="visuals.js?v=7"></script>
+    <script src="space.js?v=7"></script>
+    <!-- Buddy 3D: real-time lit/shaded 3D character rendering. Loads after everything above so
+         it can theme/mount into faces that already exist and hook the functions they defined. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="buddy3d.js?v=7"></script>
+</body>
+</html>
