@@ -796,10 +796,14 @@
         @keyframes jugOrbit { from { transform: rotate(0deg) translateX(42px) rotate(0deg); } to { transform: rotate(360deg) translateX(42px) rotate(-360deg); } }
         .mini-buddy { position: fixed; z-index: 3000; width: 30px; height: 30px; border-radius: 50%; pointer-events: none; transition: left 0.6s ease, top 0.6s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
 
-        /* Buddy blinks like a living thing */
-        .buddy-face::before, .buddy-face::after { animation: eyeBlink 4.6s infinite !important; }
+        /* Buddy blinks like a living thing - slow and gentle, never a snap/twitch */
+        .buddy-face::before, .buddy-face::after { animation: eyeBlink 7s ease-in-out infinite !important; }
         .buddy-face::after { animation-delay: 0.05s !important; }
-        @keyframes eyeBlink { 0%, 91%, 100% { transform: scaleY(1); } 94% { transform: scaleY(0.08); } 97% { transform: scaleY(1); } }
+        @keyframes eyeBlink { 0%, 88%, 100% { transform: scaleY(1); } 92% { transform: scaleY(0.15); } 96% { transform: scaleY(1); } }
+        /* Reduce Motion: Buddy's eyes stay open and calm, no blinking at all */
+        body.buddy-calm-eyes .buddy-face::before, body.buddy-calm-eyes .buddy-face::after {
+            animation: none !important; transform: scaleY(1) !important;
+        }
 
         /* Respect users who prefer less motion */
         @media (prefers-reduced-motion: reduce) {
@@ -1179,6 +1183,7 @@
                 if (el) el.style.filter = filterVal;
             });
             document.body.classList.toggle('sky-off', appSettings.sky === false);
+            document.body.classList.toggle('buddy-calm-eyes', !!appSettings.reduceMotion);
             // Keep the 3D engine's motion gate (buddy3d.js reduceMotion()) in sync with this setting.
             try { localStorage.setItem('buddy_reduce_motion', appSettings.reduceMotion ? '1' : '0'); } catch (e) { /* ignore */ }
             applyBedtimeTheme();
@@ -3748,7 +3753,7 @@
         });
         if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js?v=7').catch(() => { /* offline shell is optional */ });
+                navigator.serviceWorker.register('sw.js?v=8').catch(() => { /* offline shell is optional */ });
             });
         }
         // iPhones/iPads have no install popup - show friendly how-to instead
@@ -3802,12 +3807,12 @@
             window.__buddyLoaded = true;
         });
     </script>
-    <script src="games.js?v=7"></script>
-    <script src="visuals.js?v=7"></script>
-    <script src="space.js?v=7"></script>
+    <script src="games.js?v=8"></script>
+    <script src="visuals.js?v=8"></script>
+    <script src="space.js?v=8"></script>
     <!-- Buddy 3D: real-time lit/shaded 3D character rendering. Loads after everything above so
          it can theme/mount into faces that already exist and hook the functions they defined. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="buddy3d.js?v=7"></script>
+    <script src="buddy3d.js?v=8"></script>
 </body>
 </html>
